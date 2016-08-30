@@ -1,7 +1,6 @@
 
 .Gruntfile.js
-npm-debug.log 
-Procfile
+npm-debug.log  
 
 # Node build artifacts
 node_modules
