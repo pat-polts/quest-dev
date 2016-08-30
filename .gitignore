@@ -1,0 +1,6 @@
+.env
+.Gruntfile.js
+npm-debug.log
+src/
+/node_modules
+/bower_components

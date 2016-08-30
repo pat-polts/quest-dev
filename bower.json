@@ -1,0 +1,25 @@
+{
+  "name": "quest-dev",
+  "description": "",
+  "main": "server/server.js",
+  "authors": [
+    "poltts <poltss@gmail.com>"
+  ],
+  "license": "ISC",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "^1.3.x",
+    "angular-route": "^1.3.x",
+    "angular-resource": "^1.3.x",
+    "angular-cookies": "^1.3.x",
+    "angular-aria": "^1.3.x",
+    "angular-material": "^1.1.0"
+  }
+}
