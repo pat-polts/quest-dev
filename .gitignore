@@ -1,6 +1,14 @@
 .env
 .Gruntfile.js
+npm-debug.log 
+Procfile
+
+# Node build artifacts
+node_modules
+bower_components
 npm-debug.log
-README.txt 
-/node_modules
-/bower_components
+
+# Local development
+*.env
+*.dev
+.DS_Store
