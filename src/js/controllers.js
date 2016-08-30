@@ -63,7 +63,6 @@ quest.controller('loginController',
           $rootScope.disabled = false;
           $rootScope.userActive = false;
           $scope.loginForm = {};
-          $location.path('/register');
         });
 
     };
