@@ -1,0 +1,80 @@
+{
+	"casas" : {
+		"1": {
+			"question": "O que faz com que células normais se tornem células de câncer?",
+			"options": {
+					"a": "Aumento da apoptose celula",
+					"b": "Mutações em células tronco normais ou células progenitoras",
+					"c": "Rapidez incontrolada na divisão celular",
+					"d": "Envelhecimento celular",
+			},
+			"answer": "b",
+			"score": 10,
+			"special": false,
+			"userChoice": "none",
+			"x": 0,
+			"y": 0
+		},
+		"2": {
+			"question": "O que faz com que células normais se tornem células de câncer?",
+			"options": {
+					"a": "Aumento da apoptose celula",
+					"b": "Mutações em células tronco normais ou células progenitoras",
+					"c": "Rapidez incontrolada na divisão celular",
+					"d": "Envelhecimento celular",
+			},
+			"answer": "b",
+			"score": 10,
+			"special": false,
+			"userChoice": "none",
+			"x": 0,
+			"y": 0
+		},
+		"3": {
+			"question": "O que faz com que células normais se tornem células de câncer?",
+			"options": {
+					"a": "Aumento da apoptose celula",
+					"b": "Mutações em células tronco normais ou células progenitoras",
+					"c": "Rapidez incontrolada na divisão celular",
+					"d": "Envelhecimento celular",
+			},
+			"answer": "b",
+			"score": 10,
+			"special": false,
+			"userChoice": "none",
+			"x": 0,
+			"y": 0
+		},
+		"4": {
+			"question": "O que faz com que células normais se tornem células de câncer?",
+			"options": {
+					"a": "Aumento da apoptose celula",
+					"b": "Mutações em células tronco normais ou células progenitoras",
+					"c": "Rapidez incontrolada na divisão celular",
+					"d": "Envelhecimento celular",
+			},
+			"answer": "b",
+			"score": 10,
+			"special": false,
+			"userChoice": "none",
+			"x": 0,
+			"y": 0
+		},
+		"5": {
+			"question": "O que faz com que células normais se tornem células de câncer?",
+			"options": {
+					"a": "Aumento da apoptose celula",
+					"b": "Mutações em células tronco normais ou células progenitoras",
+					"c": "Rapidez incontrolada na divisão celular",
+					"d": "Envelhecimento celular",
+			},
+			"answer": "b",
+			"score": 10,
+			"special": false,
+			"userChoice": "none",
+			"x": 0,
+			"y": 0
+		},
+	}
+	
+}

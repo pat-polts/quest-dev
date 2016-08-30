@@ -18,7 +18,7 @@ var debug          = require('debug')('passport-mongo'); ;
 var userAuth       = require('./routes/authenticate.js');
 
 //models
-var User           = require('./models/user.js');
+var User  = require('./models/user.js');  
 
 // mongoose: temporário dev, pode ser o mesmo link o mongo automaticamente abre a conexão se estiver rodando 
 mongoose.connect('mongodb://localhost/quest-db');
@@ -45,11 +45,18 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 
-app.use('/auth/', userAuth);
-
+app.use('/auth/', userAuth); 
 app.get('/', function(req, res) {
   console.log('Rquest!');
   res.sendFile(path.join(__dirname, 'views/index.html')); 
+});
+app.use('/board', function(req, res) {
+  readJSONFile('./config/boardData.json', function(err, json){
+    if(err){
+      console·log(err);
+    }
+    console.log(res.json(json) );
+  });
 });
 
 // Catch errors

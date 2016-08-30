@@ -35,7 +35,11 @@ quest.config(function ($routeProvider,$locationProvider) {
     })
     .when('/game', {
       templateUrl: '../../views/game.html',
-      access: {restricted: false}
+      access: {restricted: true}
+    })
+    .when('/board', {
+      templateUrl: '../../views/game.html',
+      access: {restricted: true}
     })
     .otherwise({
       redirectTo: '/'
@@ -179,25 +183,114 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 /*********************
   BoardService
 **********************/
-quest.factory('BoardService', ['$rootScope', '$timeout', '$http', 
-  function($rootScope, $timeout, $http){
-
+quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 
+  function($rootScope, $q, $timeout, $http){
+      var deferred = $q.defer();
     var score  = 0;
+    var totalHouses = 30;
     var houses = {
-          0: {
-            'score' : '10',
-            'question' : '',
-            'answer' : '',
-            'special' : false
-          },
-          1: {
-            'score' : '10',
-            'question' : '',
-            'answer' : '',
-            'special' : false
-          }
+          'score' : '10',
+          'question' : ['title', 'options', 'correct'],
+          'answer' : '',
+          'special' : false,
+          'x': 0,
+          'y':0
     };
+    var board = {
+      "casas" : {
+        "1": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "answer": "b",
+          "score": 10,
+          "special": false,
+          "userChoice": "none",
+          "x": 0,
+          "y": 0
+        },
+        "2": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "answer": "b",
+          "score": 10,
+          "special": false,
+          "userChoice": "none",
+          "x": 0,
+          "y": 0
+        },
+        "3": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "answer": "b",
+          "score": 10,
+          "special": false,
+          "userChoice": "none",
+          "x": 0,
+          "y": 0
+        },
+        "4": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "answer": "b",
+          "score": 10,
+          "special": false,
+          "userChoice": "none",
+          "x": 0,
+          "y": 0
+        },
+        "5": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "answer": "b",
+          "score": 10,
+          "special": false,
+          "userChoice": "none",
+          "x": 0,
+          "y": 0
+        },
+      }
+  
+  };
+
     var game   = {};
+
+    game.getGameApi = function(){
+      return board;
+    };
+    game.createBoard = function(){
+      var props = [];
+
+      for (var i = 0; i < totalHouses; i++) {
+        props[i] = houses;
+      }
+
+      return props;
+    };
 
     game.getHouses = function(){
       return houses;
@@ -214,7 +307,7 @@ quest.factory('BoardService', ['$rootScope', '$timeout', '$http',
 //================================================
 
 /**************************
-  A definir diretivas html
+  Define altura div
 ***************************/
 quest.directive('setHeight', function($timeout, $window){
 
@@ -235,14 +328,60 @@ quest.directive('setHeight', function($timeout, $window){
     }
   }
 
-})
+});
 
 /**************************
-  Nova diretiva
+  Board
 ***************************/
-// quest.directive('profile', function($timeout, $window){});
+quest.directive('board', function(){
+    return{
+      restrict: 'EAC',
+      replace: true,
+      scope: {},
+      template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
+      link: function(scope,element, attribute){
+        var w, h, px, py, loader, manifest, board, house, eHouse;
+        drawBoard();
 
-// quest.directive('specials', function($timeout, $window){});
+        function drawBoard(){
+          if (scope.stage) {
+              scope.stage.autoClear = true;
+              scope.stage.removeAllChildren();
+              scope.stage.update();
+          } else {
+              scope.stage = new createjs.Stage(element[0]);
+          }
+          w = scope.stage.canvas.width;
+          h = scope.stage.canvas.height;
+          manifest = [
+            {src: "current-marker.png", id: "eHouse"},
+            {src: "house-marker.png", id: "house"},
+            {src: "board.png", id: "board"}
+          ];
+          loader = new createjs.LoadQueue(false);
+          loader.addEventListener("complete", handleComplete);
+          loader.loadManifest(manifest, true, "/dist/assets/");
+        }
+        function handleComplete(){
+          console.log(w + " " + h);
+          board = new createjs.Shape();
+          board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
+          house = new createjs.Shape();
+          house.graphics.beginFill("white").drawCircle(0, 0, 10);
+          house.x =  40;
+          house.y = 150;
+           scope.stage.addChild(board, house);
+           // scope.stage.addEventListener("stagemousedown", handleJumpStart);
+           createjs.Ticker.timingMode = createjs.Ticker.RAF;
+           createjs.Ticker.addEventListener("tick", tick);
+        
+        }
+        function tick(event){
+          scope.stage.update(event);
+        }
+      }
+    }
+});
 
 //================================================
 //# App Controllers
@@ -270,8 +409,9 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     };
 
 
-    console.log(BoardService.getHouses());
-    console.log("Total de pontos: " + $rootScope.score);
+    console.log(BoardService.getGameApi());
+    // console.log(BoardService.createBoard());
+    // console.log("Total de pontos: " + $rootScope.score);
 
 }]);
 
