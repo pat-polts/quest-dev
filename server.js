@@ -12,7 +12,7 @@ var passport       = require('passport');
 var localStrategy  = require('passport-local' ).Strategy
 var app            = express();
 var router         = express.Router();
-var debug          = require('debug')('passport-mongo'); ;
+var debug          = require('debug')('passport-mongo'); 
 
 //routes
 var userAuth       = require('./routes/authenticate.js');
@@ -20,8 +20,24 @@ var userAuth       = require('./routes/authenticate.js');
 //models
 var User  = require('./models/user.js');  
 
-// mongoose: temporário dev, pode ser o mesmo link o mongo automaticamente abre a conexão se estiver rodando 
-mongoose.connect('mongodb://localhost/quest-db');
+// Here we find an appropriate database to connect to, defaulting to
+// localhost if we don't find one.
+var uristring =
+process.env.MONGOLAB_URI ||
+process.env.MONGOHQ_URL ||
+'mongodb://localhost/quest-mockup';
+// The http server will listen to an appropriate port, or default to
+// port 5000.
+var port = process.env.PORT || 3000;
+// Makes connection asynchronously. Mongoose will queue up database
+// operations and release them when the connection is complete.
+mongoose.connect(uristring, function (err, res) {
+  if (err) {
+  console.log (' ERROR connecting to: ' + uristring + ' . ' + err);
+  } else {
+  console.log (' Succeeded connected to: ' + uristring);
+  }
+});
 
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
@@ -50,14 +66,6 @@ app.get('/', function(req, res) {
   console.log('Rquest!');
   res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
-app.use('/board', function(req, res) {
-  readJSONFile('./config/boardData.json', function(err, json){
-    if(err){
-      console·log(err);
-    }
-    console.log(res.json(json) );
-  });
-});
 
 // Catch errors
 app.use(function(req, res, next) {
@@ -83,10 +91,10 @@ app.use(function(err, req, res, next) {
     });
 });
 
-app.set('port', process.env.PORT || 3000);
+app.set('port', port);
 
 var server = app.listen(app.get('port'), function() {
-	console.log("Don't mess with the dragons - http://localhost:" + server.address().port);
+	console.log("local running at - http://localhost:" + server.address().port);
   debug('debug port: ' + server.address().port);
 });
 

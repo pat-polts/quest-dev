@@ -59,10 +59,11 @@ quest.controller('loginController',
         // handle error
         .catch(function () {
           $rootScope.error = true;
-          $rootScope.errorMessage = "Invalid username and/or password";
+          $rootScope.errorMessage = "Impossivel logar, registre-se";
           $rootScope.disabled = false;
           $rootScope.userActive = false;
           $scope.loginForm = {};
+          $location.path('/register');
         });
 
     };
@@ -101,7 +102,7 @@ quest.controller('registerController',
 
       // initial values
       $rootScope.error = false;
-      $rootScope.disabled = true;
+      $rootScope.disabled = false;
       $rootScope.userActive = false;
 
       // call register from service
