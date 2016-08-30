@@ -1,7 +1,6 @@
 .env
 .Gruntfile.js
 npm-debug.log
-README.txt
-src/
+README.txt 
 /node_modules
 /bower_components

@@ -1,0 +1,62 @@
+@import (reference) 'variables.less';
+
+/* styles */
+.no-pad{
+	padding: 0px;
+}
+.no-marg{
+	margin: 0px;
+}
+.border-radius(@radius){
+	border-radius: @radius;
+		-moz-border-radius: @radius;
+		-webkit-border-radius: @radius;
+		-khtml-border-radius: @radius; /* for old Konqueror browsers */
+
+}
+.border(@size: 1px, @type: solid,  @color: @base-blue){
+	border: @size @type @color;
+} 
+
+.form-elements{
+
+	input,  button{
+	  height: 3.3em;
+	  width: 100%;
+	  padding: 0px;
+	  outline: none;
+	  text-align: center;
+	  font-size: 14px;
+
+	  	.border-radius(10em);
+	}
+
+	label{
+		width: auto;
+		height: auto;
+	}
+
+	label > p{
+		font-size: 14px;
+	}
+
+	label > input{
+	  color: #41779b !important;
+	  margin: 2% 0px;
+
+	  	.border(2px, solid, #004e72);
+	} 
+
+	label:first-child > input{
+		margin: 0px;
+	}
+
+	button{ 
+		color: #fff;
+		font-weight: bold;
+		background: @base-blue;
+		border: none;
+	}
+}
+
+

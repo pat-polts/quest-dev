@@ -1,0 +1,72 @@
+@import (reference) "less/variables.less";
+@import (reference) "less/styles.less";
+
+body{
+	margin: 0px;
+	padding: 0px;
+	text-align: center;
+	overflow: hidden;
+	font-size: 13px;
+}
+
+.container{
+	width: 100%;
+	min-width: 100%;
+	height: auto;
+	min-height: 100%; 
+	position: absolute;
+	box-sizing: border-box;
+	top: 0px;
+	left: 0px;
+	overflow: hidden;
+
+	.layout-row{
+		position: relative;
+		width: 1024px;
+		height: auto;
+		margin: 0px auto;
+	}
+}
+
+.box-content{
+	width: 100%;
+	position: absolute; 
+	border: 1px solid #e0e0e0;
+	text-align: center;
+	background: url('../../../dist/assets/bg-2.png') top center no-repeat;
+    background-size: 100% 100%;
+    image-rendering: auto;
+}
+.login{
+	background: url('../../../dist/assets/bg-1.png') top center no-repeat !important; 
+}
+.register{
+}
+
+// .box-login{  }
+// .box-register{ background: url('../../../dist/assets/bg-2.png') top center no-repeat; }
+
+.form-login{
+	color: @base-blue;
+	width: 45%;
+	position: absolute;
+	left: 27.5%;
+	bottom: 2%;
+
+	.form-elements;
+
+}
+
+.form-register{
+	color: @base-blue;
+	width: 45%;
+	position: absolute;
+	left: 27.5%;
+	top: 5%;
+
+	.form-elements;
+}
+
+canvas{
+	border: 1px solid #e0e0e0;
+}

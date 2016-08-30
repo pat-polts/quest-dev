@@ -1,0 +1,123 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+  overflow: hidden;
+  font-size: 13px;
+}
+.container {
+  width: 100%;
+  min-width: 100%;
+  height: auto;
+  min-height: 100%;
+  position: absolute;
+  box-sizing: border-box;
+  top: 0px;
+  left: 0px;
+  overflow: hidden;
+}
+.container .layout-row {
+  position: relative;
+  width: 1024px;
+  height: auto;
+  margin: 0px auto;
+}
+.box-content {
+  width: 100%;
+  position: absolute;
+  border: 1px solid #e0e0e0;
+  text-align: center;
+  background: url('../../../dist/assets/bg-2.png') top center no-repeat;
+  background-size: 100% 100%;
+  image-rendering: auto;
+}
+.login {
+  background: url('../../../dist/assets/bg-1.png') top center no-repeat !important;
+}
+.form-login {
+  color: #004e72;
+  width: 45%;
+  position: absolute;
+  left: 27.5%;
+  bottom: 2%;
+}
+.form-login input,
+.form-login button {
+  height: 3.3em;
+  width: 100%;
+  padding: 0px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 10em;
+  -moz-border-radius: 10em;
+  -webkit-border-radius: 10em;
+  -khtml-border-radius: 10em;
+  /* for old Konqueror browsers */
+}
+.form-login label {
+  width: auto;
+  height: auto;
+}
+.form-login label > p {
+  font-size: 14px;
+}
+.form-login label > input {
+  color: #41779b !important;
+  margin: 2% 0px;
+  border: 2px solid #004e72;
+}
+.form-login label:first-child > input {
+  margin: 0px;
+}
+.form-login button {
+  color: #fff;
+  font-weight: bold;
+  background: #004e72;
+  border: none;
+}
+.form-register {
+  color: #004e72;
+  width: 45%;
+  position: absolute;
+  left: 27.5%;
+  top: 5%;
+}
+.form-register input,
+.form-register button {
+  height: 3.3em;
+  width: 100%;
+  padding: 0px;
+  outline: none;
+  text-align: center;
+  font-size: 14px;
+  border-radius: 10em;
+  -moz-border-radius: 10em;
+  -webkit-border-radius: 10em;
+  -khtml-border-radius: 10em;
+  /* for old Konqueror browsers */
+}
+.form-register label {
+  width: auto;
+  height: auto;
+}
+.form-register label > p {
+  font-size: 14px;
+}
+.form-register label > input {
+  color: #41779b !important;
+  margin: 2% 0px;
+  border: 2px solid #004e72;
+}
+.form-register label:first-child > input {
+  margin: 0px;
+}
+.form-register button {
+  color: #fff;
+  font-weight: bold;
+  background: #004e72;
+  border: none;
+}
+canvas {
+  border: 1px solid #e0e0e0;
+}
