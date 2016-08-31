@@ -60,6 +60,7 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
 
+
 // Catch errors
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
@@ -110,7 +111,7 @@ if(process.env.NODE_ENV == "production"){
       console.log("local running at - http://localhost:" + server.address().port);
       // debug('debug port: ' + server.address().port);
     });   
-                      
+
   });
 }else{
 
