@@ -136,8 +136,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           'x': 0,
           'y':0
     };
-    var board = {
-      "casas" : {
+    var board = [1,2,3,4,5,6];
+    var boardData = {
         "1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
@@ -212,10 +212,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           "userChoice": "none",
           "x": 0,
           "y": 0
-        },
-      }
-  
-  };
+        }
+    };
 
     var game   = {};
 
@@ -230,6 +228,17 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
       }
 
       return props;
+    };
+
+    game.getBoard = function(){
+      // for (var i = 0; i < 6; i++) {
+      //   board.push(i);
+      // }
+      return board;
+    };
+
+    game.getBoardData = function(){
+      return boardData;
     };
 
     game.getHouses = function(){

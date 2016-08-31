@@ -25,7 +25,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     };
 
 
-    console.log(BoardService.getGameApi());
+    // console.log(BoardService.getGameApi());
     // console.log(BoardService.createBoard());
     // console.log("Total de pontos: " + $rootScope.score);
 

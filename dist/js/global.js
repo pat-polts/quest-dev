@@ -196,8 +196,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           'x': 0,
           'y':0
     };
-    var board = {
-      "casas" : {
+    var board = [1,2,3,4,5,6];
+    var boardData = {
         "1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
@@ -272,10 +272,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           "userChoice": "none",
           "x": 0,
           "y": 0
-        },
-      }
-  
-  };
+        }
+    };
 
     var game   = {};
 
@@ -290,6 +288,17 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
       }
 
       return props;
+    };
+
+    game.getBoard = function(){
+      // for (var i = 0; i < 6; i++) {
+      //   board.push(i);
+      // }
+      return board;
+    };
+
+    game.getBoardData = function(){
+      return boardData;
     };
 
     game.getHouses = function(){
@@ -333,14 +342,14 @@ quest.directive('setHeight', function($timeout, $window){
 /**************************
   Board
 ***************************/
-quest.directive('board', function(){
+quest.directive('board', ['BoardService',  function(BoardService){
     return{
       restrict: 'EAC',
       replace: true,
       scope: {},
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope,element, attribute){
-        var w, h, px, py, loader, manifest, board, house, eHouse;
+        var w, h, px, py, loader, manifest, board, house, eHouse,shape;
         drawBoard();
 
         function drawBoard(){
@@ -354,34 +363,152 @@ quest.directive('board', function(){
           w = scope.stage.canvas.width;
           h = scope.stage.canvas.height;
           manifest = [
-            {src: "current-marker.png", id: "eHouse"},
-            {src: "house-marker.png", id: "house"},
+            {src: "current-marker.png", id: "currentMarker"},
+            {src: "house-marker.png", id: "marker"},
             {src: "board.png", id: "board"}
           ];
           loader = new createjs.LoadQueue(false);
           loader.addEventListener("complete", handleComplete);
           loader.loadManifest(manifest, true, "/dist/assets/");
         }
+        function createPaths(obj){
+          var item = [];
+          var indice = 0; 
+          var markerStartX = 60;
+          var markerStartY = 210;
+          var total = Object.keys(obj).length;
+
+          for (var i = 0; i < total; i++) {
+              item[i] =  new createjs.Shape();
+              item[i].x =  markerStartX;
+              item[i].y = markerStartY;
+          }
+
+          return item
+        }
         function handleComplete(){
-          console.log(w + " " + h);
+
+          var imgMarker    = loader.getResult("marker");
+          var imgMarkerMask    = loader.getResult("currentMarker");
+          var markerStartX = 60;
+          var markerStartY = 210;
+          var markerX      = markerStartX * 5;
+          var boardPath    = BoardService.getBoard();
+          var boardData    = BoardService.getBoardData();
+          var total        = boardPath.length;
+          var markerArr    = [];
+
+          var curves = Math.floor(w / 3);
+          var seq1 = Math.floor(curves / 6);
+          var seq2 = Math.floor(curves / 7);
+
+          //tabuleiro
           board = new createjs.Shape();
           board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
-          house = new createjs.Shape();
-          house.graphics.beginFill("white").drawCircle(0, 0, 10);
-          house.x =  40;
-          house.y = 150;
-           scope.stage.addChild(board, house);
-           // scope.stage.addEventListener("stagemousedown", handleJumpStart);
+          scope.stage.addChild(board); 
+          console.log(seq1);
+            var x1 =  seq1;
+            var x2 =  seq2;
+            var y1 = markerStartY;
+            var y2 = markerStartY + 40;
+            var special = false;
+
+            for (var i = 0; i < 29; i++) {
+
+              if(i < 6){ 
+                 createMarker(0,1,i,special);
+
+              }else if(i > 6 && i < 12){  
+                if(i === 11){
+                  special = true;
+                }
+                 createMarker(0,2,i,special); 
+                             
+              }else{        
+
+              } 
+
+            }
+
+              
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
         
         }
+        function createMarker(current,lines,index,special){
+          var offsetx = (w / 3) - (56 * 6);
+          var offsety = Math.round(h / 3) / 6;
+          var color   = "white";
+          var circle = new createjs.Shape();
+          var currentMark = loader.getResult("currentMarker");
+          var marker = new createjs.Shape();
+
+          if(special) color = "green";   
+            marker.graphics.beginFill("yellow").drawRoundRect(0,0,31,45,15);
+            marker.x = 48;
+            marker.y = 188;
+    
+
+          switch(lines){
+            case 1:
+              var x = 56 * (index + 1) + 10;
+              var y = 210;
+               console.log(x);
+              // 
+            break;
+            case 2:
+            //
+              var x = Math.floor(w / 3) + 3;
+              if(index === 7){
+                var y = 266;
+              }else{
+                var y = Math.round(offsety) * (index - 1) + 20; 
+              }
+            break;
+            case 3:
+
+            break;
+            default:
+            //
+            break;
+          } 
+
+          circle.graphics.beginFill(color).drawCircle(0, 0, 18);
+          circle.x = x;
+          circle.y = y;
+          circle.name = "casa_"+index; 
+          circle.on("click", handleMarkClick);
+          scope.stage.addChild(circle,marker); 
+          
+          
+        }
+        function createMarkerSpecial(){
+          //
+        }
+        function handleMarkClick(){
+          var house = this;
+          console.log(house);
+        }
         function tick(event){
           scope.stage.update(event);
         }
+
+        function toggleCache(value) {
+          // iterate all the children except the fpsLabel, and set up the cache:
+          var l = stage.getNumChildren() - 1;
+
+          for (var i = 0; i < l; i++) {
+            var shape = scope.stage.getChildAt(i);
+            if (value) {
+              shape.cache(-radius, -radius, radius * 2, radius * 2);
+            } else {
+              shape.uncache();
+            }
+          }
+        }
       }
     }
-});
+}]);
 
 //================================================
 //# App Controllers
@@ -409,7 +536,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     };
 
 
-    console.log(BoardService.getGameApi());
+    // console.log(BoardService.getGameApi());
     // console.log(BoardService.createBoard());
     // console.log("Total de pontos: " + $rootScope.score);
 
