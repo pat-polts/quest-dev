@@ -28,9 +28,7 @@
       <div class="logout" ng-controller="logoutController" ng-if="userActive">
         <a ng-click='logout()' class="btn btn-default">Sair</a>
       </div>
-      <div ng-if="error" layout="row" layout-sm="column"></div>
-
-      <div ng-if="startGame" layout="row" layout-sm="column"></div>
+      <div ng-if="isLoading" class="loading">Carregando</div> 
       
       <div ng-view layout="row" layout-sm="column"></div>
     </div>

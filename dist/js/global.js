@@ -42,12 +42,14 @@ quest.config(function ($routeProvider,$locationProvider) {
       access: {restricted: true}
     })
     .otherwise({
-      redirectTo: '/'
+      redirectTo: '/',
+      access: {restricted: true} 
     });
 });
 quest.run(function ($rootScope, $location, $route, $http, AuthService) {
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
+      $rootScope.isLoading = true;
       AuthService.getUserStatus()
       .then(function(){
         if (next.access.restricted && !AuthService.isLoggedIn()){
@@ -147,8 +149,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
       // create a new instance of deferred
       var deferred = $q.defer();
-
-      // send a post request to the server
+ 
       $http.post('/auth/register',
         {username: username, password: password})
         // handle success
@@ -521,6 +522,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
 quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthService', 'BoardService',
   function ($rootScope, $scope, $location, AuthService, BoardService) {
 
+    $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
     $rootScope.userActive   = false;
     $rootScope.question     = false;
@@ -549,6 +551,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
 quest.controller('loginController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.userActive = false;
 
@@ -586,6 +589,7 @@ quest.controller('loginController',
 quest.controller('logoutController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.logout = function () {
 
@@ -607,6 +611,7 @@ quest.controller('logoutController',
 quest.controller('registerController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.register = function () {
 

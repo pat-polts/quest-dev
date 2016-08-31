@@ -87,8 +87,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
       // create a new instance of deferred
       var deferred = $q.defer();
-
-      // send a post request to the server
+ 
       $http.post('/auth/register',
         {username: username, password: password})
         // handle success

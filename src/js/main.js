@@ -42,12 +42,14 @@ quest.config(function ($routeProvider,$locationProvider) {
       access: {restricted: true}
     })
     .otherwise({
-      redirectTo: '/'
+      redirectTo: '/',
+      access: {restricted: true} 
     });
 });
 quest.run(function ($rootScope, $location, $route, $http, AuthService) {
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
+      $rootScope.isLoading = true;
       AuthService.getUserStatus()
       .then(function(){
         if (next.access.restricted && !AuthService.isLoggedIn()){

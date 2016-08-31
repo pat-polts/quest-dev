@@ -10,6 +10,7 @@
 quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthService', 'BoardService',
   function ($rootScope, $scope, $location, AuthService, BoardService) {
 
+    $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
     $rootScope.userActive   = false;
     $rootScope.question     = false;
@@ -38,6 +39,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
 quest.controller('loginController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.userActive = false;
 
@@ -75,6 +77,7 @@ quest.controller('loginController',
 quest.controller('logoutController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.logout = function () {
 
@@ -96,6 +99,7 @@ quest.controller('logoutController',
 quest.controller('registerController',
   ['$rootScope', '$scope', '$location', 'AuthService',
   function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
 
     $rootScope.register = function () {
 
