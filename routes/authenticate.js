@@ -4,7 +4,6 @@ var passport = require('passport');
 
 var User = require('../models/user.js');
 
-var USER_COLLECTION = "users";
 
 router.post('/register', function(req, res) {
   User.register(new User({ username: req.body.username }),
