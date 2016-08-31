@@ -36,6 +36,7 @@ body {
   margin-top: 20%;
 }
 .box-content button {
+  margin-top: 5%;
   color: #fff;
   font-weight: bold;
   background: #004e72;
@@ -152,4 +153,15 @@ body {
   color: black;
   text-align: center;
   paddin-top: 20%;
+}
+.instrucoes {
+  border: 3px solid #004e72;
+  width: 45%;
+  margin: 0 auto;
+  padding: 2em;
+  border-radius: 2em;
+  -moz-border-radius: 2em;
+  -webkit-border-radius: 2em;
+  -khtml-border-radius: 2em;
+  /* for old Konqueror browsers */
 }
