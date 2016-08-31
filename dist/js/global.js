@@ -332,10 +332,13 @@ quest.directive('board', ['BoardService',  function(BoardService){
     return{
       restrict: 'EAC',
       replace: true,
-      scope: {},
+      scope: {
+        score: '=score',
+        activeHouse: '=activeHouse'
+      },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
-      link: function(scope,element, attribute){
-        var w, h, px, py, loader, manifest, board, house, eHouse,shape;
+      link: function(scope, element, attribute){
+        var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
         drawBoard();
 
         function drawBoard(){
@@ -346,8 +349,10 @@ quest.directive('board', ['BoardService',  function(BoardService){
           } else {
               scope.stage = new createjs.Stage(element[0]);
           }
-          w = scope.stage.canvas.width;
-          h = scope.stage.canvas.height;
+          activeHouse = scope.activeHouse;
+          score       = scope.score;
+          w           = scope.stage.canvas.width;
+          h           = scope.stage.canvas.height;
           manifest = [
             {src: "current-marker.png", id: "currentMarker"},
             {src: "house-marker.png", id: "marker"},
@@ -392,7 +397,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
           board = new createjs.Shape();
           board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
           scope.stage.addChild(board); 
-          console.log(seq1);
+          // console.log(seq1);
             var x1 =  seq1;
             var x2 =  seq2;
             var y1 = markerStartY;
@@ -402,13 +407,13 @@ quest.directive('board', ['BoardService',  function(BoardService){
             for (var i = 0; i < 29; i++) {
 
               if(i < 6){ 
-                 createMarker(0,1,i,special);
+                 createMarker(activeHouse,1,i,special);
 
               }else if(i > 6 && i < 12){  
                 if(i === 11){
                   special = true;
                 }
-                 createMarker(0,2,i,special); 
+                 createMarker(activeHouse,2,i,special); 
                              
               }else{        
 
@@ -429,17 +434,15 @@ quest.directive('board', ['BoardService',  function(BoardService){
           var currentMark = loader.getResult("currentMarker");
           var marker = new createjs.Shape();
 
-          if(special) color = "green";   
-            marker.graphics.beginFill("yellow").drawRoundRect(0,0,31,45,15);
-            marker.x = 48;
-            marker.y = 188;
-    
+          if(special) color = "#37d349";  
+          // console.log(scope.activeHouse);
+          // console.log(scope.score);
 
           switch(lines){
             case 1:
               var x = 56 * (index + 1) + 10;
               var y = 210;
-               console.log(x);
+               // console.log(x);
               // 
             break;
             case 2:
@@ -459,12 +462,22 @@ quest.directive('board', ['BoardService',  function(BoardService){
             break;
           } 
 
-          circle.graphics.beginFill(color).drawCircle(0, 0, 18);
+          circle.graphics.beginFill(color).drawCircle(0, 0, 16);
           circle.x = x;
           circle.y = y;
           circle.name = "casa_"+index; 
           circle.on("click", handleMarkClick);
-          scope.stage.addChild(circle,marker); 
+          
+          scope.stage.addChild(circle); 
+
+
+          if(index === current){
+
+            marker.graphics.beginFill("#e8a612").drawRoundRect(0,0,31,45,17);
+            marker.x = circle.x - 16;
+            marker.y = circle.y - 20;
+            scope.stage.addChild(marker); 
+          }
           
           
         }
@@ -517,6 +530,11 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.levels       = [];
     $rootScope.score        = BoardService.getScore();
     $rootScope.board        = BoardService;
+
+    $rootScope.activeHouse   = 0;
+    $rootScope.score         = 0;
+    $rootScope.answer        = 0;
+    $rootScope.correctAnswer = 0;
 
     $rootScope.go = function (route) {
       $location.path(route);

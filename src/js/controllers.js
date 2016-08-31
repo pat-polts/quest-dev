@@ -21,6 +21,11 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.score        = BoardService.getScore();
     $rootScope.board        = BoardService;
 
+    $rootScope.activeHouse   = 0;
+    $rootScope.score         = 0;
+    $rootScope.answer        = 0;
+    $rootScope.correctAnswer = 0;
+
     $rootScope.go = function (route) {
       $location.path(route);
     };
