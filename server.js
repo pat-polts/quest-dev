@@ -18,27 +18,27 @@ var router         = express.Router();
 var userAuth       = require('./routes/authenticate.js');
 
 //models
-var User  = require('./models/user.js');  
+// var User  = require('./models/user.js');  
  
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
-var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/quest-mockup';
+// var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/quest-mockup';
 // The http server will listen to an appropriate port, or default to
 // port 5000.
 var port = process.env.PORT || 3000;
-mongoose.connect(uristring);
+// mongoose.connect(uristring);
 
-var db = mongoose.connection;
+// var db = mongoose.connection;
 
-db.on('error', console.error.bind(console, 'connection error:'));
-db.once('open', function callback () {
-  var userSchema = mongoose.Schema({
-    username: String,
-    password: String 
-  });
+// db.on('error', console.error.bind(console, 'connection error:'));
+// db.once('open', function callback () {
+//   var userSchema = mongoose.Schema({
+//     username: String,
+//     password: String 
+//   });
 
-});
+// });
 // Makes connection asynchronously. Mongoose will queue up database
 // operations and release them when the connection is complete.
 // mongoose.connect(uristring, function (err, res) {
@@ -66,9 +66,9 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 
 // configure passport
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.use(new localStrategy(User.authenticate()));
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 
 app.use('/auth/', userAuth); 

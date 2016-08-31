@@ -61,7 +61,7 @@ body {
   width: 45%;
   position: absolute;
   left: 27.5%;
-  bottom: 2%;
+  bottom: 5%;
 }
 .form-login input,
 .form-login button {
@@ -139,9 +139,6 @@ body {
   font-weight: bold;
   background: #004e72;
   border: none;
-}
-canvas {
-  border: 1px solid #e0e0e0;
 }
 .loading {
   position: absolute;
