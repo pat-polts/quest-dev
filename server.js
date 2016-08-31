@@ -53,14 +53,6 @@ app.use(require('express-session')({
     resave: false,
     saveUninitialized: false
 }));
-app.use(passport.initialize());
-app.use(passport.session()); 
-
-// configure passport
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 
 app.use('/auth/', userAuth); 
 app.get('/', function(req, res) {
@@ -117,10 +109,17 @@ if(process.env.NODE_ENV == "production"){
     var server = app.listen(app.get('port'), function() {
       console.log("local running at - http://localhost:" + server.address().port);
       // debug('debug port: ' + server.address().port);
-    });                     
+    });   
+                      
   });
 }else{
 
+app.use(passport.initialize());
+app.use(passport.session()); 
+// configure passport
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 var server = app.listen(app.get('port'), function() {
   console.log("local running at - http://localhost:" + server.address().port);
