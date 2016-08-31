@@ -2,10 +2,10 @@
   "name": "quest-dev",
   "private": true,
   "version": "1.0.0",
-  "description": "quest olaparibe",
-  "repository": "http://interativaonline.dyndns.org:8010/svn/16062/quest/dev/",
+  "description": "quest olaparibe", 
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "bower install && grunt"
   },
   "devDependencies": {
     "grunt": "latest",
