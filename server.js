@@ -23,8 +23,7 @@ var User  = require('./models/user.js');
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
 var uristring =
-process.env.MONGOLAB_URI ||
-process.env.MONGOHQ_URL ||
+process.env.MONGOLAB_URI || 
 'mongodb://localhost/quest-mockup';
 // The http server will listen to an appropriate port, or default to
 // port 5000.
