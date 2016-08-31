@@ -37,8 +37,8 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
 ************************/
 
 quest.controller('loginController',
-  ['$rootScope', '$scope', '$location', 'AuthService',
-  function ($rootScope, $scope, $location, AuthService) {
+  ['$rootScope', '$scope', '$location', '$http','AuthService',
+  function ($rootScope, $scope, $location, $http, AuthService) {
     $rootScope.isLoading = false;
 
     $rootScope.userActive = false;
@@ -47,25 +47,27 @@ quest.controller('loginController',
 
       // initial values
       $rootScope.error = false;
-      $rootScope.disabled = true;
+      $rootScope.disabled = false;
+
+        $http.post('/auth/login', {username: "demo", password: "teste"});
 
       // call login from service
-      AuthService.login($scope.loginForm.username, $scope.loginForm.password)
-        // handle success
-        .then(function () {
-          $location.path('/saudacoes');
-          $rootScope.disabled = false;
-          $rootScope.userActive = true;
-          $scope.loginForm = {};
-        })
-        // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Impossivel logar, registre-se";
-          $rootScope.disabled = false;
-          $rootScope.userActive = false;
-          $scope.loginForm = {};
-        });
+      // AuthService.login($scope.loginForm.username, $scope.loginForm.password)
+      //   // handle success
+      //   .then(function () {
+      //     $location.path('/saudacoes');
+      //     $rootScope.disabled = false;
+      //     $rootScope.userActive = true;
+      //     $scope.loginForm = {};
+      //   })
+      //   // handle error
+      //   .catch(function () {
+      //     $rootScope.error = true;
+      //     $rootScope.errorMessage = "Impossivel logar, registre-se";
+      //     $rootScope.disabled = false;
+      //     $rootScope.userActive = false;
+      //     $scope.loginForm = {};
+      //   });
 
     };
 

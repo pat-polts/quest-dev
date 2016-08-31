@@ -19,8 +19,7 @@ var userAuth       = require('./routes/authenticate.js');
 
 //models
 var User  = require('./models/user.js');  
-
-var USER_COLLECTION = "users";
+ 
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
@@ -39,9 +38,6 @@ db.once('open', function callback () {
     password: String 
   });
 
-  var User = mongoose.model('users', userSchema);
-  var demoUser = new User({username: 'demo', password: 'teste'});
-  demoUser.save();
 });
 // Makes connection asynchronously. Mongoose will queue up database
 // operations and release them when the connection is complete.
