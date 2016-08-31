@@ -70,6 +70,7 @@ quest.run(function ($rootScope, $location, $route, $http, AuthService) {
 
 quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
   function ($rootScope, $q, $timeout, $http) {
+    $rootScope.isLoading = false;
       var user = null;
 
       var isLoggedIn = function () {
@@ -96,7 +97,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
       var login = function (username, password) {
 
-    $rootScope.isLoading = true;
         // create a new instance of deferred
         var deferred = $q.defer();
 
@@ -124,6 +124,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
       };
 
       var logout = function () {
+      $rootScope.isLoading = false;
 
       // create a new instance of deferred
       var deferred = $q.defer();
@@ -146,9 +147,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
     };
 
-    var register = function (username, password) {
-
-    $rootScope.isLoading = true;
+    var register = function (username, password) { 
       // create a new instance of deferred
       var deferred = $q.defer();
 

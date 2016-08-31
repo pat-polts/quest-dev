@@ -20,6 +20,8 @@ var userAuth       = require('./routes/authenticate.js');
 //models
 var User  = require('./models/user.js');  
 
+var USER_COLLECTION = "users";
+
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
 var uristring =
@@ -55,9 +57,9 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 
 // configure passport
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+passport.use(new localStrategy(USER_COLLECTION.authenticate()));
+passport.serializeUser(USER_COLLECTION.serializeUser());
+passport.deserializeUser(USER_COLLECTION.deserializeUser());
 
 
 app.use('/auth/', userAuth); 
