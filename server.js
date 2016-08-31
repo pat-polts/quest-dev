@@ -28,15 +28,30 @@ var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/quest-mockup';
 // The http server will listen to an appropriate port, or default to
 // port 5000.
 var port = process.env.PORT || 3000;
+mongoose.connect(uristring);
+
+var db = mongoose.connection;
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function callback () {
+  var userSchema = mongoose.Schema({
+    username: String,
+    password: String 
+  });
+
+  var User = mongoose.model('users', userSchema);
+  var demoUser = new User({username: 'demo', password: 'teste'});
+  demoUser.save();
+});
 // Makes connection asynchronously. Mongoose will queue up database
 // operations and release them when the connection is complete.
-mongoose.connect(uristring, function (err, res) {
-  if (err) {
-  console.log (' ERROR connecting to: ' + uristring + ' . ' + err);
-  } else {
-  console.log (' Succeeded connected to: ' + uristring);
-  }
-});
+// mongoose.connect(uristring, function (err, res) {
+//   if (err) {
+//   console.log (' ERROR connecting to: ' + uristring + ' . ' + err);
+//   } else {
+//   console.log (' Succeeded connected to: ' + uristring);
+//   }
+// });
 
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
