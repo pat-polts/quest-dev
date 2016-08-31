@@ -24,9 +24,7 @@ var USER_COLLECTION = "users";
 
 // Here we find an appropriate database to connect to, defaulting to
 // localhost if we don't find one.
-var uristring =
-process.env.MONGOLAB_URI || 
-'mongodb://localhost/quest-mockup';
+var uristring = process.env.MONGOLAB_URI || 'mongodb://localhost/quest-mockup';
 // The http server will listen to an appropriate port, or default to
 // port 5000.
 var port = process.env.PORT || 3000;
@@ -86,7 +84,7 @@ app.use(function(err, req, res, next) {
 });
 
 app.set('port', port);
-
+console.log(process.env.NODE_ENV);
 if(process.env.NODE_ENV == "production"){
     /* 
    * Mongoose by default sets the auto_reconnect option to true.
@@ -99,7 +97,7 @@ if(process.env.NODE_ENV == "production"){
    
   var mongodbUri = uristring;
    
-  mongoose.connect(mongodbUri, options);
+  mongoose.connect(process.env.MONGOLAB_URI, options);
   var conn = mongoose.connection;             
    
   conn.on('error', console.error.bind(console, 'connection error:'));  
@@ -115,16 +113,16 @@ if(process.env.NODE_ENV == "production"){
   });
 }else{
 
-app.use(passport.initialize());
-app.use(passport.session()); 
-// configure passport
-passport.use(new localStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+    app.use(passport.initialize());
+    app.use(passport.session()); 
+    // configure passport
+    passport.use(new localStrategy(User.authenticate()));
+    passport.serializeUser(User.serializeUser());
+    passport.deserializeUser(User.deserializeUser());
 
-var server = app.listen(app.get('port'), function() {
-  console.log("local running at - http://localhost:" + server.address().port);
-  // debug('debug port: ' + server.address().port);
+    var server = app.listen(app.get('port'), function() {
+      console.log("local running at - http://localhost:" + server.address().port);
+      debug('debug port: ' + server.address().port);
 });
 
 }
