@@ -32,13 +32,13 @@ process.env.MONGOLAB_URI ||
 var port = process.env.PORT || 3000;
 // Makes connection asynchronously. Mongoose will queue up database
 // operations and release them when the connection is complete.
-mongoose.connect(uristring, function (err, res) {
-  if (err) {
-  console.log (' ERROR connecting to: ' + uristring + ' . ' + err);
-  } else {
-  console.log (' Succeeded connected to: ' + uristring);
-  }
-});
+// mongoose.connect(uristring, function (err, res) {
+//   if (err) {
+//   console.log (' ERROR connecting to: ' + uristring + ' . ' + err);
+//   } else {
+//   console.log (' Succeeded connected to: ' + uristring);
+//   }
+// });
 
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
@@ -57,9 +57,9 @@ app.use(passport.initialize());
 app.use(passport.session()); 
 
 // configure passport
-passport.use(new localStrategy(USER_COLLECTION.authenticate()));
-passport.serializeUser(USER_COLLECTION.serializeUser());
-passport.deserializeUser(USER_COLLECTION.deserializeUser());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 app.use('/auth/', userAuth); 
@@ -94,9 +94,39 @@ app.use(function(err, req, res, next) {
 
 app.set('port', port);
 
+if(process.env.NODE_ENV == "production"){
+    /* 
+   * Mongoose by default sets the auto_reconnect option to true.
+   * We recommend setting socket options at both the server and replica set level.
+   * We recommend a 30 second connection timeout because it allows for 
+   * plenty of time in most operating environments.
+   */
+  var options = { server: { socketOptions: { keepAlive: 300000, connectTimeoutMS: 30000 } }, 
+                  replset: { socketOptions: { keepAlive: 300000, connectTimeoutMS : 30000 } } };       
+   
+  var mongodbUri = uristring;
+   
+  mongoose.connect(mongodbUri, options);
+  var conn = mongoose.connection;             
+   
+  conn.on('error', console.error.bind(console, 'connection error:'));  
+   
+  conn.once('open', function() {
+    // Wait for the database connection to establish, then start the app.    
+
+    var server = app.listen(app.get('port'), function() {
+      console.log("local running at - http://localhost:" + server.address().port);
+      // debug('debug port: ' + server.address().port);
+    });                     
+  });
+}else{
+
+
 var server = app.listen(app.get('port'), function() {
-	console.log("local running at - http://localhost:" + server.address().port);
+  console.log("local running at - http://localhost:" + server.address().port);
   // debug('debug port: ' + server.address().port);
 });
+
+}
 
 module.exports = app;
