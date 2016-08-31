@@ -12,7 +12,7 @@ var passport       = require('passport');
 var localStrategy  = require('passport-local' ).Strategy
 var app            = express();
 var router         = express.Router();
-var debug          = require('debug')('passport-mongo'); 
+// var debug          = require('debug')('passport-mongo'); 
 
 //routes
 var userAuth       = require('./routes/authenticate.js');
@@ -95,7 +95,7 @@ app.set('port', port);
 
 var server = app.listen(app.get('port'), function() {
 	console.log("local running at - http://localhost:" + server.address().port);
-  debug('debug port: ' + server.address().port);
+  // debug('debug port: ' + server.address().port);
 });
 
 module.exports = app;
