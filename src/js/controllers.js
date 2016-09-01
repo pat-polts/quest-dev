@@ -30,7 +30,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.go = function (route) {
       $location.path(route);
     };
-    
+
     $rootScope.$watch('isQuestion', function(){
       console.log($rootScope.isQuestion);
     });
@@ -54,25 +54,10 @@ quest.controller('loginController',
       $rootScope.error = false;
       $rootScope.disabled = false;
 
-        $http.post('/auth/login', {username: "demo", password: "teste"});
+      // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
       // call login from service
-      // AuthService.login($scope.loginForm.username, $scope.loginForm.password)
-      //   // handle success
-      //   .then(function () {
-      //     $location.path('/saudacoes');
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = true;
-      //     $scope.loginForm = {};
-      //   })
-      //   // handle error
-      //   .catch(function () {
-      //     $rootScope.error = true;
-      //     $rootScope.errorMessage = "Impossivel logar, registre-se";
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = false;
-      //     $scope.loginForm = {};
-      //   });
+      AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
 
     };
 

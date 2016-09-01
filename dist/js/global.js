@@ -79,28 +79,22 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
         });
       };
 
-      var login = function (username, password) {
-
-        // create a new instance of deferred
-        var deferred = $q.defer();
+      var login = function (username, password) { 
 
         // send a post request to the server
-        $http.post('/auth/login',
-          {username: username, password: password})
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
+          {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
-            if(status === 200 && data.status){
-              user = true;
-              deferred.resolve();
+            if(status === 200){
+              console.log("token: "+data);
             } else {
-              user = false;
-              deferred.reject();
+             console.log("Usuario ou Senha incorreta" + data);
             }
           })
           // handle error
           .error(function (data) {
-            user = false;
-            deferred.reject();
+            console.log("erro" + data);
           });
      
         return deferred.promise;
@@ -704,7 +698,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.go = function (route) {
       $location.path(route);
     };
-    
+
     $rootScope.$watch('isQuestion', function(){
       console.log($rootScope.isQuestion);
     });
@@ -728,25 +722,10 @@ quest.controller('loginController',
       $rootScope.error = false;
       $rootScope.disabled = false;
 
-        $http.post('/auth/login', {username: "demo", password: "teste"});
+      // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
       // call login from service
-      // AuthService.login($scope.loginForm.username, $scope.loginForm.password)
-      //   // handle success
-      //   .then(function () {
-      //     $location.path('/saudacoes');
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = true;
-      //     $scope.loginForm = {};
-      //   })
-      //   // handle error
-      //   .catch(function () {
-      //     $rootScope.error = true;
-      //     $rootScope.errorMessage = "Impossivel logar, registre-se";
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = false;
-      //     $scope.loginForm = {};
-      //   });
+      AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
 
     };
 
