@@ -43,7 +43,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
             if(status === 200){
               console.log("token: "+data);
             } else {
-             console.log("Usuario ou Senha incorreta" + data);
+              console.log(status);
+            //  console.log("Usuario ou Senha incorreta" + data);
             }
           })
           // handle error
