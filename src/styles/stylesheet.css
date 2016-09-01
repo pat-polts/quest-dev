@@ -141,6 +141,10 @@ body {
   background: #004e72;
   border: none;
 }
+canvas {
+  z-index: 101;
+  position: relative;
+}
 .loading {
   position: absolute;
   top: 0px;
@@ -164,4 +168,14 @@ body {
   -webkit-border-radius: 2em;
   -khtml-border-radius: 2em;
   /* for old Konqueror browsers */
+}
+.pergunta {
+  position: absolute;
+  background: #f2f2f2;
+  color: black;
+  text-align: center;
+  left: 2%;
+  top: 2%;
+  z-index: 102;
+  border: 1px solid #9a9c9e;
 }

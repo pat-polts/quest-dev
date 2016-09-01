@@ -25,16 +25,15 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion = false;
+    $rootScope.isQuestion = false; 
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
-
-    // console.log($rootScope.boardData);
-    // console.log(BoardService.createBoard());
-    // console.log("Total de pontos: " + $rootScope.score);
+    
+    $rootScope.$watch('isQuestion', function(){
+      console.log($rootScope.isQuestion);
+    });
 
 }]);
 

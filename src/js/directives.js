@@ -10,37 +10,69 @@ quest.directive('setHeight', function($timeout, $window){
   return{
     link: function(scope, element, attrs){
 
-		scope.height = $window.innerHeight + 'px';
-		element.css('height',scope.height);
-
-		angular.element($window).bind('resize', function(){
-        	scope.height = $window.innerHeight + 'px';
-			element.css('height',scope.height);
-	        // manuall $digest required as resize event 
-	        scope.$digest();
+    scope.height = $window.innerHeight + 'px';
+    element.css('height',scope.height);
+    
+    angular.element($window).bind('resize', function(){
+          scope.height = $window.innerHeight + 'px';
+      element.css('height',scope.height);
+          // manuall $digest required as resize event 
+          scope.$digest();
        });
-		
+    
 
     }
   }
 
 });
+/******************************************
+  Define posição e dimensões das perguntas
+*******************************************/
+quest.directive('setQuestion', function($timeout, $window){
+
+  return{
+      link: function(scope, element, attrs){  
+        var width, height;
+        scope.palco = angular.element(document).find("canvas");
+        height = scope.palco[0]['offsetHeight'] - 50;
+        width  = scope.palco[0]['offsetWidth'] - 50;
+
+        scope.palcoW = width+"px";
+        scope.palcoH = height+"px"; 
+
+        element.css('height',scope.palcoH);
+    		element.css('width',scope.palcoW);
+
+    		angular.element($window).bind('resize', function(){
+          height = scope.palco[0]['offsetHeight'] - 50;
+          width  = scope.palco[0]['offsetWidth'] - 50;
+            scope.palcoW = width+"px";
+            scope.palcoH = height+"px"; 
+          
+             element.css('height',scope.palcoH);
+    			   element.css('width',scope.palcoW);
+
+    	       scope.$digest();
+        });
+      }
+    }
+});
 
 /**************************
   Board
 ***************************/
-quest.directive('board', ['BoardService',  function(BoardService){
+quest.directive('board', ['$rootScope','BoardService',  function($rootScope, BoardService){
     return{
       restrict: 'EAC',
       replace: true,
       scope: {
         score: '=score',
         activeHouse: '=activeHouse',
-        boardData: '=boardData',
-        isQuestion: '=isQuestion'
+        boardData: '=boardData'
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
+            // console.log(element);
         var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
         drawBoard();
 
@@ -56,6 +88,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
           score       = scope.score;
           w           = scope.stage.canvas.width;
           h           = scope.stage.canvas.height;
+
           manifest = [
             {src: "current-marker.png", id: "currentMarker"},
             {src: "house-marker.png", id: "marker"},
@@ -107,16 +140,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
             var y2 = markerStartY + 40;
             var special = false;
 
-            for (var i = 1; i < 29; i++) {
-                // var house     = this;
-                // var houseName = house.name;
-                // var propName = "casa"+i;
-
-                // if(scope.boardData[houseName].isActive){
-                //   activeHouse = 0;
-                // }else{
-                //   activeHouse = null;
-                // }
+            for (var i = 1; i < 29; i++) { 
 
               if(i < 6){ 
                  createMarker(1,1,i,special);
@@ -132,8 +156,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
               } 
 
             }
-
-              
+             
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
         
@@ -193,9 +216,16 @@ quest.directive('board', ['BoardService',  function(BoardService){
           
           
         }
-        function loadQuestion(){
-          //
+//************************************
+//  carrega a pegunta
+//************************************
+        function loadQuestion(q){
+          $rootScope.isQuestion = true;   
+          $rootScope.$apply();
         }
+//************************************
+//  handle clique na casa
+//************************************
         function handleMarkClick(){
           var house     = this;
           var houseName = house.name;
@@ -204,8 +234,7 @@ quest.directive('board', ['BoardService',  function(BoardService){
           // console.log(scope.boardData[houseName].isActive);
 
           if(scope.boardData[houseName].isActive){
-            scope.isQuestion = true;
-            console.log(house);
+            return loadQuestion(scope.boardData[houseName]);
           }else{
             alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
             txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
@@ -223,19 +252,23 @@ quest.directive('board', ['BoardService',  function(BoardService){
           scope.stage.update(event);
         }
 
-        function toggleCache(value) {
-          // iterate all the children except the fpsLabel, and set up the cache:
-          var l = stage.getNumChildren() - 1;
-
-          for (var i = 0; i < l; i++) {
-            var shape = scope.stage.getChildAt(i);
-            if (value) {
-              shape.cache(-radius, -radius, radius * 2, radius * 2);
-            } else {
-              shape.uncache();
-            }
-          }
-        }
+        
       }
     }
 }]);
+
+
+quest.directive('question', ['$rootScope','BoardService',  function($rootScope, BoardService){
+  return{
+      templateUrl: '../../views/templates/question.html',
+      link: function(scope, element, attribute){
+        scope.question = "teste";
+        scope.alternativas = []; 
+
+        scope.close = function(){
+          $rootScope.isQuestion = false;
+        }
+      }
+
+  }
+}]); 
