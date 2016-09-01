@@ -184,7 +184,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     };
     var board = [1,2,3,4,5,6];
     var boardData = {
-        "1": {
+        "casa1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -192,14 +192,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": true,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "2": {
+        "casa2": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -207,14 +208,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "3": {
+        "casa3": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -222,14 +224,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "4": {
+        "casa4": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -237,14 +240,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "5": {
+        "casa5": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -252,10 +256,107 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa6": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa7": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa8": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa9": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa10": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa11": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
           "x": 0,
           "y": 0
         }
@@ -334,7 +435,9 @@ quest.directive('board', ['BoardService',  function(BoardService){
       replace: true,
       scope: {
         score: '=score',
-        activeHouse: '=activeHouse'
+        activeHouse: '=activeHouse',
+        boardData: '=boardData',
+        isQuestion: '=isQuestion'
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
@@ -404,16 +507,25 @@ quest.directive('board', ['BoardService',  function(BoardService){
             var y2 = markerStartY + 40;
             var special = false;
 
-            for (var i = 0; i < 29; i++) {
+            for (var i = 1; i < 29; i++) {
+                // var house     = this;
+                // var houseName = house.name;
+                // var propName = "casa"+i;
+
+                // if(scope.boardData[houseName].isActive){
+                //   activeHouse = 0;
+                // }else{
+                //   activeHouse = null;
+                // }
 
               if(i < 6){ 
-                 createMarker(activeHouse,1,i,special);
+                 createMarker(1,1,i,special);
 
               }else if(i > 6 && i < 12){  
                 if(i === 11){
                   special = true;
                 }
-                 createMarker(activeHouse,2,i,special); 
+                 createMarker(1,2,i,special); 
                              
               }else{        
 
@@ -427,12 +539,12 @@ quest.directive('board', ['BoardService',  function(BoardService){
         
         }
         function createMarker(current,lines,index,special){
-          var offsetx = (w / 3) - (56 * 6);
-          var offsety = Math.round(h / 3) / 6;
-          var color   = "white";
-          var circle = new createjs.Shape();
+          var offsetx     = (w / 3) - (56 * 6);
+          var offsety     = Math.round(h / 3) / 6;
+          var color       = "white";
+          var circle      = new createjs.Shape();
           var currentMark = loader.getResult("currentMarker");
-          var marker = new createjs.Shape();
+          var marker      = new createjs.Shape(); 
 
           if(special) color = "#37d349";  
           // console.log(scope.activeHouse);
@@ -462,16 +574,16 @@ quest.directive('board', ['BoardService',  function(BoardService){
             break;
           } 
 
-          circle.graphics.beginFill(color).drawCircle(0, 0, 16);
+          circle.graphics.beginStroke('#9a9c9e').beginFill(color).drawCircle(0, 0, 12);
           circle.x = x;
           circle.y = y;
-          circle.name = "casa_"+index; 
+          circle.name = "casa"+index; 
           circle.on("click", handleMarkClick);
           
           scope.stage.addChild(circle); 
 
 
-          if(index === current){
+          if(current === index){
 
             marker.graphics.beginFill("#e8a612").drawRoundRect(0,0,31,45,17);
             marker.x = circle.x - 16;
@@ -481,12 +593,31 @@ quest.directive('board', ['BoardService',  function(BoardService){
           
           
         }
-        function createMarkerSpecial(){
+        function loadQuestion(){
           //
         }
         function handleMarkClick(){
-          var house = this;
-          console.log(house);
+          var house     = this;
+          var houseName = house.name;
+          var alert     = new createjs.Shape();
+
+          // console.log(scope.boardData[houseName].isActive);
+
+          if(scope.boardData[houseName].isActive){
+            scope.isQuestion = true;
+            console.log(house);
+          }else{
+            alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
+            txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
+            alert.x = 300;
+            alert.y = 300;
+            txt.x = 350;
+            txt.y = 350;
+            alert.on('click',function(event) {
+              scope.stage.removeChild(alert, txt);
+            });
+            scope.stage.addChild(alert,txt);
+          }
         }
         function tick(event){
           scope.stage.update(event);
@@ -529,19 +660,20 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.currentScore = null;
     $rootScope.levels       = [];
     $rootScope.score        = BoardService.getScore();
-    $rootScope.board        = BoardService;
+    $rootScope.boardData    = BoardService.getBoardData();
 
     $rootScope.activeHouse   = 0;
     $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
+    $rootScope.isQuestion = false;
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
 
 
-    // console.log(BoardService.getGameApi());
+    // console.log($rootScope.boardData);
     // console.log(BoardService.createBoard());
     // console.log("Total de pontos: " + $rootScope.score);
 

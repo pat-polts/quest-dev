@@ -138,7 +138,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     };
     var board = [1,2,3,4,5,6];
     var boardData = {
-        "1": {
+        "casa1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -146,14 +146,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": true,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "2": {
+        "casa2": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -161,14 +162,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "3": {
+        "casa3": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -176,14 +178,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "4": {
+        "casa4": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -191,14 +194,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "5": {
+        "casa5": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -206,10 +210,107 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa6": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa7": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa8": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa9": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa10": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa11": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
           "x": 0,
           "y": 0
         }
