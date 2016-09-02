@@ -36,10 +36,6 @@ quest.config(function ($routeProvider,$locationProvider) {
       templateUrl: '../../views/game.html',
       restricted: true
     }) 
-    .when('/board', {
-      templateUrl: '../../views/game.html' 
-    })
-
     .otherwise({
       redirectTo: '/login' 
     });
@@ -77,6 +73,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       var userAuth = {};
 
 
+
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
 
@@ -112,46 +109,12 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           // handle error
           .error(function () {
               $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel";  
-              });
-    }  
+              $rootScope.errorMessage = "Serviço indisponivel";   
+          }); 
 
-    var getUserStatus = function () {
-      return $http.get('/auth/status') 
-        .success(function (data) {
-          if(data.status){
-            user = true;
-          } else {
-            user = false;
-          }
-        }) 
-        .error(function (data) {
-          user = false;
-        });
-      };
+        }
 
-      var login = function (username, password) { 
 
-        // send a post request to the server
-        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
-          {Login: username, Senha: password})
-          // handle success
-          .success(function (data, status) {
-            if(status === 200){
-              console.log("token: "+data);
-            } else {
-              console.log(status);
-            //  console.log("Usuario ou Senha incorreta" + data);
-            }
-          })
-          // handle error
-          .error(function (data) {
-            console.log("erro" + data);
-          });
-     
-        return deferred.promise;
-
-      };
 
       userAuth.logged = function(){
         if($cookies.get('usersSession')){
@@ -192,86 +155,6 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     var board = [1,2,3,4,5,6];
     var boardData = {
         "casa1": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": true,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa2": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa3": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa4": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa5": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa6": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -416,6 +299,22 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           "y": 0
         },
         "casa10": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa11": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -770,23 +669,14 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion = false; 
-<<<<<<< HEAD
-    $rootScope.userToken = false; 
-=======
->>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
+    $rootScope.isQuestion = false;  
+    $rootScope.userToken = false;  
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
-<<<<<<< HEAD
-    $rootScope.$watch('isQuestion');
-=======
-    $rootScope.$watch('isQuestion', function(){
-      console.log($rootScope.isQuestion);
-    });
->>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
+ 
+    $rootScope.$watch('isQuestion'); 
 
 }]);
 
@@ -836,7 +726,6 @@ quest.controller('authController',
         $rootScope.errorMessage = "Preencha os campos para prosseguir";
       }
 
-<<<<<<< HEAD
     };
 
     $rootScope.isUser = function(){
@@ -844,12 +733,7 @@ quest.controller('authController',
         return AuthService.logged();
       }
     };
-=======
-      // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
-      // call login from service
-      AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
->>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
 
     $rootScope.logout = function(){
       return AuthService.logout(); 
