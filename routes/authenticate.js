@@ -15,11 +15,10 @@ router.post('/login', function(req, res) {
   var api = process.env.API_LOGIN;
   if(api){
     res.status(200);
-    app.post(api, 
-    res.json.Stringfy({
+    app.post(api, {
       Login: req.body.Login,
       Senha: req.body.Senha
-    }), function(data,status){
+    }, function(data,status){
       console.log(status);
     });
 
