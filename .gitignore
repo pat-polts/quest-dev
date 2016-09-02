@@ -7,5 +7,5 @@ npm-debug.log
 *.dev
 *.DS_Store 
 
-global.js
-stylesheet.min.css
+dist/js/*
+dist/css/*
