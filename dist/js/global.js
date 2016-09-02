@@ -33,6 +33,8 @@ quest.config(function ($routeProvider,$locationProvider) {
     .when('/board', {
       templateUrl: '../../views/game.html' 
     })
+
+    
     .otherwise({
       redirectTo: '/' 
     });
