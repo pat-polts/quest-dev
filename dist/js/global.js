@@ -5,7 +5,15 @@
 var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 
-quest.config(function ($routeProvider,$locationProvider) {
+quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
+
+  var expireDate = new Date();
+  expireDate.setDate(expireDate.getDate() + 1);
+
+  $cookiesProvider.defaults = {expires: expireDate, secure: true};
+  // $cookiesProvider.defaults.expires = expireDate;
+  // $cookiesProvider.defaults.secure  = true;
+  
   $routeProvider.
    when('/', {
       templateUrl: '../../views/saudacoes.html',
@@ -65,58 +73,49 @@ quest.run(function ($rootScope, $location, $route, $http, $cookies) {
 **********************/
 
 quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
-  function ($rootScope, $q, $timeout, $http,$cookies, $location) {
+  function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null;
-      // var session = req.session; 
-      var token;
+      // var session = req.session;  
       var userAuth = {};
 
 
 
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
-      $rootScope.isLoading = true;
-
+        $rootScope.isLoading = true;
         $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
-              $rootScope.isLoading = false;
+          $rootScope.isLoading = false;
 
-              $cookies.put('usersSession', data);
-              $rootScope.error    = false; 
+            if(status === 200){
+              //user logged  
 
-              $location.path('/');
+              $rootScope.setCookie('usersSession', data); 
+              $rootScope.error    = false;  
               deferred.resolve();
-            // if(status === 200){
-            //   //user logged 
-            //   token = data;
 
-            //   $cookies.put('usersSession', token);
-            //   $rootScope.error    = false; 
-            //   deferred.resolve();
+            }else if(status === 500) {
 
-            // }else if(status === 500) {
+              $rootScope.error = true; 
+              $rootScope.errorMessage = "Usuario ou login incorretos";  
+              deferred.reject();
 
-            //   $rootScope.error = true; 
-            //   $rootScope.errorMessage = "Usuario ou login incorretos";  
-            //   deferred.reject();
-
-            // } else {
-            //   $rootScope.error = true;
-            //   $rootScope.errorMessage = "Serviço indisponivel";     
-            //   deferred.reject(); 
-            // }
+            } else {
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Serviço indisponivel";     
+              deferred.reject(); 
+            }
           })
           // handle error
           .error(function () {
               $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel";   
-          }); 
+              $rootScope.errorMessage = "Serviço indisponivel"; 
+          });
 
-        }
-
-
+          return deferred.promise;
+      }; 
 
       userAuth.logged = function(){
         if($cookies.get('usersSession')){
@@ -128,8 +127,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       };
 
       userAuth.logout = function(){
-        $cookies.remove('usersSession');
-        $location.path('/login');
+        $rootScope.deleteCookie('usersSession');
 
       }
  
@@ -653,8 +651,8 @@ quest.directive('question', ['$rootScope','BoardService',  function($rootScope, 
   Main
 ************************/
 
-quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthService', 'BoardService',
-  function ($rootScope, $scope, $location, AuthService, BoardService) {
+quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService',
+  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService) {
 
     $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
@@ -677,6 +675,20 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.go = function (route) {
       $location.path(route);
     };
+
+    $rootScope.setCookie = function(key, value){ 
+ 
+      $cookies.putObject(key, value);
+    };
+
+    $rootScope.getCookie = function(key){
+      $cookies.getObject(key);
+    };
+
+    $rootScope.deleteCookie = function(key){
+      $cookies.remove(key);
+      return  $location.path('/login');
+    };
  
     $rootScope.$watch('isQuestion'); 
 
@@ -693,6 +705,10 @@ quest.controller('authController',
     $rootScope.isLoading  = false;
     $rootScope.userActive = null;
     $rootScope.userToken  = false; 
+
+    if($rootScope.activePage == "/logout"){
+      return $rootScope.logout();
+    }
 
     $rootScope.checkFields = function(){
       if($scope.loginForm.username && $scope.loginForm.password){
@@ -713,8 +729,8 @@ quest.controller('authController',
       if($rootScope.checkFields()){
         AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
           .then(function () {
-            $rootScope.isLoading = false;
             $location.path('/');
+            $rootScope.isLoading = false;
             $rootScope.disabled = false;
             $scope.registerForm = {};  
           })
@@ -723,6 +739,7 @@ quest.controller('authController',
             $rootScope.error = true;
             $rootScope.errorMessage = "Something went wrong!";   
           })
+
       }else{
         $rootScope.error = true;
         $rootScope.errorMessage = "Preencha os campos para prosseguir";
