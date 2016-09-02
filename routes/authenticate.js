@@ -104,12 +104,12 @@ router.post('/login', function(req, res, next) {
 //   // })(req, res, next);
 // });
 
-router.get('/logout', function(req, res) {
-  req.logout();
-  res.status(200).json({
-    status: 'Bye!'
-  });
-});
+// router.get('/logout', function(req, res) {
+//   req.logout();
+//   res.status(200).json({
+//     status: 'Bye!'
+//   });
+// });
 
 // router.get('/status', function(req, res) {
 //   if (!req.isAuthenticated()) {
