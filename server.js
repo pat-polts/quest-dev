@@ -49,6 +49,14 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
 
+
+app.get('/api', function(req, res) { 
+    res.status(200).json.Stringfy({
+      api: process.env.API_END_POINT
+    });
+});
+
+
 // Catch all errors
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

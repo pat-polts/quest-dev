@@ -1,18 +1,30 @@
 var express  = require('express');
+var app      = express();
 var router   = express.Router();
-var sessions = require('express-session'); 
-var mongoose = require('mongoose');
-var sess; 
+var sessions = require('express-session');  
+var userSession; 
 
-var Use = require('../models/user');
+router.get('/api/login', function(req, res) {
+    var env = process.env.API_END_POINT;
+    res.status(200).json.Stringfy({
+      api: process.env.API_END_POINT
+    });
+});
 
-router.post('/login', function(req, res, next) {
-   return res.status(400).send({
-    message: 'This is an error!'
-   });
-   return res.status(500).send({
-    message: 'This is an error!'
-   });
+router.post('/login', function(req, res) {
+  var api = process.env.API_LOGIN;
+  if(api){
+    res.status(200);
+    app.post(api, 
+    res.json.Stringfy({
+      Login: req.body.Login,
+      Senha: req.body.Senha
+    }), function(data,status){
+      console.log(status);
+    });
+
+  }
+    // console.log(api);
 });
 
 // router.post('/login', function(req, res) {

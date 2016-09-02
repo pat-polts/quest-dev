@@ -10,43 +10,72 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null;
-      // var session = req.session;  
+      // var session = req.session;   
       var userAuth = {};
+      var loginApi = userAuth.api + "Usuarios/Logar";
+
+      userAuth.api = function(){ 
+        $http.get('/api')
+        .success(function(response, status){ 
+          return response.api; 
+        })
+        .error(function() {
+          $rootScope.error = true; 
+          $rootScope.errorMessage = "Problemas com a api";   
+        }); 
+      };
 
 
+          // console.log(loginApi);
 
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
+      var credentials = {Login: username, Senha: password };
         $rootScope.isLoading = true;
-        $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
-          // handle success
-          .success(function (data, status) {
-          $rootScope.isLoading = false;
 
-            if(status === 200){
-              //user logged  
+        $http.post('/auth/login', credentials)
+          .success(function(response, status){ 
 
-              $rootScope.setCookie('usersSession', data); 
-              $rootScope.error    = false;  
-              deferred.resolve();
+            console.log(response);   
+            //request api
+                // $http.post(response.api + 'Usuarios/Logar', {Login: username, Senha: password})
+                // // handle success
+                // .success(function (data, status) {
+                // $rootScope.isLoading = false;
 
-            }else if(status === 500) {
+                //   if(status === 200){
+                //     //user logged  
 
-              $rootScope.error = true; 
-              $rootScope.errorMessage = "Usuario ou login incorretos";  
-              deferred.reject();
+                //     $rootScope.setCookie('usersSession', data); 
+                //     $rootScope.error    = false;  
+                //     deferred.resolve();
 
-            } else {
-              $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel";     
-              deferred.reject(); 
-            }
+                //   }else if(status === 500) {
+
+                //     $rootScope.error = true; 
+                //     $rootScope.errorMessage = "Usuario ou login incorretos";  
+                //     deferred.reject();
+
+                //   } else {
+                //     $rootScope.error = true;
+                //     $rootScope.errorMessage = "Serviço indisponivel";     
+                //     deferred.reject(); 
+                //   }
+                // })
+                // // handle error
+                // .error(function () {
+                //     $rootScope.error = true;
+                //     $rootScope.errorMessage = "Serviço indisponivel"; 
+                // });
+                //end request api
+
           })
-          // handle error
-          .error(function () {
-              $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel"; 
-          });
+          .error(function() {
+            $rootScope.error = true; 
+            $rootScope.errorMessage = "Problemas com a api"; 
+            console.log("erro");  
+          });  
+    
 
           return deferred.promise;
       }; 
