@@ -76,7 +76,7 @@ quest.controller('authController',
           .catch(function () {
             $rootScope.error = true;
             $rootScope.errorMessage = "Something went wrong!";   
-          });
+          })
       }else{
         $rootScope.error = true;
         $rootScope.errorMessage = "Preencha os campos para prosseguir";

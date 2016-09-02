@@ -17,12 +17,14 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
+      $rootScope.isLoading = true;
 
         $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
+              $rootScope.isLoading = false;
 
-              $cookies.put('usersSession', data, {secure: true});
+              $cookies.put('usersSession', data);
               $rootScope.error    = false; 
 
               $location.path('/');
