@@ -25,14 +25,14 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion = false; 
-    $rootScope.userToken = false; 
+    $rootScope.isQuestion = false;  
+    $rootScope.userToken = false;  
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
-    $rootScope.$watch('isQuestion');
+ 
+    $rootScope.$watch('isQuestion'); 
 
 }]);
 
@@ -89,6 +89,7 @@ quest.controller('authController',
         return AuthService.logged();
       }
     };
+
 
     $rootScope.logout = function(){
       return AuthService.logout(); 

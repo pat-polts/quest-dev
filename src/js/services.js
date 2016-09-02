@@ -15,6 +15,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       var userAuth = {};
 
 
+
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
 
@@ -51,6 +52,24 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           .error(function () {
               $rootScope.error = true;
               $rootScope.errorMessage = "Serviço indisponivel";    
+
+      var login = function (username, password) { 
+
+        // send a post request to the server
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
+          {Login: username, Senha: password})
+          // handle success
+          .success(function (data, status) {
+            if(status === 200){
+              console.log("token: "+data);
+            } else {
+              console.log(status);
+            //  console.log("Usuario ou Senha incorreta" + data);
+            }
+          })
+          // handle error
+          .error(function (data) {
+            console.log("erro" + data);
           });
      
         return deferred.promise;
