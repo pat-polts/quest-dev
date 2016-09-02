@@ -22,7 +22,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           // handle success
           .success(function (data, status) {
 
-              $cookies.put('usersSession', data);
+              $cookies.put('usersSession', data, {secure: true});
               $rootScope.error    = false; 
 
               $location.path('/');
