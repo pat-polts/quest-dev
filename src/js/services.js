@@ -84,9 +84,10 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       };
 
       userAuth.logout = function(){
-        $rootScope.deleteCookie('usersSession');
+       //
 
       }
+ 
  
  
     return userAuth;

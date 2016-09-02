@@ -51,39 +51,6 @@ router.post('/login', function(req, res, next) {
     });
   } 
 });
-
-router.get('/status', function(req,res,next){ 
-  // console.log(req);
-  if (req.sessionID){ 
-    console.log(req.sessions);
-    // console.log(req.sessions["token"]);
-  }
-
-  if(req.body){
-    res.status(200);
-    res.send({
-      user: true
-    });
-  }else{
-    res.status(500);
-    res.send({
-      user: false
-    });
-  }
-
-});
-
-router.get('/api', function(req,res,next){
-
-  client.registerMethod("jsonMethod", process.env.API_HELP, "GET");
-  client.get(process.env.API_HELP,
-    function (data, response) {
-        // parsed response body as js object 
-        console.log(data);
-        // raw response 
-        console.log(response);
-    });
-
-});
+ 
 
 module.exports = router;

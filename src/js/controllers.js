@@ -117,10 +117,15 @@ quest.controller('authController',
         })
     };
 
+    $rootScope.help = function(){
+      return AuthService.help();
+    };
+ console.log($rootScope.help());
 
     $rootScope.logout = function(){
       return AuthService.logout(); 
     };
+
 
 }]);
 
