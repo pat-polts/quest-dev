@@ -2,44 +2,56 @@
 //# App configs
 //================================================
 
-var quest = angular.module('questApp', ['ngRoute', 'ngMaterial']);
+var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 
 quest.config(function ($routeProvider,$locationProvider) {
   $routeProvider.
    when('/', {
-      templateUrl: '../../views/saudacoes.html', 
+      templateUrl: '../../views/saudacoes.html',
+      restricted: true 
     })
     .when('/login', {
       templateUrl: '../../views/login.html',
-      controller: 'loginController' 
+      controller: 'authController' 
     })
     .when('/logout', {
-      controller: 'logoutController' 
+      controller: 'authController',
+      restricted: true 
     })
     .when('/register', {
       templateUrl: '../../views/register.html',
-      controller: 'registerController' 
+      controller: 'authController',
+      restricted: true 
     })
     .when('/mais-sobre', {
-      templateUrl: '../../views/mais-sobre.html' 
+      templateUrl: '../../views/mais-sobre.html',
+      restricted: true 
     })
     .when('/vamos-jogar', {
-      templateUrl: '../../views/vamos-jogar.html' 
+      templateUrl: '../../views/vamos-jogar.html',
+      restricted: true
     })
     .when('/game', {
-      templateUrl: '../../views/game.html' 
-    })
-    .when('/board', {
-      templateUrl: '../../views/game.html' 
-    })
+      templateUrl: '../../views/game.html',
+      restricted: true
+    }) 
     .otherwise({
-      redirectTo: '/' 
+      redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http) {
+quest.run(function ($rootScope, $location, $route, $http, $cookies) {
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
-      $rootScope.isLoading = true;
+      // $rootScope.isLoading = true;
+      if(next && next.$$route && next.$$route.restricted){
+          if(!$cookies.get('usersSession')){
+            $location.path('/login'); 
+          }
+      }
+  });
+  $rootScope.$on('$stateChangeStart',
+    function (event, next, current) {
+      // $rootScope.isLoading = true; 
   });
 });
