@@ -6,8 +6,8 @@
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies',
-  function ($rootScope, $q, $timeout, $http,$cookies) {
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+  function ($rootScope, $q, $timeout, $http,$cookies, $location) {
 
       var user     = null;
       // var session = req.session; 
@@ -24,6 +24,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
               $cookies.put('usersSession', data);
               $rootScope.error    = false; 
+
+              $location.path('/');
               deferred.resolve();
             // if(status === 200){
             //   //user logged 
@@ -66,6 +68,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
       userAuth.logout = function(){
         $cookies.remove('usersSession');
+        $location.path('/login');
 
       }
  

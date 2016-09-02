@@ -91,8 +91,7 @@ quest.controller('authController',
     };
 
     $rootScope.logout = function(){
-      AuthService.logout();
-      $location.path('/login');
+      return AuthService.logout(); 
     };
 
 }]);
