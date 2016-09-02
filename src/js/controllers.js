@@ -7,8 +7,8 @@
   Main
 ************************/
 
-quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthService', 'BoardService',
-  function ($rootScope, $scope, $location, AuthService, BoardService) {
+quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService',
+  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService) {
 
     $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
@@ -31,6 +31,20 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.go = function (route) {
       $location.path(route);
     };
+
+    $rootScope.setCookie = function(key, value){ 
+ 
+      $cookies.putObject(key, value);
+    };
+
+    $rootScope.getCookie = function(key){
+      $cookies.getObject(key);
+    };
+
+    $rootScope.deleteCookie = function(key){
+      $cookies.remove(key);
+      return  $location.path('/login');
+    };
  
     $rootScope.$watch('isQuestion'); 
 
@@ -47,6 +61,10 @@ quest.controller('authController',
     $rootScope.isLoading  = false;
     $rootScope.userActive = null;
     $rootScope.userToken  = false; 
+
+    if($rootScope.activePage == "/logout"){
+      return $rootScope.logout();
+    }
 
     $rootScope.checkFields = function(){
       if($scope.loginForm.username && $scope.loginForm.password){
@@ -67,8 +85,8 @@ quest.controller('authController',
       if($rootScope.checkFields()){
         AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
           .then(function () {
-            $rootScope.isLoading = false;
             $location.path('/');
+            $rootScope.isLoading = false;
             $rootScope.disabled = false;
             $scope.registerForm = {};  
           })
@@ -77,6 +95,7 @@ quest.controller('authController',
             $rootScope.error = true;
             $rootScope.errorMessage = "Something went wrong!";   
           })
+
       }else{
         $rootScope.error = true;
         $rootScope.errorMessage = "Preencha os campos para prosseguir";

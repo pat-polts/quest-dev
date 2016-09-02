@@ -5,7 +5,15 @@
 var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 
-quest.config(function ($routeProvider,$locationProvider) {
+quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
+
+  var expireDate = new Date();
+  expireDate.setDate(expireDate.getDate() + 1);
+
+  $cookiesProvider.defaults = {expires: expireDate, secure: true};
+  // $cookiesProvider.defaults.expires = expireDate;
+  // $cookiesProvider.defaults.secure  = true;
+  
   $routeProvider.
    when('/', {
       templateUrl: '../../views/saudacoes.html',

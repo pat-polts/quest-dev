@@ -7,76 +7,49 @@
 **********************/
 
 quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
-  function ($rootScope, $q, $timeout, $http,$cookies, $location) {
+  function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null;
-      // var session = req.session; 
-      var token;
+      // var session = req.session;  
       var userAuth = {};
 
 
 
       userAuth.login = function (username, password) {  
       var deferred = $q.defer();
-      $rootScope.isLoading = true;
-
+        $rootScope.isLoading = true;
         $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
-              $rootScope.isLoading = false;
+          $rootScope.isLoading = false;
 
-              $cookies.put('usersSession', data);
-              $rootScope.error    = false; 
+            if(status === 200){
+              //user logged  
 
-              $location.path('/');
+              $rootScope.setCookie('usersSession', data); 
+              $rootScope.error    = false;  
               deferred.resolve();
-            // if(status === 200){
-            //   //user logged 
-            //   token = data;
 
-            //   $cookies.put('usersSession', token);
-            //   $rootScope.error    = false; 
-            //   deferred.resolve();
+            }else if(status === 500) {
 
-            // }else if(status === 500) {
+              $rootScope.error = true; 
+              $rootScope.errorMessage = "Usuario ou login incorretos";  
+              deferred.reject();
 
-            //   $rootScope.error = true; 
-            //   $rootScope.errorMessage = "Usuario ou login incorretos";  
-            //   deferred.reject();
-
-            // } else {
-            //   $rootScope.error = true;
-            //   $rootScope.errorMessage = "Serviço indisponivel";     
-            //   deferred.reject(); 
-            // }
+            } else {
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Serviço indisponivel";     
+              deferred.reject(); 
+            }
           })
           // handle error
           .error(function () {
               $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel";    
-
-      var login = function (username, password) { 
-
-        // send a post request to the server
-        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
-          {Login: username, Senha: password})
-          // handle success
-          .success(function (data, status) {
-            if(status === 200){
-              console.log("token: "+data);
-            } else {
-              console.log(status);
-            //  console.log("Usuario ou Senha incorreta" + data);
-            }
-          })
-          // handle error
-          .error(function (data) {
-            console.log("erro" + data);
+              $rootScope.errorMessage = "Serviço indisponivel"; 
           });
-     
-        return deferred.promise;
 
-      };
+          return deferred.promise;
+      }; 
 
       userAuth.logged = function(){
         if($cookies.get('usersSession')){
@@ -88,8 +61,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       };
 
       userAuth.logout = function(){
-        $cookies.remove('usersSession');
-        $location.path('/login');
+        $rootScope.deleteCookie('usersSession');
 
       }
  
