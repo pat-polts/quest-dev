@@ -25,6 +25,7 @@
     "cookie-parser": "^1.4.1",
     "express": "^4.13.4",
     "express-session": "1.14.1",
+    "http": "0.0.0",
     "jsonwebtoken": "7.1.9",
     "mongodb": "latest",
     "mongoose": "^4.4.5",
