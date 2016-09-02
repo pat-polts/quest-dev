@@ -25,15 +25,14 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion = false; 
+    $rootScope.isQuestion = false;  
+    $rootScope.userToken = false;  
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
-    $rootScope.$watch('isQuestion', function(){
-      console.log($rootScope.isQuestion);
-    });
+ 
+    $rootScope.$watch('isQuestion'); 
 
 }]);
 
@@ -41,24 +40,59 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
   Login
 ************************/
 
-quest.controller('loginController',
-  ['$rootScope', '$scope', '$location', '$http','AuthService',
-  function ($rootScope, $scope, $location, $http, AuthService) {
-    $rootScope.isLoading = false;
+quest.controller('authController',
+  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService',
+  function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
 
-    $rootScope.userActive = false;
+    $rootScope.isLoading  = false;
+    $rootScope.userActive = null;
+    $rootScope.userToken  = false; 
 
-    $scope.login = function () {
+    $rootScope.checkFields = function(){
+      if($scope.loginForm.username && $scope.loginForm.password){
+        return true;
+      }else{
+        return false;
+      }
+    };
+
+    $rootScope.login = function () {
 
       // initial values
-      $rootScope.error = false;
-      $rootScope.disabled = false;
+      $rootScope.error    = false;
+      $rootScope.disabled = false; 
+      // $rootScope.isLoading = true;
 
-      // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
-      // call login from service
-      AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
+      if($rootScope.checkFields()){
+        AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
+          .then(function () {
+            $rootScope.isLoading = false;
+            $location.path('/');
+            $rootScope.disabled = false;
+            $scope.registerForm = {};  
+          })
+          // handle error
+          .catch(function () {
+            $rootScope.error = true;
+            $rootScope.errorMessage = "Something went wrong!";   
+          });
+      }else{
+        $rootScope.error = true;
+        $rootScope.errorMessage = "Preencha os campos para prosseguir";
+      }
 
+    };
+
+    $rootScope.isUser = function(){
+      if($cookies.get('usersSession')){
+        return AuthService.logged();
+      }
+    };
+
+
+    $rootScope.logout = function(){
+      return AuthService.logout(); 
     };
 
 }]);
@@ -74,11 +108,11 @@ quest.controller('logoutController',
     $rootScope.logout = function () {
 
       // call logout from service
-      AuthService.logout()
-        .then(function () {
-          $rootScope.userActive = false;
-          $location.path('/login');
-        });
+      // AuthService.logout()
+      //   .then(function () {
+      //     $rootScope.userActive = false;
+      //     $location.path('/login');
+      //   });
 
     };
 
@@ -100,21 +134,21 @@ quest.controller('registerController',
       $rootScope.disabled = false;
       $rootScope.userActive = false;
 
-      // call register from service
-      AuthService.register($scope.registerForm.username, $scope.registerForm.password)
-        // handle success
-        .then(function () {
-          $location.path('/login');
-          $rootScope.disabled = false;
-          $scope.registerForm = {};
-        })
-        // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Something went wrong!";
-          $rootScope.disabled = false;
-          $scope.registerForm = {};
-        });
+      // // call register from service
+      // AuthService.register($scope.registerForm.username, $scope.registerForm.password)
+      //   // handle success
+      //   .then(function () {
+      //     $location.path('/login');
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   })
+      //   // handle error
+      //   .catch(function () {
+      //     $rootScope.error = true;
+      //     $rootScope.errorMessage = "Something went wrong!";
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   });
 
     };
 

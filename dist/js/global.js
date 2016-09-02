@@ -2,45 +2,61 @@
 //# App configs
 //================================================
 
-var quest = angular.module('questApp', ['ngRoute', 'ngMaterial']);
+var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 
 quest.config(function ($routeProvider,$locationProvider) {
   $routeProvider.
    when('/', {
-      templateUrl: '../../views/saudacoes.html', 
+      templateUrl: '../../views/saudacoes.html',
+      restricted: true 
     })
     .when('/login', {
       templateUrl: '../../views/login.html',
-      controller: 'loginController' 
+      controller: 'authController' 
     })
     .when('/logout', {
-      controller: 'logoutController' 
+      controller: 'authController',
+      restricted: true 
     })
     .when('/register', {
       templateUrl: '../../views/register.html',
-      controller: 'registerController' 
+      controller: 'authController',
+      restricted: true 
     })
     .when('/mais-sobre', {
-      templateUrl: '../../views/mais-sobre.html' 
+      templateUrl: '../../views/mais-sobre.html',
+      restricted: true 
     })
     .when('/vamos-jogar', {
-      templateUrl: '../../views/vamos-jogar.html' 
+      templateUrl: '../../views/vamos-jogar.html',
+      restricted: true
     })
     .when('/game', {
-      templateUrl: '../../views/game.html' 
-    })
+      templateUrl: '../../views/game.html',
+      restricted: true
+    }) 
     .when('/board', {
       templateUrl: '../../views/game.html' 
     })
+
     .otherwise({
-      redirectTo: '/' 
+      redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http) {
+quest.run(function ($rootScope, $location, $route, $http, $cookies) {
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
-      $rootScope.isLoading = true;
+      // $rootScope.isLoading = true;
+      if(next && next.$$route && next.$$route.restricted){
+          if(!$cookies.get('usersSession')){
+            $location.path('/login'); 
+          }
+      }
+  });
+  $rootScope.$on('$stateChangeStart',
+    function (event, next, current) {
+      // $rootScope.isLoading = true; 
   });
 });
 
@@ -52,18 +68,53 @@ quest.run(function ($rootScope, $location, $route, $http) {
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
-  function ($rootScope, $q, $timeout, $http) {
-    $rootScope.isLoading = false;
-      var user = null;
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+  function ($rootScope, $q, $timeout, $http,$cookies, $location) {
 
-      var isLoggedIn = function () {
-        if(user) {
-          return true;
-        } else {
-          return false;
-        }
-      };
+      var user     = null;
+      // var session = req.session; 
+      var token;
+      var userAuth = {};
+
+
+      userAuth.login = function (username, password) {  
+      var deferred = $q.defer();
+
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
+          // handle success
+          .success(function (data, status) {
+
+              $cookies.put('usersSession', data, {secure: true});
+              $rootScope.error    = false; 
+
+              $location.path('/');
+              deferred.resolve();
+            // if(status === 200){
+            //   //user logged 
+            //   token = data;
+
+            //   $cookies.put('usersSession', token);
+            //   $rootScope.error    = false; 
+            //   deferred.resolve();
+
+            // }else if(status === 500) {
+
+            //   $rootScope.error = true; 
+            //   $rootScope.errorMessage = "Usuario ou login incorretos";  
+            //   deferred.reject();
+
+            // } else {
+            //   $rootScope.error = true;
+            //   $rootScope.errorMessage = "Serviço indisponivel";     
+            //   deferred.reject(); 
+            // }
+          })
+          // handle error
+          .error(function () {
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Serviço indisponivel";  
+              });
+    }  
 
     var getUserStatus = function () {
       return $http.get('/auth/status') 
@@ -102,64 +153,25 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
       };
 
-      var logout = function () {
-      $rootScope.isLoading = false;
+      userAuth.logged = function(){
+        if($cookies.get('usersSession')){
+          return true; 
+        }else{
+          return false;
 
-      // create a new instance of deferred
-      var deferred = $q.defer();
+        }
+      };
 
-      // send a get request to the server
-      $http.get('/auth/logout')
-        // handle success
-        .success(function (data) {
-          user = false;
-          deferred.resolve();
-        })
-        // handle error
-        .error(function (data) {
-          user = false;
-          deferred.reject();
-        });
+      userAuth.logout = function(){
+        $cookies.remove('usersSession');
+        $location.path('/login');
 
-      // return promise object
-      return deferred.promise;
-
-    };
-
-    var register = function (username, password) { 
-      // create a new instance of deferred
-      var deferred = $q.defer();
-
-      $http.post('/auth/register',
-        {username: username, password: password})
-        // handle success
-        .success(function (data, status) {
-          if(status === 200 && data.status){
-            deferred.resolve();
-          } else {
-            deferred.reject();
-          }
-        })
-        // handle error
-        .error(function (data) {
-          deferred.reject();
-        });
-
-      // return promise object
-      return deferred.promise;
-
-    };
+      }
  
-    return ({
-      isLoggedIn: isLoggedIn,
-      getUserStatus: getUserStatus,
-      login: login,
-      logout: logout,
-      register: register
-    });
+ 
+    return userAuth;
 
-  }
-]); //AuthService ends
+}]); //AuthService ends
 
 /*********************
   BoardService
@@ -180,6 +192,86 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     var board = [1,2,3,4,5,6];
     var boardData = {
         "casa1": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": true,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa2": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa3": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa4": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa5": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa6": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -324,22 +416,6 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
           "y": 0
         },
         "casa10": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "casa11": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -695,14 +771,22 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false; 
+<<<<<<< HEAD
+    $rootScope.userToken = false; 
+=======
+>>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
 
+<<<<<<< HEAD
+    $rootScope.$watch('isQuestion');
+=======
     $rootScope.$watch('isQuestion', function(){
       console.log($rootScope.isQuestion);
     });
+>>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
 
 }]);
 
@@ -710,24 +794,65 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
   Login
 ************************/
 
-quest.controller('loginController',
-  ['$rootScope', '$scope', '$location', '$http','AuthService',
-  function ($rootScope, $scope, $location, $http, AuthService) {
-    $rootScope.isLoading = false;
+quest.controller('authController',
+  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService',
+  function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
 
-    $rootScope.userActive = false;
+    $rootScope.isLoading  = false;
+    $rootScope.userActive = null;
+    $rootScope.userToken  = false; 
 
-    $scope.login = function () {
+    $rootScope.checkFields = function(){
+      if($scope.loginForm.username && $scope.loginForm.password){
+        return true;
+      }else{
+        return false;
+      }
+    };
+
+    $rootScope.login = function () {
 
       // initial values
-      $rootScope.error = false;
-      $rootScope.disabled = false;
+      $rootScope.error    = false;
+      $rootScope.disabled = false; 
+      // $rootScope.isLoading = true;
 
+
+      if($rootScope.checkFields()){
+        AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
+          .then(function () {
+            $rootScope.isLoading = false;
+            $location.path('/');
+            $rootScope.disabled = false;
+            $scope.registerForm = {};  
+          })
+          // handle error
+          .catch(function () {
+            $rootScope.error = true;
+            $rootScope.errorMessage = "Something went wrong!";   
+          });
+      }else{
+        $rootScope.error = true;
+        $rootScope.errorMessage = "Preencha os campos para prosseguir";
+      }
+
+<<<<<<< HEAD
+    };
+
+    $rootScope.isUser = function(){
+      if($cookies.get('usersSession')){
+        return AuthService.logged();
+      }
+    };
+=======
       // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
       // call login from service
       AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
+>>>>>>> 954673d6b114df46c188b8ff47479af3a637c8d9
 
+    $rootScope.logout = function(){
+      return AuthService.logout(); 
     };
 
 }]);
@@ -743,11 +868,11 @@ quest.controller('logoutController',
     $rootScope.logout = function () {
 
       // call logout from service
-      AuthService.logout()
-        .then(function () {
-          $rootScope.userActive = false;
-          $location.path('/login');
-        });
+      // AuthService.logout()
+      //   .then(function () {
+      //     $rootScope.userActive = false;
+      //     $location.path('/login');
+      //   });
 
     };
 
@@ -769,21 +894,21 @@ quest.controller('registerController',
       $rootScope.disabled = false;
       $rootScope.userActive = false;
 
-      // call register from service
-      AuthService.register($scope.registerForm.username, $scope.registerForm.password)
-        // handle success
-        .then(function () {
-          $location.path('/login');
-          $rootScope.disabled = false;
-          $scope.registerForm = {};
-        })
-        // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Something went wrong!";
-          $rootScope.disabled = false;
-          $scope.registerForm = {};
-        });
+      // // call register from service
+      // AuthService.register($scope.registerForm.username, $scope.registerForm.password)
+      //   // handle success
+      //   .then(function () {
+      //     $location.path('/login');
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   })
+      //   // handle error
+      //   .catch(function () {
+      //     $rootScope.error = true;
+      //     $rootScope.errorMessage = "Something went wrong!";
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   });
 
     };
 

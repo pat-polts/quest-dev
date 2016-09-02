@@ -6,32 +6,52 @@
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
-  function ($rootScope, $q, $timeout, $http) {
-    $rootScope.isLoading = false;
-      var user = null;
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+  function ($rootScope, $q, $timeout, $http,$cookies, $location) {
 
-      var isLoggedIn = function () {
-        if(user) {
-          return true;
-        } else {
-          return false;
-        }
-      };
+      var user     = null;
+      // var session = req.session; 
+      var token;
+      var userAuth = {};
 
-    var getUserStatus = function () {
-      return $http.get('/auth/status') 
-        .success(function (data) {
-          if(data.status){
-            user = true;
-          } else {
-            user = false;
-          }
-        }) 
-        .error(function (data) {
-          user = false;
-        });
-      };
+
+
+      userAuth.login = function (username, password) {  
+      var deferred = $q.defer();
+
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: username, Senha: password})
+          // handle success
+          .success(function (data, status) {
+
+              $cookies.put('usersSession', data, {secure: true});
+              $rootScope.error    = false; 
+
+              $location.path('/');
+              deferred.resolve();
+            // if(status === 200){
+            //   //user logged 
+            //   token = data;
+
+            //   $cookies.put('usersSession', token);
+            //   $rootScope.error    = false; 
+            //   deferred.resolve();
+
+            // }else if(status === 500) {
+
+            //   $rootScope.error = true; 
+            //   $rootScope.errorMessage = "Usuario ou login incorretos";  
+            //   deferred.reject();
+
+            // } else {
+            //   $rootScope.error = true;
+            //   $rootScope.errorMessage = "Serviço indisponivel";     
+            //   deferred.reject(); 
+            // }
+          })
+          // handle error
+          .error(function () {
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Serviço indisponivel";    
 
       var login = function (username, password) { 
 
@@ -56,64 +76,25 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
 
       };
 
-      var logout = function () {
-      $rootScope.isLoading = false;
+      userAuth.logged = function(){
+        if($cookies.get('usersSession')){
+          return true; 
+        }else{
+          return false;
 
-      // create a new instance of deferred
-      var deferred = $q.defer();
+        }
+      };
 
-      // send a get request to the server
-      $http.get('/auth/logout')
-        // handle success
-        .success(function (data) {
-          user = false;
-          deferred.resolve();
-        })
-        // handle error
-        .error(function (data) {
-          user = false;
-          deferred.reject();
-        });
+      userAuth.logout = function(){
+        $cookies.remove('usersSession');
+        $location.path('/login');
 
-      // return promise object
-      return deferred.promise;
-
-    };
-
-    var register = function (username, password) { 
-      // create a new instance of deferred
-      var deferred = $q.defer();
-
-      $http.post('/auth/register',
-        {username: username, password: password})
-        // handle success
-        .success(function (data, status) {
-          if(status === 200 && data.status){
-            deferred.resolve();
-          } else {
-            deferred.reject();
-          }
-        })
-        // handle error
-        .error(function (data) {
-          deferred.reject();
-        });
-
-      // return promise object
-      return deferred.promise;
-
-    };
+      }
  
-    return ({
-      isLoggedIn: isLoggedIn,
-      getUserStatus: getUserStatus,
-      login: login,
-      logout: logout,
-      register: register
-    });
+ 
+    return userAuth;
 
-  }
-]); //AuthService ends
+}]); //AuthService ends
 
 /*********************
   BoardService
