@@ -34,7 +34,7 @@ router.post('/login', function(req, res, next) {
         var sess = req.session; 
         if(!sess.token){
           // userSession.cookie.expires  = false;
-          sess.cookie = {token: data};   
+          sess.cookie.token = data;   
           sess.cookie.reload(function(err) {
             if(err){
               res.end(JSON.stringify({
@@ -42,7 +42,7 @@ router.post('/login', function(req, res, next) {
                 error: {}
               }));
             }
-            
+
             console.log(sess.cookie);
 
           })

@@ -132,6 +132,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.get('/auth/status')
         .success(function(user, status){ 
+          
           console.log(status);
           if(user){
             deferred.resolve();
