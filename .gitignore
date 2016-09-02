@@ -8,5 +8,4 @@ npm-debug.log
 # Local development
 *.env
 *.dev
-.DS_Store
-src/
+.DS_Store 

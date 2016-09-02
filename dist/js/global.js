@@ -81,28 +81,23 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
         });
       };
 
-      var login = function (username, password) {
-
-        // create a new instance of deferred
-        var deferred = $q.defer();
+      var login = function (username, password) { 
 
         // send a post request to the server
-        $http.post('/auth/login',
-          {username: username, password: password})
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
+          {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
-            if(status === 200 && data.status){
-              user = true;
-              deferred.resolve();
+            if(status === 200){
+              console.log("token: "+data);
             } else {
-              user = false;
-              deferred.reject();
+              console.log(status);
+            //  console.log("Usuario ou Senha incorreta" + data);
             }
           })
           // handle error
           .error(function (data) {
-            user = false;
-            deferred.reject();
+            console.log("erro" + data);
           });
      
         return deferred.promise;
@@ -186,7 +181,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     };
     var board = [1,2,3,4,5,6];
     var boardData = {
-        "1": {
+        "casa1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -194,14 +189,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": true,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "2": {
+        "casa2": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -209,14 +205,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "3": {
+        "casa3": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -224,14 +221,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "4": {
+        "casa4": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -239,14 +237,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "5": {
+        "casa5": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -254,10 +253,107 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa6": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa7": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa8": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa9": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa10": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa11": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
           "x": 0,
           "y": 0
         }
@@ -311,33 +407,70 @@ quest.directive('setHeight', function($timeout, $window){
   return{
     link: function(scope, element, attrs){
 
-		scope.height = $window.innerHeight + 'px';
-		element.css('height',scope.height);
-
-		angular.element($window).bind('resize', function(){
-        	scope.height = $window.innerHeight + 'px';
-			element.css('height',scope.height);
-	        // manuall $digest required as resize event 
-	        scope.$digest();
+    scope.height = $window.innerHeight + 'px';
+    element.css('height',scope.height);
+    
+    angular.element($window).bind('resize', function(){
+          scope.height = $window.innerHeight + 'px';
+      element.css('height',scope.height);
+          // manuall $digest required as resize event 
+          scope.$digest();
        });
-		
+    
 
     }
   }
 
 });
+/******************************************
+  Define posição e dimensões das perguntas
+*******************************************/
+quest.directive('setQuestion', function($timeout, $window){
+
+  return{
+      link: function(scope, element, attrs){  
+        var width, height;
+        scope.palco = angular.element(document).find("canvas");
+        height = scope.palco[0]['offsetHeight'] - 50;
+        width  = scope.palco[0]['offsetWidth'] - 50;
+
+        scope.palcoW = width+"px";
+        scope.palcoH = height+"px"; 
+
+        element.css('height',scope.palcoH);
+    		element.css('width',scope.palcoW);
+
+    		angular.element($window).bind('resize', function(){
+          height = scope.palco[0]['offsetHeight'] - 50;
+          width  = scope.palco[0]['offsetWidth'] - 50;
+            scope.palcoW = width+"px";
+            scope.palcoH = height+"px"; 
+          
+             element.css('height',scope.palcoH);
+    			   element.css('width',scope.palcoW);
+
+    	       scope.$digest();
+        });
+      }
+    }
+});
 
 /**************************
   Board
 ***************************/
-quest.directive('board', ['BoardService',  function(BoardService){
+quest.directive('board', ['$rootScope','BoardService',  function($rootScope, BoardService){
     return{
       restrict: 'EAC',
       replace: true,
-      scope: {},
+      scope: {
+        score: '=score',
+        activeHouse: '=activeHouse',
+        boardData: '=boardData'
+      },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
-      link: function(scope,element, attribute){
-        var w, h, px, py, loader, manifest, board, house, eHouse,shape;
+      link: function(scope, element, attribute){
+            // console.log(element);
+        var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
         drawBoard();
 
         function drawBoard(){
@@ -348,8 +481,11 @@ quest.directive('board', ['BoardService',  function(BoardService){
           } else {
               scope.stage = new createjs.Stage(element[0]);
           }
-          w = scope.stage.canvas.width;
-          h = scope.stage.canvas.height;
+          activeHouse = scope.activeHouse;
+          score       = scope.score;
+          w           = scope.stage.canvas.width;
+          h           = scope.stage.canvas.height;
+
           manifest = [
             {src: "current-marker.png", id: "currentMarker"},
             {src: "house-marker.png", id: "marker"},
@@ -394,54 +530,51 @@ quest.directive('board', ['BoardService',  function(BoardService){
           board = new createjs.Shape();
           board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
           scope.stage.addChild(board); 
-          console.log(seq1);
+          // console.log(seq1);
             var x1 =  seq1;
             var x2 =  seq2;
             var y1 = markerStartY;
             var y2 = markerStartY + 40;
             var special = false;
 
-            for (var i = 0; i < 29; i++) {
+            for (var i = 1; i < 29; i++) { 
 
               if(i < 6){ 
-                 createMarker(0,1,i,special);
+                 createMarker(1,1,i,special);
 
               }else if(i > 6 && i < 12){  
                 if(i === 11){
                   special = true;
                 }
-                 createMarker(0,2,i,special); 
+                 createMarker(1,2,i,special); 
                              
               }else{        
 
               } 
 
             }
-
-              
+             
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
         
         }
         function createMarker(current,lines,index,special){
-          var offsetx = (w / 3) - (56 * 6);
-          var offsety = Math.round(h / 3) / 6;
-          var color   = "white";
-          var circle = new createjs.Shape();
+          var offsetx     = (w / 3) - (56 * 6);
+          var offsety     = Math.round(h / 3) / 6;
+          var color       = "white";
+          var circle      = new createjs.Shape();
           var currentMark = loader.getResult("currentMarker");
-          var marker = new createjs.Shape();
+          var marker      = new createjs.Shape(); 
 
-          if(special) color = "green";   
-            marker.graphics.beginFill("yellow").drawRoundRect(0,0,31,45,15);
-            marker.x = 48;
-            marker.y = 188;
-    
+          if(special) color = "#37d349";  
+          // console.log(scope.activeHouse);
+          // console.log(scope.score);
 
           switch(lines){
             case 1:
               var x = 56 * (index + 1) + 10;
               var y = 210;
-               console.log(x);
+               // console.log(x);
               // 
             break;
             case 2:
@@ -461,42 +594,81 @@ quest.directive('board', ['BoardService',  function(BoardService){
             break;
           } 
 
-          circle.graphics.beginFill(color).drawCircle(0, 0, 18);
+          circle.graphics.beginStroke('#9a9c9e').beginFill(color).drawCircle(0, 0, 12);
           circle.x = x;
           circle.y = y;
-          circle.name = "casa_"+index; 
+          circle.name = "casa"+index; 
           circle.on("click", handleMarkClick);
-          scope.stage.addChild(circle,marker); 
+          
+          scope.stage.addChild(circle); 
+
+
+          if(current === index){
+
+            marker.graphics.beginFill("#e8a612").drawRoundRect(0,0,31,45,17);
+            marker.x = circle.x - 16;
+            marker.y = circle.y - 20;
+            scope.stage.addChild(marker); 
+          }
           
           
         }
-        function createMarkerSpecial(){
-          //
+//************************************
+//  carrega a pegunta
+//************************************
+        function loadQuestion(q){
+          $rootScope.isQuestion = true;   
+          $rootScope.$apply();
         }
+//************************************
+//  handle clique na casa
+//************************************
         function handleMarkClick(){
-          var house = this;
-          console.log(house);
+          var house     = this;
+          var houseName = house.name;
+          var alert     = new createjs.Shape();
+
+          // console.log(scope.boardData[houseName].isActive);
+
+          if(scope.boardData[houseName].isActive){
+            return loadQuestion(scope.boardData[houseName]);
+          }else{
+            alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
+            txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
+            alert.x = 300;
+            alert.y = 300;
+            txt.x = 350;
+            txt.y = 350;
+            alert.on('click',function(event) {
+              scope.stage.removeChild(alert, txt);
+            });
+            scope.stage.addChild(alert,txt);
+          }
         }
         function tick(event){
           scope.stage.update(event);
         }
 
-        function toggleCache(value) {
-          // iterate all the children except the fpsLabel, and set up the cache:
-          var l = stage.getNumChildren() - 1;
-
-          for (var i = 0; i < l; i++) {
-            var shape = scope.stage.getChildAt(i);
-            if (value) {
-              shape.cache(-radius, -radius, radius * 2, radius * 2);
-            } else {
-              shape.uncache();
-            }
-          }
-        }
+        
       }
     }
 }]);
+
+
+quest.directive('question', ['$rootScope','BoardService',  function($rootScope, BoardService){
+  return{
+      templateUrl: '../../views/templates/question.html',
+      link: function(scope, element, attribute){
+        scope.question = "teste";
+        scope.alternativas = []; 
+
+        scope.close = function(){
+          $rootScope.isQuestion = false;
+        }
+      }
+
+  }
+}]); 
 
 //================================================
 //# App Controllers
@@ -518,16 +690,21 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', 'AuthSe
     $rootScope.currentScore = null;
     $rootScope.levels       = [];
     $rootScope.score        = BoardService.getScore();
-    $rootScope.board        = BoardService;
+    $rootScope.boardData    = BoardService.getBoardData();
+
+    $rootScope.activeHouse   = 0;
+    $rootScope.score         = 0;
+    $rootScope.answer        = 0;
+    $rootScope.correctAnswer = 0;
+    $rootScope.isQuestion = false; 
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
 
-
-    // console.log(BoardService.getGameApi());
-    // console.log(BoardService.createBoard());
-    // console.log("Total de pontos: " + $rootScope.score);
+    $rootScope.$watch('isQuestion', function(){
+      console.log($rootScope.isQuestion);
+    });
 
 }]);
 
@@ -548,25 +725,10 @@ quest.controller('loginController',
       $rootScope.error = false;
       $rootScope.disabled = false;
 
-        $http.post('/auth/login', {username: "demo", password: "teste"});
+      // $http.post('/auth/login', {username: req.body.username, password: req.body.password});
 
       // call login from service
-      // AuthService.login($scope.loginForm.username, $scope.loginForm.password)
-      //   // handle success
-      //   .then(function () {
-      //     $location.path('/saudacoes');
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = true;
-      //     $scope.loginForm = {};
-      //   })
-      //   // handle error
-      //   .catch(function () {
-      //     $rootScope.error = true;
-      //     $rootScope.errorMessage = "Impossivel logar, registre-se";
-      //     $rootScope.disabled = false;
-      //     $rootScope.userActive = false;
-      //     $scope.loginForm = {};
-      //   });
+      AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
 
     };
 

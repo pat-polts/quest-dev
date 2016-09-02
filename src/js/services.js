@@ -33,28 +33,23 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http',
         });
       };
 
-      var login = function (username, password) {
-
-        // create a new instance of deferred
-        var deferred = $q.defer();
+      var login = function (username, password) { 
 
         // send a post request to the server
-        $http.post('/auth/login',
-          {username: username, password: password})
+        $http.post('http://via.events/jogoquest/api/Usuarios/Logar',
+          {Login: username, Senha: password})
           // handle success
           .success(function (data, status) {
-            if(status === 200 && data.status){
-              user = true;
-              deferred.resolve();
+            if(status === 200){
+              console.log("token: "+data);
             } else {
-              user = false;
-              deferred.reject();
+              console.log(status);
+            //  console.log("Usuario ou Senha incorreta" + data);
             }
           })
           // handle error
           .error(function (data) {
-            user = false;
-            deferred.reject();
+            console.log("erro" + data);
           });
      
         return deferred.promise;
@@ -138,7 +133,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     };
     var board = [1,2,3,4,5,6];
     var boardData = {
-        "1": {
+        "casa1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -146,14 +141,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": true,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "2": {
+        "casa2": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -161,14 +157,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "3": {
+        "casa3": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -176,14 +173,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "4": {
+        "casa4": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -191,14 +189,15 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
           "x": 0,
           "y": 0
         },
-        "5": {
+        "casa5": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -206,10 +205,107 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
               "c": "Rapidez incontrolada na divisão celular",
               "d": "Envelhecimento celular",
           },
-          "answer": "b",
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
           "score": 10,
-          "special": false,
-          "userChoice": "none",
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa6": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa7": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa8": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa9": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa10": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
+          "x": 0,
+          "y": 0
+        },
+        "casa11": {
+          "question": "O que faz com que células normais se tornem células de câncer?",
+          "options": {
+              "a": "Aumento da apoptose celula",
+              "b": "Mutações em células tronco normais ou células progenitoras",
+              "c": "Rapidez incontrolada na divisão celular",
+              "d": "Envelhecimento celular",
+          },
+          "correctAnswer": "b",
+          "answer": "",
+          "isActive": false,
+          "score": 10,
+          "special": false, 
           "x": 0,
           "y": 0
         }

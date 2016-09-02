@@ -1,5 +1,5 @@
 <!-- # Tela Login  --> 
 <div ng-if="error" >{{errorMessage}}</div> 
-<div ng-if="question">pergunta</div> 
+<question ng-if="isQuestion"></question> 
 <div ng-if="special">casa especial</div> 
-<board></board>
+<board score="score" active-house="activeHouse" answer="answer" correct-answer="correctAnswer" board-data="boardData"></board>
