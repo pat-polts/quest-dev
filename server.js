@@ -10,14 +10,20 @@ var hash          = require('bcrypt-nodejs');
 var path          = require('path'); 
 var app           = express();
 var router        = express.Router();
+// var RedisStore = require('connect-redis')(sessions);
+// var ci  = RedisStore.createClient();
 // var debug          = require('debug')('passport-mongo'); 
+var session = require('client-sessions');
 
 //routes
 var userAuth       = require('./routes/authenticate.js');
 
 
-var port = process.env.PORT || 3000;
-
+var port = process.env.PORT || 3000; 
+var sess = {
+  secret: 'Sjhf#@jsduries',
+  cookie: {}
+}
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
@@ -28,26 +34,32 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(sessions({
-  secret: 'Sjhf#@jsduries',
-  resave: false,
+  secret: 'ultra_mega_blaster_master_secret', 
+  name: 'quest_dev',
+  duration: 30 * 60 * 1000,
+  activeDuration: 5 * 60 * 1000,
+  httpOnly: true,
+  secure: true,
+  resave: true,
   saveUninitialized: true,
-  cookie: { secure: true, httpOnly: true }
+  cookie: { secure: true, httpOnly: true}
 })); 
 
-app.all('*',function(req, res, next){
-  res.header('Access-Control-Allow-Origin', '*');
+app.all('*',function(req, res, next){ 
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Credentials", "true");
+  res.header("Access-Control-Allow-Origin", "http://localhost");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
 
 app.use('/auth/', userAuth); 
 
-app.get('/', function(req, res) {
-  console.log('Rquest!');
+app.get('/', function(req, res, next) { 
   res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
+
 
 // Catch all errors
 app.use(function(req, res, next) {
@@ -65,7 +77,10 @@ if (app.get('env') === 'production') {
         error: {}
     });
   }); 
-
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+  sess.name = 'quest_game'
+  app.use(session(sess))
 }else{
   app.use(function(err, req, res) {
     res.status(err.status || 500);

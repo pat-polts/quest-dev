@@ -7,12 +7,9 @@ var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
 
-  var expireDate = new Date();
-  expireDate.setDate(expireDate.getDate() + 1);
-
-  // $cookiesProvider.defaults = {};
-  $cookiesProvider.defaults.expires = expireDate;
-  $cookiesProvider.defaults.secure  = true;
+  // // $cookiesProvider.defaults = {};
+  // $cookiesProvider.defaults.expires = expireDate;
+  // $cookiesProvider.defaults.secure  = true;
   
   $routeProvider.
    when('/', {
@@ -48,12 +45,12 @@ quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $cookies) {
+quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current) {
+    function (event, next, current,$rootScope) {
       // $rootScope.isLoading = true;
       if(next && next.$$route && next.$$route.restricted){
-          if(!$cookies.get('usersSession')){
+          if(!AuthService.logged()){
             $location.path('/login'); 
           }
       }

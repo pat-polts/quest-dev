@@ -85,10 +85,10 @@ quest.controller('authController',
       if($rootScope.checkFields()){
         AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
           .then(function () {
-            $location.path('/');
             $rootScope.isLoading = false;
             $rootScope.disabled = false;
             $scope.registerForm = {};  
+            return  $location.path('/');
           })
           // handle error
           .catch(function () {
@@ -104,15 +104,23 @@ quest.controller('authController',
     };
 
     $rootScope.isUser = function(){
-      if($cookies.get('usersSession')){
-        return AuthService.logged();
-      }
+      AuthService.logged()
+        .then(function () {
+          $rootScope.isLoading = false;
+          return true;
+        })
+          // handle error
+        .catch(function () {
+          $rootScope.error = true;
+          $rootScope.errorMessage = "Nao logado";   
+          return false;
+        })
     };
-
 
     $rootScope.logout = function(){
       return AuthService.logout(); 
     };
+
 
 }]);
 

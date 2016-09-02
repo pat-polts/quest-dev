@@ -1,6 +1,3 @@
- 
-npm-debug.log  
-
 # Node build artifacts
 node_modules/
 npm-debug.log
@@ -8,4 +5,9 @@ npm-debug.log
 # Local development
 *.env
 *.dev
-.DS_Store 
+*.DS_Store 
+
+/**/**/global.js
+/dist/js
+/dist/js/*
+dist/css/*
