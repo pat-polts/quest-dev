@@ -7,12 +7,9 @@ var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
 
-  var expireDate = new Date();
-  expireDate.setDate(expireDate.getDate() + 1);
-
-  // $cookiesProvider.defaults = {};
-  $cookiesProvider.defaults.expires = expireDate;
-  $cookiesProvider.defaults.secure  = true;
+  // // $cookiesProvider.defaults = {};
+  // $cookiesProvider.defaults.expires = expireDate;
+  // $cookiesProvider.defaults.secure  = true;
   
   $routeProvider.
    when('/', {
@@ -48,12 +45,12 @@ quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $cookies) {
+quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current) {
+    function (event, next, current,$rootScope) {
       // $rootScope.isLoading = true;
       if(next && next.$$route && next.$$route.restricted){
-          if(!$cookies.get('usersSession')){
+          if(!AuthService.logged()){
             $location.path('/login'); 
           }
       }
@@ -100,59 +97,53 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         $rootScope.isLoading = true;
 
         $http.post('/auth/login', credentials)
-          .success(function(response, status){ 
+          .success(function(response, status){  
 
-            console.log(response);   
-            //request api
-                // $http.post(response.api + 'Usuarios/Logar', {Login: username, Senha: password})
-                // // handle success
-                // .success(function (data, status) {
-                // $rootScope.isLoading = false;
+                  console.log(response);
+                  if(status === 200){
+                    //user logged  
+                    $rootScope.error    = false;  
+                    $location.path('/');
+                    deferred.resolve();
 
-                //   if(status === 200){
-                //     //user logged  
+                  }else if(status === 500) {
 
-                //     $rootScope.setCookie('usersSession', data); 
-                //     $rootScope.error    = false;  
-                //     deferred.resolve();
+                    $rootScope.error = true; 
+                    $rootScope.errorMessage = "Usuario ou login incorretos";  
+                    deferred.reject();
 
-                //   }else if(status === 500) {
-
-                //     $rootScope.error = true; 
-                //     $rootScope.errorMessage = "Usuario ou login incorretos";  
-                //     deferred.reject();
-
-                //   } else {
-                //     $rootScope.error = true;
-                //     $rootScope.errorMessage = "Serviço indisponivel";     
-                //     deferred.reject(); 
-                //   }
-                // })
-                // // handle error
-                // .error(function () {
-                //     $rootScope.error = true;
-                //     $rootScope.errorMessage = "Serviço indisponivel"; 
-                // });
-                //end request api
-
-          })
-          .error(function() {
-            $rootScope.error = true; 
-            $rootScope.errorMessage = "Problemas com a api"; 
-            console.log("erro");  
-          });  
+                  } else {
+                    $rootScope.error = true;
+                    $rootScope.errorMessage = "Serviço indisponivel";     
+                    deferred.reject(); 
+                  }
+                })
+                // handle error
+            .error(function () {
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Serviço indisponivel"; 
+            });
     
-
           return deferred.promise;
       }; 
 
       userAuth.logged = function(){
-        if($cookies.get('usersSession')){
-          return true; 
-        }else{
-          return false;
+        var deferred = $q.defer();
 
-        }
+        $http.get('/auth/status')
+        .success(function(user, status){ 
+          console.log(status);
+          if(user){
+            deferred.resolve();
+          } else{
+            deferred.reject();
+          }
+        })
+        .error(function() {
+            deferred.reject();
+        });
+
+        return deferred.promise;
       };
 
       userAuth.logout = function(){
@@ -758,10 +749,10 @@ quest.controller('authController',
       if($rootScope.checkFields()){
         AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
           .then(function () {
-            $location.path('/');
             $rootScope.isLoading = false;
             $rootScope.disabled = false;
             $scope.registerForm = {};  
+            return  $location.path('/');
           })
           // handle error
           .catch(function () {
@@ -777,9 +768,17 @@ quest.controller('authController',
     };
 
     $rootScope.isUser = function(){
-      if($cookies.get('usersSession')){
-        return AuthService.logged();
-      }
+      AuthService.logged()
+        .then(function () {
+          $rootScope.isLoading = false;
+          return true;
+        })
+          // handle error
+        .catch(function () {
+          $rootScope.error = true;
+          $rootScope.errorMessage = "Nao logado";   
+          return false;
+        })
     };
 
 

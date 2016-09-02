@@ -16,8 +16,11 @@ var router        = express.Router();
 var userAuth       = require('./routes/authenticate.js');
 
 
-var port = process.env.PORT || 3000;
-
+var port = process.env.PORT || 3000; 
+var sess = {
+  secret: 'Sjhf#@jsduries',
+  cookie: {}
+}
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
@@ -29,9 +32,12 @@ app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(sessions({
   secret: 'Sjhf#@jsduries',
-  resave: false,
+  name: 'quest_dev',
+  path: '/#/',
+  proxy: true,
+  resave: true,
   saveUninitialized: true,
-  cookie: { secure: true, httpOnly: true }
+  cookie: { secure: true, httpOnly: false}
 })); 
 
 app.all('*',function(req, res, next){
@@ -47,13 +53,6 @@ app.use('/auth/', userAuth);
 app.get('/', function(req, res) {
   console.log('Rquest!');
   res.sendFile(path.join(__dirname, 'views/index.html')); 
-});
-
-
-app.get('/api', function(req, res) { 
-    res.status(200).json.Stringfy({
-      api: process.env.API_END_POINT
-    });
 });
 
 
@@ -73,7 +72,10 @@ if (app.get('env') === 'production') {
         error: {}
     });
   }); 
-
+  app.set('trust proxy', 1) // trust first proxy
+  sess.cookie.secure = true // serve secure cookies
+  sess.name = 'quest_game'
+  app.use(session(sess))
 }else{
   app.use(function(err, req, res) {
     res.status(err.status || 500);

@@ -1,8 +1,10 @@
-var express  = require('express');
-var app      = express();
-var router   = express.Router();
-var sessions = require('express-session');  
-var userSession; 
+var express    = require('express');
+var app        = express();
+var router     = express.Router();
+var sessions   = require('express-session');  
+var bodyparser = require('body-parser');  
+var Client     = require('node-rest-client').Client;
+var client = new Client();
 
 router.get('/api/login', function(req, res) {
     var env = process.env.API_END_POINT;
@@ -11,126 +13,76 @@ router.get('/api/login', function(req, res) {
     });
 });
 
-router.post('/login', function(req, res) {
+router.post('/login', function(req, res, next) {
   var api = process.env.API_LOGIN;
   if(api){
-    res.status(200);
-    app.post(api, {
-      Login: req.body.Login,
-      Senha: req.body.Senha
-    }, function(data,status){
-      console.log(status);
-    });
+    var args = {
+      data: { Login: req.body.Login, Senha: req.body.Senha},
+      headers: { "Content-Type": "application/json" },
+      requestConfig: {
+        timeout: 1000, //request timeout in milliseconds 
+        noDelay: true, //Enable/disable the Nagle algorithm 
+        keepAlive: true, //Enable/disable keep-alive functionalityidle socket. 
+        keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent 
+      }
+    };
+ 
+    client.post(api, args, function (data, response) {
+      // parsed response body as js object 
+      // console.log(data);
+      if(res.status(200)){
+        var sess = req.session; 
+        if(!sess.token){
+          // userSession.cookie.expires  = false;
+          sess.cookie = {token: data};   
+          sess.cookie.reload(function(err) {
+            if(err){
+              res.end(JSON.stringify({
+                message: err,
+                error: {}
+              }));
+            }
+            
+            console.log(sess.cookie);
 
-  }
-    // console.log(api);
+          })
+          res.send({
+            status: 200
+          });
+          req.session.reload(function(err) {
+            // session updated
+          })
+        }
+      }else if(res.status(500)){
+          res.send({
+            status: 500
+          });
+      }
+      else{ 
+          res.send(JSON.stringify({
+            message: err.message,
+            error: {}
+          }));
+      }
+    });
+  } 
 });
 
-// router.post('/login', function(req, res) {
-//   if(!req.body) { 
-//         return res.send(400); 
-//     } // 6
-//   console.log(req.body);
- 
-//   // $http.post('http://via.events/jogoquest/api/Usuarios/Logar', {Login: req.body.login, Senha: req.body.senha}, 
-//   //   function(data, status) {
-//   //     var error;
-//   //     sess = req.session.users;
-//   //     if(status === 200){
-//   //       //logado
-//   //       sess.logged = true;
-//   //       sess.oken = data;
-//   //       sess.save(function(err) {
-//   //         // session saved
-//   //         if(err){
-//   //           error = err;
-//   //           console.log(err);
-//   //         }
+router.get('/status', function(req,res,next){
+  var sess = req.session; 
+  if(sess.cookie){
+    console.log(userSession.cookie);
+    res.status(200);
+    res.send({
+      user: true
+    });
+  }else{
+    res.status(500);
+    res.send({
+      user: false
+    });
+  }
 
-//   //       });
-
-//   //     }else if(status === 500){
-//   //       //login ou senha invalido
-//   //           error = "Login ou senha não existe";
-//   //     }else{
-//   //       //erro desconhecido
-//   //           error = "Serviço indisponivel, tente mais tarde.";
-//   //     }
-//   // });
-
-//   // return (data,status,sess,error);
-// });
-
-
-// router.post('/register', function(req, res) {
-//   // User.register(new User({ username: req.body.username }),
-//   //   req.body.password, function(err, account) {
-//   //   if (err) {
-//   //     return res.status(500).json({
-//   //       err: err
-//   //     });
-//   //   }
-//   //   passport.authenticate('local')(req, res, function () {
-//   //     return res.status(200).json({
-//   //       status: 'Registration successful!'
-//   //     });
-//   //   });
-//   // });
-
-      
-//       var User = mongoose.model('users', userSchema);
-//       var demoUser = new User({username: 'demo', password: 'teste'});
-//       demoUser.save();
-// });
-
-// router.post('/login', function(req, res, next) {
-//       var User = mongoose.model('users', userSchema);
-//       User.findOne({username: req.body.username, password: req.body.password}, function(err, doc) {
-//         if (err) {
-//           handleError(res, err.message, "Failed to get login");
-//         } else {
-//           res.status(200).json(doc);
-//         }
-//       });
-
-//   // passport.authenticate('local', function(err, user, info) {
-//   //   if (err) {
-//   //     return next(err);
-//   //   }
-//   //   if (!user) {
-//   //     return res.status(401).json({
-//   //       err: info
-//   //     });
-//   //   }
-//   //   req.logIn(user, function(err) {
-//   //     if (err) {
-//   //       return res.status(500).json({
-//   //         err: 'Could not log in user'
-//   //       });
-//   //     }
-//   //     res.status(200).json({
-//   //       status: 'Login successful!'
-//   //     });
-//   //   });
-//   // })(req, res, next);
-// });
-
-// router.get('/logout', function(req, res) {
-//   req.logout();
-//   res.status(200).json({
-//     status: 'Bye!'
-//   });
-// });
-
-// router.get('/status', function(req, res) {
-//   if (!req.isAuthenticated()) {
-//     return res.status(200).json({
-//       status: false
-//     });
-//   }
-//   res.status(200).json({
-//     status: true
-//   });
-// });
+});
 
 module.exports = router;
