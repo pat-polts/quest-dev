@@ -15,8 +15,9 @@ router.get('/api/login', function(req, res) {
 
 router.post('/login', function(req, res, next) {
   var api = process.env.API_LOGIN;
+  // var session = req.session.key;
   if(api){
-    var args = {
+    var args = { 
       data: { Login: req.body.Login, Senha: req.body.Senha},
       headers: { "Content-Type": "application/json" },
       requestConfig: {
@@ -28,31 +29,14 @@ router.post('/login', function(req, res, next) {
     };
  
     client.post(api, args, function (data, response) {
-      // parsed response body as js object 
-      // console.log(data);
-      if(res.status(200)){
-        var sess = req.session; 
-        if(!sess.token){
-          // userSession.cookie.expires  = false;
-          sess.cookie.token = data;   
-          sess.cookie.reload(function(err) {
-            if(err){
-              res.end(JSON.stringify({
-                message: err,
-                error: {}
-              }));
-            }
-
-            console.log(sess.cookie);
-
-          })
+      if(res.status(200)){  
+      // sets a cookie with the user's info 
+        req.session.token = data;
+        res.locals.token = data;
           res.send({
             status: 200
           });
-          req.session.reload(function(err) {
-            // session updated
-          })
-        }
+
       }else if(res.status(500)){
           res.send({
             status: 500
@@ -68,10 +52,14 @@ router.post('/login', function(req, res, next) {
   } 
 });
 
-router.get('/status', function(req,res,next){
-  var sess = req.session; 
-  if(sess.cookie){
-    console.log(userSession.cookie);
+router.get('/status', function(req,res,next){ 
+  // console.log(req);
+  if (req.sessionID){ 
+    console.log(req.sessions);
+    // console.log(req.sessions["token"]);
+  }
+
+  if(req.body){
     res.status(200);
     res.send({
       user: true
@@ -82,6 +70,19 @@ router.get('/status', function(req,res,next){
       user: false
     });
   }
+
+});
+
+router.get('/api', function(req,res,next){
+
+  client.registerMethod("jsonMethod", process.env.API_HELP, "GET");
+  client.get(process.env.API_HELP,
+    function (data, response) {
+        // parsed response body as js object 
+        console.log(data);
+        // raw response 
+        console.log(response);
+    });
 
 });
 
