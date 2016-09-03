@@ -31,10 +31,10 @@ router.post('/login', function(req, res, next) {
     client.post(api, args, function (data, response) {
       if(res.status(200)){  
       // sets a cookie with the user's info 
-        req.sessions.token = data; 
+        req.sessions = {token: data}; 
         res.status(200);
           res.send({
-            response: req.session
+            response: req.sessions
           });
 
       }else if(res.status(500)){
@@ -57,7 +57,7 @@ router.post('/login', function(req, res, next) {
 router.get('/status', function(req, res, next){
 
 if(req.sessions){
-  console.log(req.sessions.token);
+  console.log(req.sessions);
 }
 res.status(200);
 
