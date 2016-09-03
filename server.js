@@ -33,23 +33,20 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
-app.use(sessions({
-  secret: 'ultra_mega_blaster_master_secret', 
+app.use(sessions({ 
+  secret: 'sw$g45&uioQA!!', 
   name: 'quest_dev',
-  duration: 30 * 60 * 1000,
-  activeDuration: 5 * 60 * 1000,
   httpOnly: true,
-  secure: true,
   resave: true,
   saveUninitialized: true,
   cookie: { secure: true, httpOnly: true}
 })); 
 
 app.all('*',function(req, res, next){ 
+  res.header("Access-Control-Allow-Origin", "http://localhost");
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Credentials", "true");
-  res.header("Access-Control-Allow-Origin", "http://localhost");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });

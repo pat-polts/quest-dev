@@ -98,8 +98,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.post('/auth/login', credentials)
           .success(function(response, status){  
-
-                  console.log(response);
                   if(status === 200){
                     //user logged  
                     $rootScope.error    = false;  
@@ -123,34 +121,29 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
               $rootScope.error = true;
               $rootScope.errorMessage = "Serviço indisponivel"; 
             });
-    
           return deferred.promise;
       }; 
 
       userAuth.logged = function(){
-        var deferred = $q.defer();
+
+        var userStatus = false;
 
         $http.get('/auth/status')
         .success(function(user, status){ 
-          
-          console.log(status);
-          if(user){
-            deferred.resolve();
-          } else{
-            deferred.reject();
-          }
+          userStatus = true;
         })
-        .error(function() {
-            deferred.reject();
+        .error(function() { 
+              $rootScope.error = true;
+              $rootScope.errorMessage = "Logar"; 
         });
 
-        return deferred.promise;
+        return userStatus;
       };
 
       userAuth.logout = function(){
-        $rootScope.deleteCookie('usersSession');
-
-      }
+       //
+      };
+ 
  
  
     return userAuth;
@@ -768,24 +761,14 @@ quest.controller('authController',
 
     };
 
-    $rootScope.isUser = function(){
-      AuthService.logged()
-        .then(function () {
-          $rootScope.isLoading = false;
-          return true;
-        })
-          // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Nao logado";   
-          return false;
-        })
+    $rootScope.logged = function(){
+      return AuthService.logged();
     };
-
 
     $rootScope.logout = function(){
       return AuthService.logout(); 
     };
+
 
 }]);
 

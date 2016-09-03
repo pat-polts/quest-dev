@@ -15,7 +15,7 @@ router.get('/api/login', function(req, res) {
 
 router.post('/login', function(req, res, next) {
   var api = process.env.API_LOGIN;
-  // var session = req.session.key;
+
   if(api){
     var args = { 
       data: { Login: req.body.Login, Senha: req.body.Senha},
@@ -29,13 +29,22 @@ router.post('/login', function(req, res, next) {
     };
  
     client.post(api, args, function (data, response) {
-      if(res.status(200)){  
-      // sets a cookie with the user's info 
-        req.sessions = {token: data}; 
+      if(res.status(200)){   
         res.status(200);
-          res.send({
-            response: req.sessions
+        // 
+          req.session.uid = req.session.uid || { token: data };
+          req.uid         = req.session.uid;
+          req.session.save(function(err){
+            if(err) console.log(err);
           });
+          req.session.regenerate(function(err){
+             if(err) console.log(err); 
+          });
+          res.send(JSON.stringify({
+            response: 'logged'
+          }));
+
+          
 
       }else if(res.status(500)){
           res.status(500);
@@ -54,13 +63,22 @@ router.post('/login', function(req, res, next) {
 });
 
 
-router.get('/status', function(req, res, next){
+router.get('/status', function(req, res, next){ 
+  if(req.uid){
 
-if(req.sessions){
-  console.log(req.sessions);
-}
-res.status(200);
+    res.status(200);
+    console.log(req.uid.token);
+    res.send(JSON.stringify({
+      user: true, 
+    }));
 
+  }else{
+    console.log("no session");
+    res.status(500);
+    res.send(JSON.stringify({
+      user: false, 
+    }));
+  } 
 });
  
 
