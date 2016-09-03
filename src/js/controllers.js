@@ -103,12 +103,16 @@ quest.controller('authController',
 
     };
 
-    $rootScope.logged = function(){
-      return AuthService.logged();
-    };
-
     $rootScope.logout = function(){
-      return AuthService.logout(); 
+      AuthService.logout()
+          .then(function () {
+            $location.path('/login');
+          })
+          // handle error
+          .catch(function () {
+            $rootScope.error = true;
+            $rootScope.errorMessage = "Something went wrong!";   
+          })
     };
 
 

@@ -1,10 +1,14 @@
 var express    = require('express');
 var app        = express();
 var router     = express.Router();
-var sessions   = require('express-session');  
+var session   = require('express-session');  
 var bodyparser = require('body-parser');  
 var Client     = require('node-rest-client').Client;
 var client = new Client();
+
+
+var MemoryStore = session.MemoryStore,
+    sessionStore = new MemoryStore();
 
 router.get('/api/login', function(req, res) {
     var env = process.env.API_END_POINT;
@@ -31,18 +35,23 @@ router.post('/login', function(req, res, next) {
     client.post(api, args, function (data, response) {
       if(res.status(200)){   
         res.status(200);
-        // 
-          req.session.uid = req.session.uid || { token: data };
-          req.uid         = req.session.uid;
-          req.session.save(function(err){
-            if(err) console.log(err);
-          });
-          req.session.regenerate(function(err){
-             if(err) console.log(err); 
-          });
-          res.send(JSON.stringify({
-            response: 'logged'
-          }));
+
+           var sessionID = req.sessionID; 
+           var sess      = req.session;
+
+            sess.token = data; 
+            req.session.save(function(err){ 
+              if(err) res.end(err);
+            }); 
+
+            sessionStore.set('user_data', sess.token, function(error){
+              if(error) res.end(error);
+            });
+            //sessionStore.touch(sess.user.id, sess.user, function(error){});
+
+          next(res.send(JSON.stringify({
+            response: 'logged' 
+          })));
 
           
 
@@ -63,20 +72,37 @@ router.post('/login', function(req, res, next) {
 });
 
 
-router.get('/status', function(req, res, next){ 
-  if(req.uid){
-
+router.get('/logout', function(req, res, next){
+  sessionStore.destroy('user_data', function(error){
+    if(error) res.end(error);
+  });
+    res.send({
+        logout: true
+      });
     res.status(200);
-    console.log(req.uid.token);
-    res.send(JSON.stringify({
-      user: true, 
+});
+
+router.get('/status', function(req, res, next){ 
+
+  var hour = 3600000;
+  var userLog = sessionStore.sessions.user_data;
+  // console.log(userLog);
+
+  if(userLog){
+    var sessionID = 'user_data'; 
+    // console.log(userLog);
+    res.status(200);  
+    next(res.send({
+       logged: true,
+       status: 200
     }));
 
-  }else{
-    console.log("no session");
+  }else{ 
     res.status(500);
-    res.send(JSON.stringify({
-      user: false, 
+    next( 
+    res.send({
+       logged: false,
+       status: 500
     }));
   } 
 });

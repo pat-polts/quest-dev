@@ -61,24 +61,37 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           return deferred.promise;
       }; 
 
-      userAuth.logged = function(){
-
-        var userStatus = false;
-
+      userAuth.logged = function(){ 
+         var deferred = $q.defer(); 
         $http.get('/auth/status')
-        .success(function(user, status){ 
-          userStatus = true;
+        .success(function(response, status){   
+          if(response.logged){
+              deferred.resolve();
+          }
         })
-        .error(function() { 
-              $rootScope.error = true;
-              $rootScope.errorMessage = "Logar"; 
-        });
+        .error(function() {      
+            deferred.reject(); 
+        }); 
 
-        return userStatus;
+        return deferred.promise;
       };
 
       userAuth.logout = function(){
-       //
+         var deferred = $q.defer(); 
+        $http.get('/auth/logout')
+        .success(function(response, status){  
+          if(response.logout){
+              deferred.resolve();
+          }else{
+            deferred.reject();
+          }
+        })
+        .error(function() {     
+          deferred.reject(); 
+        }); 
+
+        return deferred.promise;
+
       };
  
  
