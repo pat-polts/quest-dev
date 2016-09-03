@@ -31,15 +31,16 @@ router.post('/login', function(req, res, next) {
     client.post(api, args, function (data, response) {
       if(res.status(200)){  
       // sets a cookie with the user's info 
-        req.session.token = data;
-        res.locals.token = data;
+        req.sessions.token = data; 
+        res.status(200);
           res.send({
-            status: 200
+            response: req.session
           });
 
       }else if(res.status(500)){
+          res.status(500);
           res.send({
-            status: 500
+            response: "usuario nao existe"
           });
       }
       else{ 
@@ -50,6 +51,16 @@ router.post('/login', function(req, res, next) {
       }
     });
   } 
+});
+
+
+router.get('/status', function(req, res, next){
+
+if(req.sessions){
+  console.log(req.sessions.token);
+}
+res.status(200);
+
 });
  
 
