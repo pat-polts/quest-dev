@@ -35,8 +35,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.post('/auth/login', credentials)
           .success(function(response, status){  
-
-                  console.log(response);
                   if(status === 200){
                     //user logged  
                     $rootScope.error    = false;  
@@ -63,28 +61,37 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           return deferred.promise;
       }; 
 
-      userAuth.logged = function(){
-        var deferred = $q.defer();
-
+      userAuth.logged = function(){ 
+         var deferred = $q.defer(); 
         $http.get('/auth/status')
-        .success(function(user, status){ 
-
-          console.log(status);
-          if(user){
-            deferred.resolve();
-          } else{
-            deferred.reject();
+        .success(function(response, status){   
+          if(response.logged){
+              deferred.resolve();
           }
         })
-        .error(function() {
-            deferred.reject();
-        });
+        .error(function() {      
+            deferred.reject(); 
+        }); 
 
         return deferred.promise;
       };
 
       userAuth.logout = function(){
-       //
+         var deferred = $q.defer(); 
+        $http.get('/auth/logout')
+        .success(function(response, status){  
+          if(response.logout){
+              deferred.resolve();
+          }else{
+            deferred.reject();
+          }
+        })
+        .error(function() {     
+          deferred.reject(); 
+        }); 
+
+        return deferred.promise;
+
       };
  
  

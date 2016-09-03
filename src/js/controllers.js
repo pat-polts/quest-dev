@@ -103,22 +103,16 @@ quest.controller('authController',
 
     };
 
-    $rootScope.isUser = function(){
-      AuthService.logged()
-        .then(function () {
-          $rootScope.isLoading = false;
-          return true;
-        })
-          // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Nao logado";   
-          return false;
-        })
-    };
-
     $rootScope.logout = function(){
-      return AuthService.logout(); 
+      AuthService.logout()
+          .then(function () {
+            $location.path('/login');
+          })
+          // handle error
+          .catch(function () {
+            $rootScope.error = true;
+            $rootScope.errorMessage = "Something went wrong!";   
+          })
     };
 
 

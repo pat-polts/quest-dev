@@ -21,7 +21,7 @@ quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
       controller: 'authController' 
     })
     .when('/logout', {
-      controller: 'authController',
+      controller: 'authController.logout()',
       restricted: true 
     })
     .when('/register', {
@@ -48,7 +48,7 @@ quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
 quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
   $rootScope.$on('$routeChangeStart',
     function (event, next, current,$rootScope) {
-      // $rootScope.isLoading = true;
+      // $rootScope.isLoading = true; 
       if(next && next.$$route && next.$$route.restricted){
           if(!AuthService.logged()){
             $location.path('/login'); 
@@ -56,8 +56,12 @@ quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService)
       }
   });
   $rootScope.$on('$stateChangeStart',
-    function (event, next, current) {
-      // $rootScope.isLoading = true; 
+    function (event, next, current) { 
+        if(next && next.$$route && next.$$route.restricted){
+          if(!AuthService.logged()){
+            $location.path('/login'); 
+          }
+      }
   });
 });
 
@@ -98,8 +102,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.post('/auth/login', credentials)
           .success(function(response, status){  
-
-                  console.log(response);
                   if(status === 200){
                     //user logged  
                     $rootScope.error    = false;  
@@ -123,34 +125,42 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
               $rootScope.error = true;
               $rootScope.errorMessage = "Serviço indisponivel"; 
             });
-    
           return deferred.promise;
       }; 
 
-      userAuth.logged = function(){
-        var deferred = $q.defer();
-
+      userAuth.logged = function(){ 
+         var deferred = $q.defer(); 
         $http.get('/auth/status')
-        .success(function(user, status){ 
-          
-          console.log(status);
-          if(user){
-            deferred.resolve();
-          } else{
-            deferred.reject();
+        .success(function(response, status){   
+          if(response.logged){
+              deferred.resolve();
           }
         })
-        .error(function() {
-            deferred.reject();
-        });
+        .error(function() {      
+            deferred.reject(); 
+        }); 
 
         return deferred.promise;
       };
 
       userAuth.logout = function(){
-        $rootScope.deleteCookie('usersSession');
+         var deferred = $q.defer(); 
+        $http.get('/auth/logout')
+        .success(function(response, status){  
+          if(response.logout){
+              deferred.resolve();
+          }else{
+            deferred.reject();
+          }
+        })
+        .error(function() {     
+          deferred.reject(); 
+        }); 
 
-      }
+        return deferred.promise;
+
+      };
+ 
  
  
     return userAuth;
@@ -768,24 +778,18 @@ quest.controller('authController',
 
     };
 
-    $rootScope.isUser = function(){
-      AuthService.logged()
-        .then(function () {
-          $rootScope.isLoading = false;
-          return true;
-        })
-          // handle error
-        .catch(function () {
-          $rootScope.error = true;
-          $rootScope.errorMessage = "Nao logado";   
-          return false;
-        })
-    };
-
-
     $rootScope.logout = function(){
-      return AuthService.logout(); 
+      AuthService.logout()
+          .then(function () {
+            $location.path('/login');
+          })
+          // handle error
+          .catch(function () {
+            $rootScope.error = true;
+            $rootScope.errorMessage = "Something went wrong!";   
+          })
     };
+
 
 }]);
 
