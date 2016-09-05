@@ -118,7 +118,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
     };
     var board = [1,2,3,4,5,6];
     var boardData = {
-        "casa1": {
+        "1": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -134,7 +134,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa2": {
+        "2": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -150,7 +150,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa3": {
+        "3": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -166,7 +166,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa4": {
+        "4": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -182,7 +182,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa5": {
+        "5": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -198,7 +198,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa6": {
+        "6": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -214,7 +214,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa7": {
+        "7": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -230,7 +230,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa8": {
+        "8": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -246,7 +246,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa9": {
+        "9": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -262,7 +262,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa10": {
+        "10": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",
@@ -278,7 +278,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           "x": 0,
           "y": 0
         },
-        "casa11": {
+        "11": {
           "question": "O que faz com que células normais se tornem células de câncer?",
           "options": {
               "a": "Aumento da apoptose celula",

@@ -291,8 +291,6 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
-
-        BoardService.getQuestion();
           
         }
 //************************************
@@ -305,35 +303,38 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 //************************************
 //  handle clique na casa
 //************************************
-        function handleMarkClick(cuurent){
+        function handleMarkClick(){
           var house     = this;
           var houseName = house.name;
           var alert     = new createjs.Shape();
           var next      = houseName + 1;
 
-
-          // if(houseName){
-          //   // return loadQuestion(scope.boardData[houseName]);
-          // }else{
-          //   alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-          //   txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
-          //   alert.x = 300;
-          //   alert.y = 300;
-          //   txt.x = 350;
-          //   txt.y = 350;
-          //   alert.on('click',function(event) {
-          //     scope.stage.removeChild(alert, txt);
-          //     moveMarker(next);
-          //   });
-          //   scope.stage.addChild(alert,txt);
-          // }
+         // console.log(scope.boardData[2].isActive);
+if(scope.boardData[houseName]){
+          if(scope.boardData[houseName].isActive){
+            return loadQuestion(scope.boardData[houseName]);
+          }else{
+            alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
+            txt = new createjs.Text("Responda a 1° pergunta para prosseguir!", "22px Arial", "#c00");
+            alert.x = 300;
+            alert.y = 300;
+            txt.x = 350;
+            txt.y = 350;
+            alert.on('click',function(event) {
+              scope.stage.removeChild(alert, txt);
+              moveMarker(next);
+            });
+            scope.stage.addChild(alert,txt);
+          }
         }
-        function moveMarker(index){
-          var house = circle.index;
-          var hx = house.x;
-          var hy = house.y;
-          var mx = marker.x;
-          var my = marker.y;
+
+        }
+        function moveMarker(){
+          // var house = circle.index;
+          // var hx = house.x;
+          // var hy = house.y;
+          // var mx = marker.x;
+          // var my = marker.y;
           // createjs.TweenJS.get(marker).to({x:mx}, 1000).to({x:hx}, 0).call(onAnimationComplete);
         }
         function onAnimationComplete(){
