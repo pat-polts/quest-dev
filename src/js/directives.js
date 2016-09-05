@@ -75,7 +75,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             // console.log(element);
         var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
         drawBoard();
-
+        // var questions = BoardService.getQuestion();  
         function drawBoard(){
           if (scope.stage) {
               scope.stage.autoClear = true;
@@ -139,21 +139,49 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             var y1 = markerStartY;
             var y2 = markerStartY + 40;
             var special = false;
+            var current = 1;
 
-            for (var i = 1; i < 29; i++) { 
+            // console.log(questions);
 
-              if(i < 6){ 
-                 createMarker(1,1,i,special);
+            for (var i = 1; i < 32; i++) { 
 
-              }else if(i > 6 && i < 12){  
-                if(i === 11){
+              if(i < 7){ 
+                 createMarker(current,1,i,special);
+
+              }else if(i > 6 && i < 13){  
+                if(i === 12){
                   special = true;
+                }else{
+                  special = false;
                 }
-                 createMarker(1,2,i,special); 
+                 
+                 createMarker(current,2,i,special); 
                              
-              }else{        
+              }else if(i > 13 && i < 20){
+                special = false;
+                 createMarker(current,3,i,special); 
+                
+              }else if(i > 19 && i < 22){    
+                special = false;
+                 createMarker(current,4,i,special);     
 
-              } 
+              
+              }else if(i > 22 && i < 29){   
+                if(i === 23 || i === 27){
+                  special = true;
+                } else{
+                  special = false;   
+                }
+                 createMarker(current,5,i,special);  
+
+              } else{
+                if(i > 28 && i < 33){
+
+                  special = false; 
+                 createMarker(current,6,i,special); 
+                } 
+
+              }
 
             }
              
@@ -162,35 +190,84 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
         
         }
         function createMarker(current,lines,index,special){
-          var offsetx     = (w / 3) - (56 * 6);
-          var offsety     = Math.round(h / 3) / 6;
+          var offsetx     = (w / 3);
+          var offsety     = Math.round(h / 3);
           var color       = "white";
           var circle      = new createjs.Shape();
           var currentMark = loader.getResult("currentMarker");
           var marker      = new createjs.Shape(); 
 
+          var line1x = Math.round(offsetx) /  6;
+          var line2y = Math.round(offsety) /  6;
+
           if(special) color = "#37d349";  
-          // console.log(scope.activeHouse);
-          // console.log(scope.score);
+
 
           switch(lines){
             case 1:
-              var x = 56 * (index + 1) + 10;
+              var x = Math.round(line1x) * (index);
               var y = 210;
-               // console.log(x);
-              // 
+              
             break;
             case 2:
-            //
-              var x = Math.floor(w / 3) + 3;
+              var x1 = Math.round(line1x) * 6;
+              var x = x1; 
               if(index === 7){
-                var y = 266;
+                var y = offsety;  
               }else{
-                var y = Math.round(offsety) * (index - 1) + 20; 
-              }
+                var y = offsety + ( Math.round(line2y) * (index - 7) ) + index; 
+              } 
+         
             break;
             case 3:
+              var y2 = offsety + ( Math.round(line2y) * 5 ) + 12;
+              var y  = y2;
+              var x1 = (Math.round(line1x) * 6) + 16;
 
+              if(index === 14){
+                  var x =  x1 + (14 * 2);
+              }else{
+                var x3 = x1 + (14 * 2);
+                 var x = x3 + (index * 2) * (index - 14) + index;
+              }
+
+            break;
+            case 4:
+              var x1 = (Math.round(line1x) * 6) + 16;
+                var x3 = x1 + (14 * 2);
+               if(index === 20){
+                  var y =  offsety + ( Math.round(line2y) * (11 - 7) ) + 11;
+               }else{
+                var y =  offsety + ( Math.round(line2y) * (10 - 7) ) + 10;
+               }
+                var x = x3 + (19 * 2) * (19 - 14) + 19;
+ // console.log(y);
+            break;
+            case 5:
+              var y  =  offsety + ( Math.round(line2y) * (10 - 7) ) + 10;
+              var x5 = (Math.round(offsetx * 2)) - 50;
+
+              if(index === 23){
+                var x = x5;
+              }else{
+                var x = x5 + (index * 2) * (index - 23) - 5;
+              }
+ 
+            break;
+            case 6:
+              var x5 = (Math.round(offsetx * 2)) - 50; 
+              var y6 = offsety + ( Math.round(line2y) * (11 - 7) ) + 11;
+             if(index === 29){
+                  var y =  429;
+
+             }else if(index === 30){
+                var y =  459;
+             }else{
+                var y =  489;
+             }
+              
+                var x = x5 + (28 * 2) * (28 - 23) - 5;
+ 
             break;
             default:
             //
@@ -200,10 +277,11 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
           circle.graphics.beginStroke('#9a9c9e').beginFill(color).drawCircle(0, 0, 12);
           circle.x = x;
           circle.y = y;
-          circle.name = "casa"+index; 
+          circle.name = index; 
           circle.on("click", handleMarkClick);
           
           scope.stage.addChild(circle); 
+          
 
 
           if(current === index){
@@ -213,7 +291,8 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
-          
+
+        BoardService.getQuestion();
           
         }
 //************************************
@@ -226,27 +305,39 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 //************************************
 //  handle clique na casa
 //************************************
-        function handleMarkClick(){
+        function handleMarkClick(cuurent){
           var house     = this;
           var houseName = house.name;
           var alert     = new createjs.Shape();
+          var next      = houseName + 1;
 
-          // console.log(scope.boardData[houseName].isActive);
 
-          if(scope.boardData[houseName].isActive){
-            return loadQuestion(scope.boardData[houseName]);
-          }else{
-            alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-            txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
-            alert.x = 300;
-            alert.y = 300;
-            txt.x = 350;
-            txt.y = 350;
-            alert.on('click',function(event) {
-              scope.stage.removeChild(alert, txt);
-            });
-            scope.stage.addChild(alert,txt);
-          }
+          // if(houseName){
+          //   // return loadQuestion(scope.boardData[houseName]);
+          // }else{
+          //   alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
+          //   txt = new createjs.Text("Responda a pergunta para prosseguir!", "22px Arial", "#c00");
+          //   alert.x = 300;
+          //   alert.y = 300;
+          //   txt.x = 350;
+          //   txt.y = 350;
+          //   alert.on('click',function(event) {
+          //     scope.stage.removeChild(alert, txt);
+          //     moveMarker(next);
+          //   });
+          //   scope.stage.addChild(alert,txt);
+          // }
+        }
+        function moveMarker(index){
+          var house = circle.index;
+          var hx = house.x;
+          var hy = house.y;
+          var mx = marker.x;
+          var my = marker.y;
+          // createjs.TweenJS.get(marker).to({x:mx}, 1000).to({x:hx}, 0).call(onAnimationComplete);
+        }
+        function onAnimationComplete(){
+          console.log(this);
         }
         function tick(event){
           scope.stage.update(event);

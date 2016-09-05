@@ -18,8 +18,10 @@ var MemoryStore = session.MemoryStore,
 // var session = require('client-sessions');
 
 //routes
-var userAuth       = require('./routes/authenticate.js');
-var MemStore = session.MemoryStore
+var userAuth = require('./routes/authenticate.js');
+var api      = require('./routes/api.js');
+
+var MemStore = session.MemoryStore;
 
 var port = process.env.PORT || 3000; 
 var hour = 3600000
@@ -57,6 +59,7 @@ app.all('*',function(req, res, next){
 });
 
 app.use('/auth/', userAuth); 
+app.use('/api/', api); 
 
 app.get('/', function(req, res, next) { 
   res.sendFile(path.join(__dirname, 'views/index.html')); 
