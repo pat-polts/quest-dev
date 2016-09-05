@@ -45,7 +45,9 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
       $cookies.remove(key);
       return  $location.path('/login');
     };
- 
+// BoardService.getQuestion();
+console.log($cookies.getObject('udt'));
+
     $rootScope.$watch('isQuestion'); 
 
 }]);
@@ -61,6 +63,7 @@ quest.controller('authController',
     $rootScope.isLoading  = false;
     $rootScope.userActive = null;
     $rootScope.userToken  = false; 
+        console.log($cookies.getAll());
 
     if($rootScope.activePage == "/logout"){
       return $rootScope.logout();
@@ -81,27 +84,19 @@ quest.controller('authController',
       $rootScope.disabled = false; 
       // $rootScope.isLoading = true;
 
-
       if($rootScope.checkFields()){
-        AuthService.login($scope.loginForm.username, $scope.loginForm.password) 
-          .then(function () {
-            $rootScope.isLoading = false;
-            $rootScope.disabled = false;
-            $scope.registerForm = {};  
-            return  $location.path('/');
-          })
-          // handle error
-          .catch(function () {
-            $rootScope.error = true;
-            $rootScope.errorMessage = "Something went wrong!";   
-          })
+
+        AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+        if($cookies.getObject('udt')){
+          $location.path('/');
+        }
 
       }else{
         $rootScope.error = true;
         $rootScope.errorMessage = "Preencha os campos para prosseguir";
       }
 
-    };
+    };  
 
     $rootScope.logout = function(){
       AuthService.logout()

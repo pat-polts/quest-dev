@@ -9,10 +9,10 @@
 quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
-      var user     = null;
-      // var session = req.session;   
-      var userAuth = {};
-      var loginApi = userAuth.api + "Usuarios/Logar";
+      var user     = null; 
+      var userAuth = {}; 
+      var hour     = 3600000
+      var exp      = new Date(Date.now() + hour);
 
       userAuth.api = function(){ 
         $http.get('/api')
@@ -29,51 +29,51 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           // console.log(loginApi);
 
       userAuth.login = function (username, password) {  
-      var deferred = $q.defer();
-      var credentials = {Login: username, Senha: password };
+ 
+        var credentials = {Login: username, Senha: password };
+        var loginApi;
+
         $rootScope.isLoading = true;
+        $http.get('/auth/login')
+        .then(function success(res){ 
+          loginApi = res.data.api;
 
-        $http.post('/auth/login', credentials)
-          .success(function(response, status){  
-                  if(status === 200){
-                    //user logged  
-                    $rootScope.error    = false;  
-                    $location.path('/');
-                    deferred.resolve();
+            $http.post(res.data.api, credentials)
 
-                  }else if(status === 500) {
+              .then(function successCallback(res) {
+                  $rootScope.isLoading = false;
 
-                    $rootScope.error = true; 
-                    $rootScope.errorMessage = "Usuario ou login incorretos";  
-                    deferred.reject();
+                  if(res.status === 200){
 
-                  } else {
-                    $rootScope.error = true;
-                    $rootScope.errorMessage = "Serviço indisponivel";     
-                    deferred.reject(); 
+                    var token = res.data;
+                    var userData = $cookies.get('udt');
+                    $cookies.putObject("udt", token, {secure: true, expires: exp});
+                      
                   }
-                })
-                // handle error
-            .error(function () {
-              $rootScope.error = true;
-              $rootScope.errorMessage = "Serviço indisponivel"; 
-            });
-          return deferred.promise;
+
+                }, function errorCallback(res) {
+                  if(res.status === 500){
+                    console.log("usuario/senha incorreto");
+                  }else{
+                    console.log("erro desconhecido");
+                  }
+                });
+
+        }, function error(res){
+          $rootScope.error = true; 
+          $rootScope.errorMessage = "Erro inesperado!";  
+        });       
+
       }; 
 
       userAuth.logged = function(){ 
-         var deferred = $q.defer(); 
-        $http.get('/auth/status')
-        .success(function(response, status){   
-          if(response.logged){
-              deferred.resolve();
-          }
-        })
-        .error(function() {      
-            deferred.reject(); 
-        }); 
-
-        return deferred.promise;
+        var userData = $cookies.getObject('udt');
+        console.log(userData);
+        if(userData){
+          return true;
+        }else{
+          return false;
+        }
       };
 
       userAuth.logout = function(){
@@ -103,8 +103,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 /*********************
   BoardService
 **********************/
-quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 
-  function($rootScope, $q, $timeout, $http){
+quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookies', 
+  function($rootScope, $q, $timeout, $http,$cookies){
       var deferred = $q.defer();
     var score  = 0;
     var totalHouses = 30;
@@ -297,6 +297,32 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http',
     };
 
     var game   = {};
+console.log($cookies.getObject('udt'));
+    game.getQuestion = function(){ 
+          // $http.get('/api/question')
+          // .then(function successCallback(response) {
+          //     console.log($cookies);
+          //     $http.get(response.api)
+          //       .then(function successCallback(res) {
+          //           $rootScope.isLoading = false;
+
+          //           if(res.status === 200){
+ 
+          //               console.log(res);
+          //           }
+
+          //         }, function errorCallback(res) {
+          //           if(res.status === 500){
+          //             console.log("erro ao pegar questao");
+          //           }else{
+          //             console.log("erro desconhecido");
+          //           }
+          //         });
+
+          //   }, function errorCallback(response) {
+          //     console.log(response);
+          //   });
+    };
 
     game.getGameApi = function(){
       return board;

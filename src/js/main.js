@@ -5,11 +5,8 @@
 var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
 
 
-quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
-
-  // // $cookiesProvider.defaults = {};
-  // $cookiesProvider.defaults.expires = expireDate;
-  // $cookiesProvider.defaults.secure  = true;
+quest.config(function ($routeProvider,$locationProvider) {
+ 
   
   $routeProvider.
    when('/', {
@@ -46,21 +43,26 @@ quest.config(function ($routeProvider,$locationProvider,$cookiesProvider) {
     });
 });
 quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
+        console.log($cookies.getAll());
+
   $rootScope.$on('$routeChangeStart',
     function (event, next, current,$rootScope) {
       // $rootScope.isLoading = true; 
       if(next && next.$$route && next.$$route.restricted){
-          if(!AuthService.logged()){
-            $location.path('/login'); 
-          }
+        // console.log($cookies.get('udt'));
+          // if(!$cookies.get('udt')){
+          //   $location.path('/login'); 
+          // }
       }
   });
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){
-          if(!AuthService.logged()){
-            $location.path('/login'); 
-          }
+        if(next && next.$$route && next.$$route.restricted){ 
+        // console.log($cookies.get('udt'));
+           // console.log($cookies.getObject('udt'));
+          // if(!$cookies.get('udt')){
+          //   $location.path('/login'); 
+          // }
       }
   });
 });
