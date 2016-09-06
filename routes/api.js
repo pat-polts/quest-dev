@@ -47,15 +47,16 @@ router.get('/questions', function(req, res, next) {
 router.get('/user',function(req,res,next){
 
   if(!req.session.token){
+     res.status(500);
     res.end('Sem usuario');
   }
-  var token = req.session.token;
+  var token = req.session.token; 
 
-  var api = process.env.API_USER + token;
-  var env = process.env.API_QUESTION + req.session.token;
+  var api = process.env.API_USER + token; 
 
       httpClient.get(api, function (data, response) {
         if(data){ 
+          // console.log(data);
           res.status(200);
           res.send({
             user: data
@@ -63,9 +64,33 @@ router.get('/user',function(req,res,next){
 
         }else{
           res.status(500);
-            res.send({
-              error: "Não foi possivel obter usuario"
-            }); 
+            res.end("Não foi possivel obter usuario"); 
+        } 
+      });
+
+});
+ 
+router.get('/question/:id',function(req,res,next){
+
+  if(!req.session.token){
+     res.status(500);
+    res.end('Sem usuario');
+  }
+  var token = req.session.token; 
+
+  var api = process.env.API_QUESTION_SINGLE + '/' + req.params.id + '/' + token;
+console.log(api);
+      httpClient.get(api, function (data, response) {
+        if(data){ 
+         console.log(data);
+          res.status(200);
+          res.send({
+            question: data
+          });
+
+        }else{
+          res.status(500);
+            res.end("Não foi possivel obter pergunta"); 
         } 
       });
 

@@ -61,14 +61,15 @@ quest.directive('setQuestion', function($timeout, $window){
 /**************************
   Board
 ***************************/
-quest.directive('board', ['$rootScope','BoardService',  function($rootScope, BoardService){
+quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootScope, $http, BoardService){
     return{
       restrict: 'EAC',
       replace: true,
       scope: {
         score: '=score',
         activeHouse: '=activeHouse',
-        boardData: '=boardData'
+        boardData: '=boardData',
+        userData: '=userData'
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
@@ -134,14 +135,15 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
           board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
           scope.stage.addChild(board); 
           // console.log(seq1);
-            var x1 =  seq1;
-            var x2 =  seq2;
-            var y1 = markerStartY;
-            var y2 = markerStartY + 40;
-            var special = false;
-            var current = 1;
-
-            // console.log(questions);
+            var x1         =  seq1;
+            var x2         =  seq2;
+            var y1         = markerStartY;
+            var y2         = markerStartY + 40;
+            var special    = false;
+            var lastAnswer = scope.userData.userLastAnswer;
+            var current    = 8;
+        
+             
 
             for (var i = 1; i < 32; i++) { 
 
@@ -187,7 +189,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
              
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
-
+            loadQuestion(current);
             // BoardService.getQuestion();
             // console.log(scope.boardData);
         
@@ -283,8 +285,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
           circle.name = index; 
           circle.on("click", handleMarkClick);
           
-          scope.stage.addChild(circle); 
-          
+          scope.stage.addChild(circle);  
 
 
           if(current === index){
@@ -294,16 +295,25 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
-          loadQuestion(current);
           
         }
 //************************************
 //  carrega a pegunta
 //************************************
-        function loadQuestion(q){
+        function loadQuestion(q){ 
+          $http.get('/api/question/'+q)
+            .then(function success(res){ 
+              if(res.data.question){
+                console.log(res.data.question);
+                $rootScope.isQuestion = true;  
+                $rootScope.questionData = res.data.question;  
 
-          $rootScope.isQuestion = true;   
-          $rootScope.$apply();
+              }
+            }, function error(res){ 
+                console.log("erro ao obter pergunta");
+            }); 
+
+            $rootScope.$apply();
         }
 //************************************
 //  handle clique na casa
@@ -324,7 +334,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             if(question[houseName]){
               if(question[houseName].Respondida){
                 //proxima casa
-                return loadNextQuestion(next);
+                return loadQuestion(question[next]);
 
               }else{
                 //carrega pergunta
@@ -338,6 +348,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 //  handle clique na casa errada
 //************************************
         function handleWrongHouse(house){
+          var alert = new createjs.Shape(); 
             alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
             txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
             alert.x = 300;
@@ -383,10 +394,19 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 
 quest.directive('question', ['$rootScope','BoardService',  function($rootScope, BoardService){
   return{
-      templateUrl: '../../views/templates/question.html',
+      templateUrl: '../../views/templates/question_copy.html',
+      scope: {
+        questionData: '=questionData'
+      },
       link: function(scope, element, attribute){
-        scope.question = "teste";
-        scope.alternativas = []; 
+        var question = scope.questionData;
+        console.log(scope.questionData);
+
+        // scope.title    = question.title;
+        // scope.desc     = question.desc;
+        // scope.score    = question.score;
+        // scope.answered = question.answered;
+        // scope.options  = question.options; 
 
         scope.close = function(){
           $rootScope.isQuestion = false;

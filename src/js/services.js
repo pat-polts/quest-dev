@@ -12,9 +12,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
     var userApi = {};
 
     userApi.getUserData = function(){
+      $rootScope.isLoading = true;
         $http.get('/api/user')
         .then(function success(res){ 
             if(res.data.user){
+              $rootScope.isLoading = false;
               var user = res.data.user;
 
               $rootScope.userData.userName       = user.Nome;

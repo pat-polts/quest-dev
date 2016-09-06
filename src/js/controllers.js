@@ -25,6 +25,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false;  
+    $rootScope.questionData = {};
 
 
     $rootScope.userData      = {}; 

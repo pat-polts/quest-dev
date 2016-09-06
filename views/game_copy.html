@@ -6,8 +6,9 @@
 	.profile{
 		position: absolute;
 	    z-index: 103;
-	        height: 150px;
-    width: 50%;
+	    height: 150px;
+    	width: 50%;
+    	bottom: 1%;
 	}
 	.profile > img{
 		float: left;
@@ -26,7 +27,7 @@
 	}
 </style>
 <div ng-if="error" >{{errorMessage}}</div> 
-<question ng-if="isQuestion"></question> 
+<question ng-if="isQuestion" questio-data="questionData"></question> 
 <div ng-if="special">casa especial</div> 
 <div class="profile" ng-model="userData" ng-init="userGetData()">
 	<img src="dist/assets/img-maria-desenho.png">
