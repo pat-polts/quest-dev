@@ -6,7 +6,8 @@
 	.profile{
 		position: absolute;
 	    z-index: 103;
-	    bottom: 1%;
+	        height: 150px;
+    width: 50%;
 	}
 	.profile > img{
 		float: left;
@@ -15,11 +16,13 @@
 	}
 	.profile > p{
 		float: left;
-		width: 80%;
-		font-weight: bold;
-		font-size: 16px; 
-		clear: right;
+	    width: 75%;
+	    font-weight: bold;
+	    font-size: 16px;
+	    clear: right;
 	    color: #ffc80f;
+	    text-align: left;
+	    padding-left: 3%;
 	}
 </style>
 <div ng-if="error" >{{errorMessage}}</div> 
