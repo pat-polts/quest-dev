@@ -14,7 +14,7 @@ var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
 
 if(process.env.REDIS_URL){
-  var cli = require('redis').createClient(process.env.REDIS_URL);
+  var cli = redis.createClient(process.env.REDIS_URL);
 }else{
   var cli = redis.createClient();
 }
@@ -32,10 +32,7 @@ var MemStore = session.MemoryStore;
 var port = process.env.PORT || 3000; 
 var hour = 3600000
 var exp = new Date(Date.now() + hour);
-var sess = {
-  secret: 'Sjhf#@jsduries',
-  cookie: {}
-}
+ 
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));

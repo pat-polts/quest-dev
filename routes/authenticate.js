@@ -78,15 +78,15 @@ router.get('/logout', function(req, res, next){
 router.get('/status', function(req, res, next){ 
  
   var userLog = req.session; 
-// console.log(userLog.token);
   if(userLog.token){  
+    console.log(userLog.token);
     res.status(200);
-   res.send({
-      logged: true
-    });
+     res.send({
+        logged: true
+      });
 
   }else{  
-    res.status(500);
+   res.status(500);
     res.send({
         logged: false
       }); 

@@ -53,19 +53,31 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         $http.get('/auth/status')
           .then(function success(res){ 
             $rootScope.isLoading = false;  
+
              if(res.status === 200){
+
                 deferred.resolve();
+                return deferred.promise;
+
               }else if(res.status === 500){
+
                 deferred.reject();
+                return deferred.promise;
+
               }else{
+
                 deferred.reject();
+                return deferred.promise;
               }
+
             
           }, function error(res){ 
              deferred.reject();
+             return deferred.promise;
           });     
 
           return deferred.promise;
+
       };
 
       userAuth.logout = function(){ 
