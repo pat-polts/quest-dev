@@ -652,18 +652,18 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 //  handle clique na casa errada
 //************************************
         function handleWrongHouse(house){
-          var alert = new createjs.Shape(); 
-            alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-            txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
-            alert.x = 300;
-            alert.y = 300;
-            txt.x   = 350;
-            txt.y   = 350;
-            alert.on('click',function(event) {
-              scope.stage.removeChild(alert, txt);
-              moveMarker(next);
-            });
-            scope.stage.addChild(alert,txt);
+          // var alert = new createjs.Shape(); 
+          //   alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
+          //   txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
+          //   alert.x = 300;
+          //   alert.y = 300;
+          //   txt.x   = 350;
+          //   txt.y   = 350;
+          //   alert.on('click',function(event) {
+          //     scope.stage.removeChild(alert, txt);
+          //     moveMarker(next);
+          //   });
+          //   scope.stage.addChild(alert,txt);
         }
 //************************************
 //  move marcador
