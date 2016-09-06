@@ -36,9 +36,9 @@
 	<div class="profile" ng-init="userGetData()" >
 		<img src="dist/assets/img-maria-desenho.png">
 		<p ng-model="userName">{{userData.userName}}</p>
-		<p>{{userData.userScore}}</p>
+		<p>{{userData.userScore}} pts</p>
 	</div> 
 
-	<board board-data="boardData"></board>
+	<board board-data="boardData" ng-bind="activeHouse"></board>
 
 </div>

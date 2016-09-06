@@ -94,8 +94,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               var user = res.data.user;
 
               $rootScope.userData.userName       = user.Nome;
-              $rootScope.userData.userScore      = user.Pontuacao + 'pts';
-              return userApi.setActiveHouse(user.UltimaPerguntaRespondida); 
+              $rootScope.userData.userScore      = user.Pontuacao; 
 
             }
            
@@ -106,20 +105,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           }
         }); 
     };
-
-    userApi.setActiveHouse = function(data){
-      $rootScope.activeHouse = data; 
-      // $rootScope.$apply();
-      return $rootScope.acttiveHouse;
-    };
-
-    userApi.getActiveHouse = function(){ 
-      return $rootScope.acttiveHouse;
-    };
-
-    $rootScope.$watch('activeHouse', function(){
-      // console.log($rootScope.activeHouse);
-    }); 
+ 
     return userApi;
  
 }]);
@@ -128,7 +114,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null; 
@@ -227,8 +213,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
           'y':0
     };
     var board = [1,2,3,4,5,6];
-    var boardData = {};
-    $rootScope.activeHouse = ApiService.getActiveHouse();
+    var boardData = {}; 
 
     var game   = {}; 
     game.getQuestions = function(){ 
@@ -251,10 +236,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
 
          return boardData;
     };
-
-    game.getActiveHouse = function(){ 
-      return $rootScope.activeHouse;
-    };
+ 
     game.getGameApi = function(){
       return board;
     };
@@ -352,7 +334,7 @@ quest.directive('setQuestion', function($timeout, $window){
 /**************************
   Board
 ***************************/
-quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  function($rootScope, $http, BoardService, ApiService){
+quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  function($rootScope, $http, BoardService, AuthService){
     return{
       restrict: 'EAC',
       replace: true,
@@ -360,11 +342,13 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
         score: '=score',
         boardData: '=boardData'
       },
-      template: '<canvas id="game" width="1024" height="768" set-height ng-model="activeHouse"></canvas>',
+      template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
             // console.log(element);
-        var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
-        drawBoard();
+        var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, loadHouse, question;
+
+        getCurrent();
+        drawBoard(); 
         // var questions = BoardService.getQuestion();  
         function drawBoard(){
           if (scope.stage) {
@@ -374,8 +358,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
           } else {
               scope.stage = new createjs.Stage(element[0]);
           }
-          activeHouse = "";
-          // score       = scope.userData.userScore;
+          // score       = scope.userData.userScore; 
           w           = scope.stage.canvas.width;
           h           = scope.stage.canvas.height;
 
@@ -403,8 +386,34 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
 
           return item
         }
-        function handleComplete(){
 
+        function getCurrent(){   
+          
+          AuthService.logged();
+          $http.get('/api/user')
+            .then(function success(res){ 
+                if(res.status === 200){ 
+
+                  if(res.data.user){
+                   $rootScope.activeHouse = res.data.user.UltimaPerguntaRespondida; 
+                  }
+                } 
+                return $rootScope.activeHouse;
+
+            }, function error(res){ 
+                if(res.status === 500){
+                  console.log("erro inesperado");
+                }
+            });   
+
+          if($rootScope.activeHouse  && $rootScope.activeHouse !== 0 ){
+            loadHouse = $rootScope.activeHouse;
+          }else{
+            loadHouse = 1;
+          }
+          
+        }
+        function handleComplete(){ 
           var imgMarker    = loader.getResult("marker");
           var imgMarkerMask    = loader.getResult("currentMarker");
           var markerStartX = 60;
@@ -428,9 +437,15 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
             var x2         =  seq2;
             var y1         = markerStartY;
             var y2         = markerStartY + 40;
-            var special    = false; 
-            var current    = getCurrent();
-        
+            var special    = false;  
+            var lastResp    = loadHouse;
+            if(lastResp === 1){
+              var current = 1;
+            } else{
+               var current    = lastResp + 1;
+            }
+           
+            console.log(current);
              
 
             for (var i = 1; i < 32; i++) { 
@@ -474,21 +489,13 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
               }
 
             }
-             
+
+           loadQuestion(current);
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
-           createjs.Ticker.addEventListener("tick", tick);
-            loadQuestion(current);
-            // BoardService.getQuestion();
-            // console.log(scope.boardData);
+           createjs.Ticker.addEventListener("tick", tick); 
         
         }
-        function getCurrent(){
-          console.log(BoardService.getActiveHouse());
-          console.log($rootScope.activeHouse);
-          console.log(":: "+ApiService.getActiveHouse());
-          // console.log(activeHouse);
-          return 5;
-        }
+
         function createMarker(current,lines,index,special){
           var offsetx     = (w / 3);
           var offsety     = Math.round(h / 3);
@@ -595,20 +602,21 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
 //************************************
 //  carrega a pegunta
 //************************************
-        function loadQuestion(q){ 
-          $http.get('/api/question/'+q)
-            .then(function success(res){ 
-              if(res.data.question){
-                // console.log(res.data.question);
-                $rootScope.isQuestion = true;  
-                $rootScope.questionData = res.data.question;   
-                // $rootScope.$apply();  
-              }
-            }, function error(res){ 
-                console.log("erro ao obter pergunta");
-            }); 
+        function loadQuestion(q){  
+          if(q){
+            $http.get('/api/question/'+q)
+              .then(function success(res){ 
+                if(res.data.question){
+                  $rootScope.isQuestion = true;  
+                  $rootScope.questionData = res.data.question;  
+                }
+              }, function error(res){ 
+                  console.log("erro ao obter pergunta");
+              }); 
+          }
 
-            // 
+        }
+        function getUserObj(){
         }
 //************************************
 //  handle clique na casa
@@ -659,13 +667,13 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
 //************************************
 //  move marcador
 //************************************
-        function moveMarker(){
-          // var house = circle.index;
-          // var hx = house.x;
-          // var hy = house.y;
-          // var mx = marker.x;
-          // var my = marker.y;
-          // createjs.TweenJS.get(marker).to({x:mx}, 1000).to({x:hx}, 0).call(onAnimationComplete);
+        function moveMarker(q){
+         return loadQuestion(q);
+        }
+
+        $rootScope.nextQuestion = function(q){
+          return loadQuestion(q);
+
         }
 
 //************************************
@@ -687,31 +695,87 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  f
 }]);
 
 
-quest.directive('question', ['$rootScope','BoardService',  function($rootScope, BoardService){
+quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($rootScope, $http,BoardService){
   return{
       templateUrl: '../../views/templates/question_copy.html',
       scope: {
         questionData: '=questionData'
       },
       link: function(scope, element, attribute){
-        var question = scope.questionData;
-        console.log(question);
-        scope.id     = question.Numero;
-        scope.title    = question.Titulo;
-        scope.desc     = question.Descricao;
-        scope.score    = question.ValorPontuacao;
-        scope.answered = question.Respondida;
-        scope.options  = question.Alternativas; 
-        scope.correct  = question.ValorAlternativaCorreta; 
+        var question = scope.questionData; 
+        var escolha = null;
+        if(question){
+
+          scope.id     = question.Numero;
+          scope.title    = question.Titulo;
+          scope.desc     = question.Descricao;
+          scope.score    = question.ValorPontuacao;
+          scope.answered = question.Respondida;
+          scope.options  = question.Alternativas; 
+          scope.correct  = question.ValorAlternativaCorreta; 
+        }
+          scope.choose = false;
 
         scope.selectOption = function(){
-          var resposta = this;
-          var valor = element;
-          console.log(element.$$hashKey);
+          var el       = this; 
+          escolha  = el.alt.Valor;
+          var resposta = el.$index; 
+
+          if(escolha === scope.correct){
+            //yep acertou!
+            $rootScope.activeScore = scope.score;
+            $rootScope.userData.userScore +=  parseInt($rootScope.activeScore);
+            console.log("yep");
+            console.log("Acertou, mais "+scope.score+" pontos");
+          } else{
+            console.log("ounch");
+            console.log("reposta certa seria: "+scope.correct);
+          }
           scope.answered = true;
+          $rootScope.activeHouse = scope.id;
+
+          $http.post('/api/question', {numero: scope.id, valor: escolha}, 
+            function success(res) {
+              if(res.status === 200){
+                console.log("ok, move next");
+              }            
+          }, function error(res){
+
+              if(res.status === 500){
+                console.log("erro ao gravar a pergunta");
+              }     
+
+          });
+
+          // console.log(el); 
         }
-        scope.close = function(){
+
+        function loadQuestion(q){  
+          if(q){
+            console.log(q);
+            console.log($rootScope.userData.userScore);
+            $rootScope.isLoading = true;
+            $http.get('/api/question/'+q)
+              .then(function success(res){ 
+                $rootScope.isLoading = false;
+                if(res.data.question){
+                  $rootScope.isQuestion = true;  
+                  $rootScope.questionData = res.data.question;  
+                }
+              }, function error(res){ 
+                  console.log("erro ao obter pergunta");
+              }); 
+          }
+
+        }
+        scope.choose = function(){
+          if(!escolha){
+            console.log("responda a pergunta");
+          }
+          var next = parseInt($rootScope.activeHouse) + 1;
+          console.log(next);
           $rootScope.isQuestion = false;
+          return loadQuestion(next);
         }
       }
 
@@ -740,11 +804,12 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.score        = BoardService.getScore();
     $rootScope.boardData    = BoardService.getQuestions();
 
-    $rootScope.activeHouse = ApiService.getActiveHouse();
+    $rootScope.activeHouse = false;
+    $rootScope.activeScore = false;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion = false;  
-    $rootScope.questionData = {};
+    $rootScope.isQuestion    = false;  
+    $rootScope.questionData  = {};
 
 
     $rootScope.userData      = {}; 
@@ -757,10 +822,15 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
       $location.path(route);
     };
  
-    $rootScope.$watch('activeHouse', function(){
-      // console.log($rootScope.activeHouse);
+    $rootScope.$watch('activeScore', function(value){
+        // console.log("has changed to: "+ value);
+        return $rootScope.activeScore;
+    }); 
+    $rootScope.$watch('activeHouse', function(value){
+      return $rootScope.activeHouse;
     }); 
     $rootScope.$watch('isQuestion'); 
+    $rootScope.$watch('userData'); 
 
 }]);
 

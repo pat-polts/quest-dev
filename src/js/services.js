@@ -20,8 +20,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               var user = res.data.user;
 
               $rootScope.userData.userName       = user.Nome;
-              $rootScope.userData.userScore      = user.Pontuacao + 'pts';
-              return userApi.setActiveHouse(user.UltimaPerguntaRespondida); 
+              $rootScope.userData.userScore      = user.Pontuacao; 
 
             }
            
@@ -32,20 +31,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           }
         }); 
     };
-
-    userApi.setActiveHouse = function(data){
-      $rootScope.activeHouse = data; 
-      // $rootScope.$apply();
-      return $rootScope.acttiveHouse;
-    };
-
-    userApi.getActiveHouse = function(){ 
-      return $rootScope.acttiveHouse;
-    };
-
-    $rootScope.$watch('activeHouse', function(){
-      // console.log($rootScope.activeHouse);
-    }); 
+ 
     return userApi;
  
 }]);
@@ -54,7 +40,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null; 
@@ -153,8 +139,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
           'y':0
     };
     var board = [1,2,3,4,5,6];
-    var boardData = {};
-    $rootScope.activeHouse = ApiService.getActiveHouse();
+    var boardData = {}; 
 
     var game   = {}; 
     game.getQuestions = function(){ 
@@ -177,10 +162,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
 
          return boardData;
     };
-
-    game.getActiveHouse = function(){ 
-      return $rootScope.activeHouse;
-    };
+ 
     game.getGameApi = function(){
       return board;
     };
