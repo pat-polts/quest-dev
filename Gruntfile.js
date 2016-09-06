@@ -10,14 +10,14 @@ module.exports = function(grunt) {
 
 //---> Uglify: genarate javascript minified
     uglify: {
-      options: {
+      options: { 
         banner: '/*\n <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> \n*/\n'
       },
       build: {
         files: {
           'dist/js/global.min.js': 'dist/js/global.js'
         }
-      }
+      },
     },
 
 //---> Less: compiles less file to css
@@ -67,7 +67,7 @@ module.exports = function(grunt) {
       files: ['src/styles/**/*.less','src/styles/stylesheet.less', 'src/styles/stylesheet.css'], 
       tasks: ['less','cssmin'],
       scripts: { 
-        files: ['src/**/*.js', 'dist/js/global.js'], tasks: ['concat','wiredep'] 
+        files: ['src/**/*.js', 'dist/js/global.js'], tasks: ['concat'] 
       } 
     }
 
@@ -85,6 +85,6 @@ module.exports = function(grunt) {
   // grunt.registerTask('watch', ['watch']);
 
 //---> Set wich tasks grunt should load when grunt is called  
-  grunt.registerTask('default', ['cssmin', 'less', 'wiredep','concat']);
+  grunt.registerTask('default', ['cssmin', 'less','concat']);
 
 };

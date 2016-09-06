@@ -431,7 +431,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           //tabuleiro
           board = new createjs.Shape();
           var imgBoard = loader.getResult("board");
-          board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0);
+          board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, w, h);
           scope.stage.addChild(board); 
           // console.log(seq1);
             var x1         =  seq1;
