@@ -46,16 +46,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(session({ 
-  store: new redisStore({host: process.env.host, port: 6379, client: cli, ttl: 260}),
-  secret: process.env.APP_SECRET,
-  name: 'quest_dev',
+  store: new redisStore({ client: cli}),
+  secret: process.env.APP_SECRET, 
   httpOnly: true,
   resave: true,
   saveUninitialized: true
 })); 
 
 app.all('*',function(req, res, next){ 
-  res.header("Access-Control-Allow-Origin", process.env.HOST);
+  res.header("Access-Control-Allow-Origin", "localhost");
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Credentials", "true");
