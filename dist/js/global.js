@@ -19,8 +19,13 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: false
     })
     .when('/logout', {
-      controller: 'authController.logout()',
-      restricted: true
+      controller: 'authController',
+      restricted: true,
+      resolve: {
+        load: function($rootScope, AuthService){
+          return AuthService.logout();
+        }
+      }
       
     })
     .when('/register', {
@@ -49,21 +54,22 @@ quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthServic
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
       if(next && next.$$route && next.$$route.restricted){  
-        // console.log(AuthService.logged());
           if(!AuthService.logged()){
+          event.preventDefault(); 
             $location.path('/login'); 
            } 
       }
   });
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){
-         // console.log(AuthService.logged());          
+        if(next && next.$$route && next.$$route.restricted){       
           if(!AuthService.logged()){
-            $location.path('/login'); 
+          event.preventDefault(); 
+             $location.path('/login'); 
            } 
       }
   });
+ 
 });
 
 //================================================
@@ -117,48 +123,36 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       }; 
 
      userAuth.logged = function(){ 
+
         var deferred = $q.defer();
+
         $http.get('/auth/status')
-          .then(function success(res){ 
-            $rootScope.isLoading = false;  
-
-             if(res.status === 200){
-
-                deferred.resolve();
-                return deferred.promise;
-
-              }else if(res.status === 500){
-
-                deferred.reject();
-                return deferred.promise;
-
-              }else{
-
-                deferred.reject();
-                return deferred.promise;
-              }
-
-            
-          }, function error(res){ 
-             deferred.reject();
-             return deferred.promise;
-          });     
+          
+        .success(function(res){ 
+          deferred.resolve();
+        })
+        .error(function() {
+          $rootScope.error = true; 
+          $rootScope.errorMessage = "Efetue login";   
+          deferred.reject();
+          return $location.path('/login');
+        }); 
 
           return deferred.promise;
 
       };
 
       userAuth.logout = function(){ 
-        // $http.get('/auth/logout')
-        //   .then(function success(res){ 
-        //     $rootScope.isLoading = false;  
-        //     if(!res.data.logged){
+        $http.get('/auth/logout')
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+            if(!res.data.logged){
 
-        //       return $location.path('/login');
-        //     }
-        //   }, function error(res){  
-        //      console.log("erro ao deslogar");
-        //   });      
+              return $location.path('/login');
+            }
+          }, function error(res){  
+             console.log("erro ao deslogar");
+          });      
 
       };
  
@@ -842,9 +836,7 @@ quest.controller('authController',
 
     $rootScope.isLoading  = false;
     $rootScope.userActive = null; 
-    if($rootScope.activePage == "/logout"){
-      return $rootScope.logout();
-    }
+ 
 
     $rootScope.checkFields = function(){
       if($scope.loginForm.username && $scope.loginForm.password){
@@ -872,10 +864,6 @@ quest.controller('authController',
 
     };  
 
-    $rootScope.logout = function(){
-      console.log("x");
-      return AuthService.logout();
-    };
 
     $rootScope.logged = function(){
       AuthService.logged();

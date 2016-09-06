@@ -5,7 +5,7 @@ var session    = require('express-session');
 var bodyparser = require('body-parser');  
 var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
-var redisStore   = require('connect-redis')(session);
+var redisStore = require('connect-redis')(session);
 
 
 
@@ -78,8 +78,7 @@ router.get('/logout', function(req, res, next){
 router.get('/status', function(req, res, next){ 
  
   var userLog = req.session; 
-  if(userLog.token){  
-    console.log(userLog.token);
+  if(userLog.token){   
     res.status(200);
      res.send({
         logged: true

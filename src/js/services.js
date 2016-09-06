@@ -49,48 +49,36 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       }; 
 
      userAuth.logged = function(){ 
+
         var deferred = $q.defer();
+
         $http.get('/auth/status')
-          .then(function success(res){ 
-            $rootScope.isLoading = false;  
-
-             if(res.status === 200){
-
-                deferred.resolve();
-                return deferred.promise;
-
-              }else if(res.status === 500){
-
-                deferred.reject();
-                return deferred.promise;
-
-              }else{
-
-                deferred.reject();
-                return deferred.promise;
-              }
-
-            
-          }, function error(res){ 
-             deferred.reject();
-             return deferred.promise;
-          });     
+          
+        .success(function(res){ 
+          deferred.resolve();
+        })
+        .error(function() {
+          $rootScope.error = true; 
+          $rootScope.errorMessage = "Efetue login";   
+          deferred.reject();
+          return $location.path('/login');
+        }); 
 
           return deferred.promise;
 
       };
 
       userAuth.logout = function(){ 
-        // $http.get('/auth/logout')
-        //   .then(function success(res){ 
-        //     $rootScope.isLoading = false;  
-        //     if(!res.data.logged){
+        $http.get('/auth/logout')
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+            if(!res.data.logged){
 
-        //       return $location.path('/login');
-        //     }
-        //   }, function error(res){  
-        //      console.log("erro ao deslogar");
-        //   });      
+              return $location.path('/login');
+            }
+          }, function error(res){  
+             console.log("erro ao deslogar");
+          });      
 
       };
  

@@ -48,9 +48,7 @@ quest.controller('authController',
 
     $rootScope.isLoading  = false;
     $rootScope.userActive = null; 
-    if($rootScope.activePage == "/logout"){
-      return $rootScope.logout();
-    }
+ 
 
     $rootScope.checkFields = function(){
       if($scope.loginForm.username && $scope.loginForm.password){
@@ -78,10 +76,6 @@ quest.controller('authController',
 
     };  
 
-    $rootScope.logout = function(){
-      console.log("x");
-      return AuthService.logout();
-    };
 
     $rootScope.logged = function(){
       AuthService.logged();

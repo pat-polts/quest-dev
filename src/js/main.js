@@ -19,8 +19,13 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: false
     })
     .when('/logout', {
-      controller: 'authController.logout()',
-      restricted: true
+      controller: 'authController',
+      restricted: true,
+      resolve: {
+        load: function($rootScope, AuthService){
+          return AuthService.logout();
+        }
+      }
       
     })
     .when('/register', {
@@ -49,19 +54,20 @@ quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthServic
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
       if(next && next.$$route && next.$$route.restricted){  
-        // console.log(AuthService.logged());
           if(!AuthService.logged()){
+          event.preventDefault(); 
             $location.path('/login'); 
            } 
       }
   });
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){
-         // console.log(AuthService.logged());          
+        if(next && next.$$route && next.$$route.restricted){       
           if(!AuthService.logged()){
-            $location.path('/login'); 
+          event.preventDefault(); 
+             $location.path('/login'); 
            } 
       }
   });
+ 
 });
