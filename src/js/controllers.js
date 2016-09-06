@@ -7,8 +7,8 @@
   Main
 ************************/
 
-quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService',
-  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService) {
+quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService', 'ApiService',
+  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService, ApiService) {
 
     $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
@@ -19,21 +19,24 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.currentScore = null;
     $rootScope.levels       = [];
     $rootScope.score        = BoardService.getScore();
-    $rootScope.boardData    = BoardService.getBoardData();
+    $rootScope.boardData    = BoardService.getQuestions();
 
     $rootScope.activeHouse   = 0;
-    $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false;  
 
+
+    $rootScope.userData      = {}; 
+
+    $rootScope.userGetData = function(){
+      ApiService.getUserData();
+    };
+
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
  
-
-
     $rootScope.$watch('isQuestion'); 
 
 }]);

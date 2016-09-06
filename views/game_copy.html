@@ -1,0 +1,33 @@
+<!-- # Tela Login  --> 
+<style type="text/css">
+.pergunta{
+	z-index: 104;
+}
+	.profile{
+		position: absolute;
+	    z-index: 103;
+	    bottom: 1%;
+	}
+	.profile > img{
+		float: left;
+		width: 8em;
+		height: 8em;
+	}
+	.profile > p{
+		float: left;
+		width: 80%;
+		font-weight: bold;
+		font-size: 16px; 
+		clear: right;
+	    color: #ffc80f;
+	}
+</style>
+<div ng-if="error" >{{errorMessage}}</div> 
+<question ng-if="isQuestion"></question> 
+<div ng-if="special">casa especial</div> 
+<div class="profile" ng-model="userData" ng-init="userGetData()">
+	<img src="dist/assets/img-maria-desenho.png">
+	<p>{{userData.userName}}</p>
+	<p>{{userData.userScore}}</p>
+</div> 
+<board score="score" active-house="activeHouse" answer="answer" correct-answer="correctAnswer" board-data="boardData" user-data="userData"></board>

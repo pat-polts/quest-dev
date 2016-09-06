@@ -7,11 +7,6 @@ var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
 var redisStore = require('connect-redis')(session);
 
-
-
-var MemoryStore = session.MemoryStore,
-    sessionStore = new MemoryStore();
-
 router.get('/api/login', function(req, res) {
     var env = process.env.API_END_POINT;
     res.status(200).json.Stringfy({

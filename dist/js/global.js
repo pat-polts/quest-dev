@@ -42,7 +42,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     })
     .when('/game', {
-      templateUrl: '../../views/game.html',
+      templateUrl: '../../views/game_copy.html',
       restricted: true
     }) 
     .otherwise({
@@ -75,6 +75,42 @@ quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthServic
 //================================================
 //# App Factories
 //================================================
+
+/*********************
+  UserService
+**********************/
+
+quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location', 'AuthService',
+  function ($rootScope, $q, $timeout, $http, $location,AuthService) {
+
+    var userApi = {};
+
+    userApi.getUserData = function(){
+        $http.get('/api/user')
+        .then(function success(res){ 
+            if(res.data.user){
+              var user = res.data.user;
+
+              $rootScope.userData.userName       = user.Nome;
+              $rootScope.userData.userScore      = user.Pontuacao + 'pts';
+              $rootScope.userData.userLastAnswer = user.UltimaPerguntaRespondida; 
+
+              // $rootScope.$apply();
+
+            }
+           
+        }, function error(res){
+          if(res.data.error){
+            $rootScope.error = true; 
+            $rootScope.errorMessage = res.data.error;  
+          }
+        }); 
+    };
+
+    return userApi;
+
+
+}]);
 
 /*********************
   AuthService
@@ -179,210 +215,28 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           'y':0
     };
     var board = [1,2,3,4,5,6];
-    var boardData = {
-        "1": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": true,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "2": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "3": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "4": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "5": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "6": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "7": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "8": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "9": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "10": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "11": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        }
-    };
+    var boardData = {};
 
     var game   = {}; 
-    game.getQuestion = function(){ 
-          // $http.get('/api/question')
-          // .then(function successCallback(response) {
-          //     console.log($cookies);
-          //     $http.get(response.api)
-          //       .then(function successCallback(res) {
-          //           $rootScope.isLoading = false;
+    game.getQuestions = function(){ 
+       $http.get('/api/questions')
+         .then(function successCallback(res) {
+            $rootScope.isLoading = false;
 
-          //           if(res.status === 200){
+             if(res.status === 200){
  
-          //               console.log(res);
-          //           }
+                boardData.questions = res.data;
+             }
 
-          //         }, function errorCallback(res) {
-          //           if(res.status === 500){
-          //             console.log("erro ao pegar questao");
-          //           }else{
-          //             console.log("erro desconhecido");
-          //           }
-          //         });
+         }, function errorCallback(res) {
+            if(res.status === 500){
+                console.log("erro ao pegar questao");
+             }else{
+                console.log("erro desconhecido");
+             }
+         });
 
-          //   }, function errorCallback(response) {
-          //     console.log(response);
-          //   });
+         return boardData;
     };
 
     game.getGameApi = function(){
@@ -608,6 +462,9 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
              
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
+
+            // BoardService.getQuestion();
+            // console.log(scope.boardData);
         
         }
         function createMarker(current,lines,index,special){
@@ -719,6 +576,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 //  carrega a pegunta
 //************************************
         function loadQuestion(q){
+
           $rootScope.isQuestion = true;   
           $rootScope.$apply();
         }
@@ -730,27 +588,46 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
           var houseName = house.name;
           var alert     = new createjs.Shape();
           var next      = houseName + 1;
+          var prev      = houseName - 1;
+          var question  = scope.boardData.questions.data;
 
-         // console.log(scope.boardData[2].isActive);
-if(scope.boardData[houseName]){
-          if(scope.boardData[houseName].isActive){
-            return loadQuestion(scope.boardData[houseName]);
-          }else{
+          if(prev !==0 && !question[prev].Respondida){
+            //Ops pulando casas
+            return handleWrongHouse(prev);
+          }
+
+            if(question[houseName]){
+              if(question[houseName].Respondida){
+                //proxima casa
+                return loadNextQuestion(next);
+
+              }else{
+                //carrega pergunta
+                return loadQuestion(question[houseName]);
+
+              }
+            }
+
+        }
+//************************************
+//  handle clique na casa errada
+//************************************
+        function handleWrongHouse(house){
             alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-            txt = new createjs.Text("Responda a 1° pergunta para prosseguir!", "22px Arial", "#c00");
+            txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
             alert.x = 300;
             alert.y = 300;
-            txt.x = 350;
-            txt.y = 350;
+            txt.x   = 350;
+            txt.y   = 350;
             alert.on('click',function(event) {
               scope.stage.removeChild(alert, txt);
               moveMarker(next);
             });
             scope.stage.addChild(alert,txt);
-          }
         }
-
-        }
+//************************************
+//  move marcador
+//************************************
         function moveMarker(){
           // var house = circle.index;
           // var hx = house.x;
@@ -758,6 +635,13 @@ if(scope.boardData[houseName]){
           // var mx = marker.x;
           // var my = marker.y;
           // createjs.TweenJS.get(marker).to({x:mx}, 1000).to({x:hx}, 0).call(onAnimationComplete);
+        }
+
+//************************************
+//  carrega info usuario
+//************************************
+        function loadProfile(){
+
         }
         function onAnimationComplete(){
           console.log(this);
@@ -795,8 +679,8 @@ quest.directive('question', ['$rootScope','BoardService',  function($rootScope, 
   Main
 ************************/
 
-quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService',
-  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService) {
+quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService', 'ApiService',
+  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService, ApiService) {
 
     $rootScope.isLoading = false;
     $rootScope.activePage   = $location.path(); 
@@ -807,21 +691,24 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.currentScore = null;
     $rootScope.levels       = [];
     $rootScope.score        = BoardService.getScore();
-    $rootScope.boardData    = BoardService.getBoardData();
+    $rootScope.boardData    = BoardService.getQuestions();
 
     $rootScope.activeHouse   = 0;
-    $rootScope.score         = 0;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false;  
 
+
+    $rootScope.userData      = {}; 
+
+    $rootScope.userGetData = function(){
+      ApiService.getUserData();
+    };
+
     $rootScope.go = function (route) {
       $location.path(route);
     };
-
  
-
-
     $rootScope.$watch('isQuestion'); 
 
 }]);

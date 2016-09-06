@@ -187,6 +187,9 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
              
            createjs.Ticker.timingMode = createjs.Ticker.RAF;
            createjs.Ticker.addEventListener("tick", tick);
+
+            // BoardService.getQuestion();
+            // console.log(scope.boardData);
         
         }
         function createMarker(current,lines,index,special){
@@ -298,6 +301,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
 //  carrega a pegunta
 //************************************
         function loadQuestion(q){
+
           $rootScope.isQuestion = true;   
           $rootScope.$apply();
         }
@@ -309,27 +313,46 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
           var houseName = house.name;
           var alert     = new createjs.Shape();
           var next      = houseName + 1;
+          var prev      = houseName - 1;
+          var question  = scope.boardData.questions.data;
 
-         // console.log(scope.boardData[2].isActive);
-if(scope.boardData[houseName]){
-          if(scope.boardData[houseName].isActive){
-            return loadQuestion(scope.boardData[houseName]);
-          }else{
+          if(prev !==0 && !question[prev].Respondida){
+            //Ops pulando casas
+            return handleWrongHouse(prev);
+          }
+
+            if(question[houseName]){
+              if(question[houseName].Respondida){
+                //proxima casa
+                return loadNextQuestion(next);
+
+              }else{
+                //carrega pergunta
+                return loadQuestion(question[houseName]);
+
+              }
+            }
+
+        }
+//************************************
+//  handle clique na casa errada
+//************************************
+        function handleWrongHouse(house){
             alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-            txt = new createjs.Text("Responda a 1° pergunta para prosseguir!", "22px Arial", "#c00");
+            txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
             alert.x = 300;
             alert.y = 300;
-            txt.x = 350;
-            txt.y = 350;
+            txt.x   = 350;
+            txt.y   = 350;
             alert.on('click',function(event) {
               scope.stage.removeChild(alert, txt);
               moveMarker(next);
             });
             scope.stage.addChild(alert,txt);
-          }
         }
-
-        }
+//************************************
+//  move marcador
+//************************************
         function moveMarker(){
           // var house = circle.index;
           // var hx = house.x;
@@ -337,6 +360,13 @@ if(scope.boardData[houseName]){
           // var mx = marker.x;
           // var my = marker.y;
           // createjs.TweenJS.get(marker).to({x:mx}, 1000).to({x:hx}, 0).call(onAnimationComplete);
+        }
+
+//************************************
+//  carrega info usuario
+//************************************
+        function loadProfile(){
+
         }
         function onAnimationComplete(){
           console.log(this);

@@ -19,26 +19,56 @@ router.get('/login', function(req, res) {
 });
 
 router.get('/questions', function(req, res, next) {
-// console.log(res.cookie);
-    var env = process.env.API_QUESTION + req.session.token;
-    httpClient.post(env, function (data, response) {
-      if(data){
-        
-         res.status(200);
-         
-        res.send(json.Stringfy({
-          api: env
-        }));
 
-      }else{
-        res.status(500);
+  if(req.session.token){
+
+      var env = process.env.API_QUESTION + req.session.token;
+
+      httpClient.get(env, function (data, response) {
+        if(data){
+          // console.log(data);
+          res.status(200);
           res.send({
-            logged: false
-          }); 
-      } 
-    });
+            data
+          });
+
+        }else{
+          res.status(500);
+            res.send({
+              error: "Não foi possivel carregar as questoes"
+            }); 
+        } 
+      });
+
+  }
 
 });
  
+router.get('/user',function(req,res,next){
+
+  if(!req.session.token){
+    res.end('Sem usuario');
+  }
+  var token = req.session.token;
+
+  var api = process.env.API_USER + token;
+  var env = process.env.API_QUESTION + req.session.token;
+
+      httpClient.get(api, function (data, response) {
+        if(data){ 
+          res.status(200);
+          res.send({
+            user: data
+          });
+
+        }else{
+          res.status(500);
+            res.send({
+              error: "Não foi possivel obter usuario"
+            }); 
+        } 
+      });
+
+});
 
 module.exports = router;

@@ -42,7 +42,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     })
     .when('/game', {
-      templateUrl: '../../views/game.html',
+      templateUrl: '../../views/game_copy.html',
       restricted: true
     }) 
     .otherwise({

@@ -3,6 +3,42 @@
 //================================================
 
 /*********************
+  UserService
+**********************/
+
+quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location', 'AuthService',
+  function ($rootScope, $q, $timeout, $http, $location,AuthService) {
+
+    var userApi = {};
+
+    userApi.getUserData = function(){
+        $http.get('/api/user')
+        .then(function success(res){ 
+            if(res.data.user){
+              var user = res.data.user;
+
+              $rootScope.userData.userName       = user.Nome;
+              $rootScope.userData.userScore      = user.Pontuacao + 'pts';
+              $rootScope.userData.userLastAnswer = user.UltimaPerguntaRespondida; 
+
+              // $rootScope.$apply();
+
+            }
+           
+        }, function error(res){
+          if(res.data.error){
+            $rootScope.error = true; 
+            $rootScope.errorMessage = res.data.error;  
+          }
+        }); 
+    };
+
+    return userApi;
+
+
+}]);
+
+/*********************
   AuthService
 **********************/
 
@@ -105,210 +141,28 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
           'y':0
     };
     var board = [1,2,3,4,5,6];
-    var boardData = {
-        "1": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": true,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "2": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "3": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "4": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "5": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "6": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "7": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "8": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "9": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "10": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        },
-        "11": {
-          "question": "O que faz com que células normais se tornem células de câncer?",
-          "options": {
-              "a": "Aumento da apoptose celula",
-              "b": "Mutações em células tronco normais ou células progenitoras",
-              "c": "Rapidez incontrolada na divisão celular",
-              "d": "Envelhecimento celular",
-          },
-          "correctAnswer": "b",
-          "answer": "",
-          "isActive": false,
-          "score": 10,
-          "special": false, 
-          "x": 0,
-          "y": 0
-        }
-    };
+    var boardData = {};
 
     var game   = {}; 
-    game.getQuestion = function(){ 
-          // $http.get('/api/question')
-          // .then(function successCallback(response) {
-          //     console.log($cookies);
-          //     $http.get(response.api)
-          //       .then(function successCallback(res) {
-          //           $rootScope.isLoading = false;
+    game.getQuestions = function(){ 
+       $http.get('/api/questions')
+         .then(function successCallback(res) {
+            $rootScope.isLoading = false;
 
-          //           if(res.status === 200){
+             if(res.status === 200){
  
-          //               console.log(res);
-          //           }
+                boardData.questions = res.data;
+             }
 
-          //         }, function errorCallback(res) {
-          //           if(res.status === 500){
-          //             console.log("erro ao pegar questao");
-          //           }else{
-          //             console.log("erro desconhecido");
-          //           }
-          //         });
+         }, function errorCallback(res) {
+            if(res.status === 500){
+                console.log("erro ao pegar questao");
+             }else{
+                console.log("erro desconhecido");
+             }
+         });
 
-          //   }, function errorCallback(response) {
-          //     console.log(response);
-          //   });
+         return boardData;
     };
 
     game.getGameApi = function(){
