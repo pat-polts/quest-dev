@@ -21,9 +21,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
               $rootScope.userData.userName       = user.Nome;
               $rootScope.userData.userScore      = user.Pontuacao + 'pts';
-              $rootScope.userData.userLastAnswer = user.UltimaPerguntaRespondida; 
-
-              return $rootScope.userData;
+              return userApi.setActiveHouse(user.UltimaPerguntaRespondida); 
 
             }
            
@@ -35,9 +33,21 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
         }); 
     };
 
+    userApi.setActiveHouse = function(data){
+      $rootScope.activeHouse = data; 
+      // $rootScope.$apply();
+      return $rootScope.acttiveHouse;
+    };
+
+    userApi.getActiveHouse = function(){ 
+      return $rootScope.acttiveHouse;
+    };
+
+    $rootScope.$watch('activeHouse', function(){
+      // console.log($rootScope.activeHouse);
+    }); 
     return userApi;
-
-
+ 
 }]);
 
 /*********************
@@ -129,8 +139,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 /*********************
   BoardService
 **********************/
-quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookies', 
-  function($rootScope, $q, $timeout, $http,$cookies){
+quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiService', 
+  function($rootScope, $q, $timeout, $http, ApiService){
       var deferred = $q.defer();
     var score  = 0;
     var totalHouses = 30;
@@ -144,6 +154,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
     };
     var board = [1,2,3,4,5,6];
     var boardData = {};
+    $rootScope.activeHouse = ApiService.getActiveHouse();
 
     var game   = {}; 
     game.getQuestions = function(){ 
@@ -167,6 +178,9 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
          return boardData;
     };
 
+    game.getActiveHouse = function(){ 
+      return $rootScope.activeHouse;
+    };
     game.getGameApi = function(){
       return board;
     };

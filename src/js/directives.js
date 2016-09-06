@@ -61,18 +61,15 @@ quest.directive('setQuestion', function($timeout, $window){
 /**************************
   Board
 ***************************/
-quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootScope, $http, BoardService){
+quest.directive('board', ['$rootScope','$http', 'BoardService', 'ApiService',  function($rootScope, $http, BoardService, ApiService){
     return{
       restrict: 'EAC',
       replace: true,
       scope: {
         score: '=score',
-        activeHouse: '=activeHouse',
-        boardData: '=boardData',
-        userData: '=userData',
-        lastAnswer: '=lastAnswer'
+        boardData: '=boardData'
       },
-      template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
+      template: '<canvas id="game" width="1024" height="768" set-height ng-model="activeHouse"></canvas>',
       link: function(scope, element, attribute){
             // console.log(element);
         var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, activeHouse, question;
@@ -86,8 +83,8 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
           } else {
               scope.stage = new createjs.Stage(element[0]);
           }
-          activeHouse = scope.activeHouse;
-          score       = scope.score;
+          activeHouse = "";
+          // score       = scope.userData.userScore;
           w           = scope.stage.canvas.width;
           h           = scope.stage.canvas.height;
 
@@ -195,8 +192,11 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
         
         }
         function getCurrent(){
-          console.log(scope.lastAnswer);
-          return 8;
+          console.log(BoardService.getActiveHouse());
+          console.log($rootScope.activeHouse);
+          console.log(":: "+ApiService.getActiveHouse());
+          // console.log(activeHouse);
+          return 5;
         }
         function createMarker(current,lines,index,special){
           var offsetx     = (w / 3);
@@ -310,14 +310,14 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
               if(res.data.question){
                 // console.log(res.data.question);
                 $rootScope.isQuestion = true;  
-                $rootScope.questionData = res.data.question;  
+                $rootScope.questionData = res.data.question;   
                 // $rootScope.$apply();  
               }
             }, function error(res){ 
                 console.log("erro ao obter pergunta");
             }); 
 
-            $rootScope.$apply();
+            // 
         }
 //************************************
 //  handle clique na casa
@@ -416,7 +416,7 @@ quest.directive('question', ['$rootScope','BoardService',  function($rootScope, 
         scope.selectOption = function(){
           var resposta = this;
           var valor = element;
-          console.log(valor);
+          console.log(element.$$hashKey);
           scope.answered = true;
         }
         scope.close = function(){
