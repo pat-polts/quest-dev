@@ -142,7 +142,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
         }
         function handleComplete(){ 
           var imgMarker    = loader.getResult("marker");
-          var imgMarkerMask    = loader.getResult("currentMarker");
+          var imgMarkerMask = loader.getResult("currentMarker");
           var markerStartX = 60;
           var markerStartY = 210;
           var markerX      = markerStartX * 5;
@@ -157,7 +157,8 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 
           //tabuleiro
           board = new createjs.Shape();
-          board.graphics.beginBitmapFill(loader.getResult("board")).drawRect(0, 0, w, h);
+          var imgBoard = loader.getResult("board");
+          board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, imgBoard.width, imgBoard.height);
           scope.stage.addChild(board); 
           // console.log(seq1);
             var x1         =  seq1;
