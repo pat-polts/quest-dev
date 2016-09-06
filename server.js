@@ -10,8 +10,14 @@ var path         = require('path');
 var app          = express();
 var router       = express.Router();
 var session      = require('express-session');
-var MemoryStore = session.MemoryStore,
-    sessionStore = new MemoryStore();
+var redis        = require("redis");
+var redisStore   = require('connect-redis')(session);
+
+if(process.env.REDIS_URL){
+  var cli = require('redis').createClient(process.env.REDIS_URL);
+}else{
+  var cli = redis.createClient();
+}
 // var RedisStore = require('connect-redis')(sessions);
 // var ci  = RedisStore.createClient();
 // var debug          = require('debug')('passport-mongo'); 
@@ -40,17 +46,16 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(session({ 
-  store: sessionStore,
-  secret: 'sw$g45&uioQA!!',
+  store: new redisStore({host: process.env.host, port: 6379, client: cli, ttl: 260}),
+  secret: process.env.APP_SECRET,
   name: 'quest_dev',
   httpOnly: true,
   resave: true,
-  saveUninitialized: true,
-  cookie: { secure: true, httpOnly: true}
+  saveUninitialized: true
 })); 
 
 app.all('*',function(req, res, next){ 
-  res.header("Access-Control-Allow-Origin", "http://localhost");
+  res.header("Access-Control-Allow-Origin", process.env.HOST);
   res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Credentials", "true");
@@ -64,7 +69,6 @@ app.use('/api/', api);
 app.get('/', function(req, res, next) { 
   res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
-
 
 // Catch all errors
 app.use(function(req, res, next) {
@@ -82,10 +86,6 @@ if (app.get('env') === 'production') {
         error: {}
     });
   }); 
-  app.set('trust proxy', 1) // trust first proxy
-  sess.cookie.secure = true // serve secure cookies
-  sess.name = 'quest_game'
-  app.use(session(sess))
 }else{
   app.use(function(err, req, res) {
     res.status(err.status || 500);

@@ -34,63 +34,51 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var loginApi;
 
         $rootScope.isLoading = true;
-        $http.get('/auth/login')
+
+        $http.post('/auth/login', credentials)
         .then(function success(res){ 
-          loginApi = res.data.api;
-
-            $http.post(res.data.api, credentials)
-
-              .then(function successCallback(res) {
-                  $rootScope.isLoading = false;
-
-                  if(res.status === 200){
-
-                    var token = res.data;
-                    var userData = $cookies.get('udt');
-                    $cookies.putObject("udt", token, {secure: true, expires: exp});
-                      
-                  }
-
-                }, function errorCallback(res) {
-                  if(res.status === 500){
-                    console.log("usuario/senha incorreto");
-                  }else{
-                    console.log("erro desconhecido");
-                  }
-                });
+          $rootScope.isLoading = false;  
+          
+          return  $location.path('/');  
 
         }, function error(res){
           $rootScope.error = true; 
           $rootScope.errorMessage = "Erro inesperado!";  
         });       
-
+   
       }; 
 
-      userAuth.logged = function(){ 
-        var userData = $cookies.getObject('udt');
-        console.log(userData);
-        if(userData){
-          return true;
-        }else{
-          return false;
-        }
+     userAuth.logged = function(){ 
+        var deferred = $q.defer();
+        $http.get('/auth/status')
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+             if(res.status === 200){
+                deferred.resolve();
+              }else if(res.status === 500){
+                deferred.reject();
+              }else{
+                deferred.reject();
+              }
+            
+          }, function error(res){ 
+             deferred.reject();
+          });     
+
+          return deferred.promise;
       };
 
-      userAuth.logout = function(){
-         var deferred = $q.defer(); 
-        $http.get('/auth/logout')
-        .success(function(response, status){  
-          if(response.logout){
-              deferred.resolve();
-          }else{
-            deferred.reject();
-          }
-        })
-        .error(function() {     
-          deferred.reject(); 
-        }); 
+      userAuth.logout = function(){ 
+        // $http.get('/auth/logout')
+        //   .then(function success(res){ 
+        //     $rootScope.isLoading = false;  
+        //     if(!res.data.logged){
 
-        return deferred.promise;
+        //       return $location.path('/login');
+        //     }
+        //   }, function error(res){  
+        //      console.log("erro ao deslogar");
+        //   });      
 
       };
  
@@ -296,8 +284,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
         }
     };
 
-    var game   = {};
-console.log($cookies.getObject('udt'));
+    var game   = {}; 
     game.getQuestion = function(){ 
           // $http.get('/api/question')
           // .then(function successCallback(response) {

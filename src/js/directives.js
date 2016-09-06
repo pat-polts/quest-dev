@@ -291,6 +291,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
+          loadQuestion(current);
           
         }
 //************************************

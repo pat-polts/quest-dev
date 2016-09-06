@@ -26,27 +26,13 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false;  
-    $rootScope.userToken = false;  
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
 
-    $rootScope.setCookie = function(key, value){ 
  
-      $cookies.putObject(key, value);
-    };
 
-    $rootScope.getCookie = function(key){
-      $cookies.getObject(key);
-    };
-
-    $rootScope.deleteCookie = function(key){
-      $cookies.remove(key);
-      return  $location.path('/login');
-    };
-// BoardService.getQuestion();
-console.log($cookies.getObject('udt'));
 
     $rootScope.$watch('isQuestion'); 
 
@@ -61,10 +47,7 @@ quest.controller('authController',
   function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
 
     $rootScope.isLoading  = false;
-    $rootScope.userActive = null;
-    $rootScope.userToken  = false; 
-        console.log($cookies.getAll());
-
+    $rootScope.userActive = null; 
     if($rootScope.activePage == "/logout"){
       return $rootScope.logout();
     }
@@ -86,10 +69,7 @@ quest.controller('authController',
 
       if($rootScope.checkFields()){
 
-        AuthService.login($scope.loginForm.username, $scope.loginForm.password);
-        if($cookies.getObject('udt')){
-          $location.path('/');
-        }
+        return AuthService.login($scope.loginForm.username, $scope.loginForm.password);
 
       }else{
         $rootScope.error = true;
@@ -99,15 +79,12 @@ quest.controller('authController',
     };  
 
     $rootScope.logout = function(){
-      AuthService.logout()
-          .then(function () {
-            $location.path('/login');
-          })
-          // handle error
-          .catch(function () {
-            $rootScope.error = true;
-            $rootScope.errorMessage = "Something went wrong!";   
-          })
+      console.log("x");
+      return AuthService.logout();
+    };
+
+    $rootScope.logged = function(){
+      AuthService.logged();
     };
 
 

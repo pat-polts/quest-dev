@@ -3,8 +3,10 @@ var app        = express();
 var router     = express.Router();
 var session    = require('express-session');  
 var bodyparser = require('body-parser');  
-var Client     = require('node-rest-client').Client;
-var client     = new Client();
+var Http       = require('node-rest-client').Client;
+var httpClient = new Http();
+var redisStore   = require('connect-redis')(session);
+
 
 
 var MemoryStore = session.MemoryStore,
@@ -17,83 +19,77 @@ router.get('/api/login', function(req, res) {
     });
 });
 
-router.get('/login', function(req, res, next) {
+router.post('/login', function(req, res, next) {
   var api = process.env.API_LOGIN; 
-   
-    res.status(200);
-    res.send({
-      api: api
-    }); 
 
-  // if(api){
-  //   var args = { 
-  //     data: { Login: req.body.Login, Senha: req.body.Senha},
-  //     headers: { "Content-Type": "application/json" },
-  //     requestConfig: {
-  //       timeout: 1000, //request timeout in milliseconds 
-  //       noDelay: true, //Enable/disable the Nagle algorithm 
-  //       keepAlive: true, //Enable/disable keep-alive functionalityidle socket. 
-  //       keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent 
-  //     }
-  //   };
+  if(req.body.Login && req.body.Senha){ 
+
+    var args = { 
+      data: { Login: req.body.Login, Senha: req.body.Senha},
+      headers: { "Content-Type": "application/json" },
+      requestConfig: {
+        timeout: 1000, //request timeout in milliseconds 
+        noDelay: true, //Enable/disable the Nagle algorithm 
+        keepAlive: true, //Enable/disable keep-alive functionalityidle socket. 
+        keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent 
+      }
+    };
  
-  //   client.post(api, args, function (data, response) {
-  //       res.status(200);
-  //     if(data){
-  //       res.status(200);
-  //       var sess  = req.session;
+    httpClient.post(api, args, function (data, response) {
+      if(data){
+        res.status(200);
+        var sess  = req.session;
+          sess.token = data; 
+          sess.regenerate(function(err) {
+            if(err) res.end(err);
+          });
+         res.status(200);
+         res.send({
+            logged: true
+          });
 
-  //       sess.token = data; 
-  //       req.session.save(function(err){ 
-  //         if(err) res.end(err);
-  //       }); 
+      }else{
+        res.status(500);
+          res.send({
+            logged: false
+          }); 
+      } 
+    });
+  }
 
-  //       sessionStore.set('user_data', sess.token, function(error){
-  //         if(error) res.end(error);
-  //       });
-  //         res.send({
-  //           logged: true
-  //         }); 
-
-  //     }else{
-  //       res.status(500);
-  //         res.send({
-  //           logged: false
-  //         }); 
-  //     } 
-  //   });
-  // } 
 });
 
+router.get('/login', function(req, res, next) {
+  
+});
 
 router.get('/logout', function(req, res, next){
-  sessionStore.destroy('user_data', function(error){
-    if(error) res.end(error);
-  });
-    res.status(200).json.Stringfy({
+  req.session.destroy(function(err) {
+    if(err) res.end(err);
+
+   res.status(200);
+   res.send({
       logged: false
-    }); 
+    });
+
+  });
 });
 
 router.get('/status', function(req, res, next){ 
-
-          // console.log(sessionStore.sessions.user_data);
  
-  var userLog = sessionStore.sessions.user_data;
-  console.log(res.cookies);
-
-  if(userLog){ 
-   // console.log(userLog);
+  var userLog = req.session; 
+// console.log(userLog.token);
+  if(userLog.token){  
     res.status(200);
-    res.send({
+   res.send({
       logged: true
-    }); 
+    });
 
-  }else{ 
+  }else{  
     res.status(500);
     res.send({
-      logged: false
-    }); 
+        logged: false
+      }); 
   } 
 });
  

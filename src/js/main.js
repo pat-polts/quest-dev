@@ -15,11 +15,13 @@ quest.config(function ($routeProvider,$locationProvider) {
     })
     .when('/login', {
       templateUrl: '../../views/login.html',
-      controller: 'authController' 
+      controller: 'authController',
+      restricted: false
     })
     .when('/logout', {
       controller: 'authController.logout()',
-      restricted: true 
+      restricted: true
+      
     })
     .when('/register', {
       templateUrl: '../../views/register.html',
@@ -42,27 +44,24 @@ quest.config(function ($routeProvider,$locationProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
-        console.log($cookies.getAll());
+quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthService) { 
 
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current,$rootScope) {
-      // $rootScope.isLoading = true; 
-      if(next && next.$$route && next.$$route.restricted){
-        // console.log($cookies.get('udt'));
-          // if(!$cookies.get('udt')){
-          //   $location.path('/login'); 
-          // }
+    function (event, next, current) {
+      if(next && next.$$route && next.$$route.restricted){  
+        // console.log(AuthService.logged());
+          if(!AuthService.logged()){
+            $location.path('/login'); 
+           } 
       }
   });
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){ 
-        // console.log($cookies.get('udt'));
-           // console.log($cookies.getObject('udt'));
-          // if(!$cookies.get('udt')){
-          //   $location.path('/login'); 
-          // }
+        if(next && next.$$route && next.$$route.restricted){
+         // console.log(AuthService.logged());          
+          if(!AuthService.logged()){
+            $location.path('/login'); 
+           } 
       }
   });
 });

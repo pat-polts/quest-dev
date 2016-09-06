@@ -15,11 +15,13 @@ quest.config(function ($routeProvider,$locationProvider) {
     })
     .when('/login', {
       templateUrl: '../../views/login.html',
-      controller: 'authController' 
+      controller: 'authController',
+      restricted: false
     })
     .when('/logout', {
       controller: 'authController.logout()',
-      restricted: true 
+      restricted: true
+      
     })
     .when('/register', {
       templateUrl: '../../views/register.html',
@@ -42,27 +44,24 @@ quest.config(function ($routeProvider,$locationProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $cookies, AuthService) {
-        console.log($cookies.getAll());
+quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthService) { 
 
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current,$rootScope) {
-      // $rootScope.isLoading = true; 
-      if(next && next.$$route && next.$$route.restricted){
-        // console.log($cookies.get('udt'));
-          // if(!$cookies.get('udt')){
-          //   $location.path('/login'); 
-          // }
+    function (event, next, current) {
+      if(next && next.$$route && next.$$route.restricted){  
+        // console.log(AuthService.logged());
+          if(!AuthService.logged()){
+            $location.path('/login'); 
+           } 
       }
   });
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){ 
-        // console.log($cookies.get('udt'));
-           // console.log($cookies.getObject('udt'));
-          // if(!$cookies.get('udt')){
-          //   $location.path('/login'); 
-          // }
+        if(next && next.$$route && next.$$route.restricted){
+         // console.log(AuthService.logged());          
+          if(!AuthService.logged()){
+            $location.path('/login'); 
+           } 
       }
   });
 });
@@ -103,63 +102,51 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var loginApi;
 
         $rootScope.isLoading = true;
-        $http.get('/auth/login')
+
+        $http.post('/auth/login', credentials)
         .then(function success(res){ 
-          loginApi = res.data.api;
-
-            $http.post(res.data.api, credentials)
-
-              .then(function successCallback(res) {
-                  $rootScope.isLoading = false;
-
-                  if(res.status === 200){
-
-                    var token = res.data;
-                    var userData = $cookies.get('udt');
-                    $cookies.putObject("udt", token, {secure: true, expires: exp});
-                      
-                  }
-
-                }, function errorCallback(res) {
-                  if(res.status === 500){
-                    console.log("usuario/senha incorreto");
-                  }else{
-                    console.log("erro desconhecido");
-                  }
-                });
+          $rootScope.isLoading = false;  
+          
+          return  $location.path('/');  
 
         }, function error(res){
           $rootScope.error = true; 
           $rootScope.errorMessage = "Erro inesperado!";  
         });       
-
+   
       }; 
 
-      userAuth.logged = function(){ 
-        var userData = $cookies.getObject('udt');
-        console.log(userData);
-        if(userData){
-          return true;
-        }else{
-          return false;
-        }
+     userAuth.logged = function(){ 
+        var deferred = $q.defer();
+        $http.get('/auth/status')
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+             if(res.status === 200){
+                deferred.resolve();
+              }else if(res.status === 500){
+                deferred.reject();
+              }else{
+                deferred.reject();
+              }
+            
+          }, function error(res){ 
+             deferred.reject();
+          });     
+
+          return deferred.promise;
       };
 
-      userAuth.logout = function(){
-         var deferred = $q.defer(); 
-        $http.get('/auth/logout')
-        .success(function(response, status){  
-          if(response.logout){
-              deferred.resolve();
-          }else{
-            deferred.reject();
-          }
-        })
-        .error(function() {     
-          deferred.reject(); 
-        }); 
+      userAuth.logout = function(){ 
+        // $http.get('/auth/logout')
+        //   .then(function success(res){ 
+        //     $rootScope.isLoading = false;  
+        //     if(!res.data.logged){
 
-        return deferred.promise;
+        //       return $location.path('/login');
+        //     }
+        //   }, function error(res){  
+        //      console.log("erro ao deslogar");
+        //   });      
 
       };
  
@@ -365,8 +352,7 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', '$cookie
         }
     };
 
-    var game   = {};
-console.log($cookies.getObject('udt'));
+    var game   = {}; 
     game.getQuestion = function(){ 
           // $http.get('/api/question')
           // .then(function successCallback(response) {
@@ -720,6 +706,7 @@ quest.directive('board', ['$rootScope','BoardService',  function($rootScope, Boa
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
+          loadQuestion(current);
           
         }
 //************************************
@@ -821,27 +808,13 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion = false;  
-    $rootScope.userToken = false;  
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
 
-    $rootScope.setCookie = function(key, value){ 
  
-      $cookies.putObject(key, value);
-    };
 
-    $rootScope.getCookie = function(key){
-      $cookies.getObject(key);
-    };
-
-    $rootScope.deleteCookie = function(key){
-      $cookies.remove(key);
-      return  $location.path('/login');
-    };
-// BoardService.getQuestion();
-console.log($cookies.getObject('udt'));
 
     $rootScope.$watch('isQuestion'); 
 
@@ -856,10 +829,7 @@ quest.controller('authController',
   function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
 
     $rootScope.isLoading  = false;
-    $rootScope.userActive = null;
-    $rootScope.userToken  = false; 
-        console.log($cookies.getAll());
-
+    $rootScope.userActive = null; 
     if($rootScope.activePage == "/logout"){
       return $rootScope.logout();
     }
@@ -881,10 +851,7 @@ quest.controller('authController',
 
       if($rootScope.checkFields()){
 
-        AuthService.login($scope.loginForm.username, $scope.loginForm.password);
-        if($cookies.getObject('udt')){
-          $location.path('/');
-        }
+        return AuthService.login($scope.loginForm.username, $scope.loginForm.password);
 
       }else{
         $rootScope.error = true;
@@ -894,15 +861,12 @@ quest.controller('authController',
     };  
 
     $rootScope.logout = function(){
-      AuthService.logout()
-          .then(function () {
-            $location.path('/login');
-          })
-          // handle error
-          .catch(function () {
-            $rootScope.error = true;
-            $rootScope.errorMessage = "Something went wrong!";   
-          })
+      console.log("x");
+      return AuthService.logout();
+    };
+
+    $rootScope.logged = function(){
+      AuthService.logged();
     };
 
 
