@@ -21,7 +21,8 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.score        = BoardService.getScore();
     $rootScope.boardData    = BoardService.getQuestions();
 
-    $rootScope.activeHouse   = 1;
+    $rootScope.activeHouse = false;
+    $rootScope.activeScore = false;
     $rootScope.answer        = 0;
     $rootScope.correctAnswer = 0;
     $rootScope.isQuestion    = false;  
@@ -38,8 +39,15 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
       $location.path(route);
     };
  
-    $rootScope.$watch('activeHouse'); 
+    $rootScope.$watch('activeScore', function(value){
+        // console.log("has changed to: "+ value);
+        return $rootScope.activeScore;
+    }); 
+    $rootScope.$watch('activeHouse', function(value){
+      return $rootScope.activeHouse;
+    }); 
     $rootScope.$watch('isQuestion'); 
+    $rootScope.$watch('userData'); 
 
 }]);
 

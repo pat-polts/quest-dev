@@ -1,11 +1,17 @@
+<style type="text/css">
+	li.active{
+		border: 1px solid blue;
+		background: rgba(255,255,255,.3);
+	}
+</style>
 <div class="pergunta" set-question >
 <p>{{title}}</p>
 <ul> 
-		<li ng-repeat="alt in options" id="{alt.Valor}" ng-class="{active: answered}" ng-click="selectOption()" >
-			<p ng-model="alt.Valor">{{alt.Valor}}</p>
-			<p ng-model="alt.Valor">{{alt.DescricaoAlternativa}}</p>
+		<li ng-repeat="alt in options" id="{$index}" ng-class="" ng-click="selectOption()" >
+			<p id="valor">{{alt.Valor}}</p>
+			<p id="desc">{{alt.DescricaoAlternativa}}</p>
 		</li> 
 </ul>
-	<button ng-click="close()">pronto</button>
+	<button ng-click="choose()">pronto</button>
 
 </div>

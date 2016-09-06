@@ -20,7 +20,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               var user = res.data.user;
 
               $rootScope.userData.userName       = user.Nome;
-              $rootScope.userData.userScore      = user.Pontuacao + 'pts'; 
+              $rootScope.userData.userScore      = user.Pontuacao; 
 
             }
            
@@ -40,7 +40,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
   AuthService
 **********************/
 
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location',
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
       var user     = null; 

@@ -96,4 +96,49 @@ console.log(api);
 
 });
 
+ 
+router.post('/question',function(req,res,next){
+
+  if(!req.session.token){
+     res.status(500);
+    res.end('Sem usuario');
+  }
+  var token = req.session.token; 
+
+  var api = process.env.API_SEND_QUESTION + token;
+
+  if(!req.body.numero && !req.body.valor){
+    res.status(500);
+    res.end("dados para cadastro incompleto");
+  }
+
+    var args = { 
+      data: { NumeroPergunta: req.body.numero, ValorAlternativaRespondida: req.body.valor},
+      headers: { "Content-Type": "application/json" },
+      requestConfig: {
+        timeout: 1000, //request timeout in milliseconds 
+        noDelay: true, //Enable/disable the Nagle algorithm 
+        keepAlive: true, //Enable/disable keep-alive functionalityidle socket. 
+        keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent 
+      }
+    };
+ 
+    httpClient.post(api, args, function (data, response) {
+      if(data){ 
+        console.log(data);
+         res.status(200);
+         res.send({
+            ok: true
+          });
+
+      }else{
+        res.status(500);
+          res.send({
+            ok: false
+          }); 
+      } 
+    });
+
+});
+
 module.exports = router;
