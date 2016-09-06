@@ -1,7 +1,12 @@
 <div class="pergunta" set-question >
-<p></p>
+<p>{{title}}</p>
 <ul>
-	<li></li>
+	<div ng-repeat="alt in options" >
+		<li id="{alt.Valor}" ng-class="{active: answered}" ng-click="selectOption()" >
+			<span >{{alt.Valor}}</span>
+			<span>{{alt.DescricaoAlternativa}}</span>
+		</li>
+	</div>
 </ul>
 	<button ng-click="close()">pronto</button>
 

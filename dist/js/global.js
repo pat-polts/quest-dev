@@ -97,7 +97,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               $rootScope.userData.userScore      = user.Pontuacao + 'pts';
               $rootScope.userData.userLastAnswer = user.UltimaPerguntaRespondida; 
 
-              // $rootScope.$apply();
+              return $rootScope.userData;
 
             }
            
@@ -346,7 +346,8 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
         score: '=score',
         activeHouse: '=activeHouse',
         boardData: '=boardData',
-        userData: '=userData'
+        userData: '=userData',
+        lastAnswer: '=lastAnswer'
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
@@ -416,9 +417,8 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
             var x2         =  seq2;
             var y1         = markerStartY;
             var y2         = markerStartY + 40;
-            var special    = false;
-            var lastAnswer = scope.userData.userLastAnswer;
-            var current    = 8;
+            var special    = false; 
+            var current    = getCurrent();
         
              
 
@@ -470,6 +470,10 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
             // BoardService.getQuestion();
             // console.log(scope.boardData);
         
+        }
+        function getCurrent(){
+          console.log(scope.lastAnswer);
+          return 8;
         }
         function createMarker(current,lines,index,special){
           var offsetx     = (w / 3);
@@ -581,10 +585,10 @@ quest.directive('board', ['$rootScope','$http', 'BoardService',  function($rootS
           $http.get('/api/question/'+q)
             .then(function success(res){ 
               if(res.data.question){
-                console.log(res.data.question);
+                // console.log(res.data.question);
                 $rootScope.isQuestion = true;  
                 $rootScope.questionData = res.data.question;  
-
+                // $rootScope.$apply();  
               }
             }, function error(res){ 
                 console.log("erro ao obter pergunta");
@@ -677,14 +681,21 @@ quest.directive('question', ['$rootScope','BoardService',  function($rootScope, 
       },
       link: function(scope, element, attribute){
         var question = scope.questionData;
-        console.log(scope.questionData);
+        console.log(question);
+        scope.id     = question.Numero;
+        scope.title    = question.Titulo;
+        scope.desc     = question.Descricao;
+        scope.score    = question.ValorPontuacao;
+        scope.answered = question.Respondida;
+        scope.options  = question.Alternativas; 
+        scope.correct  = question.ValorAlternativaCorreta; 
 
-        // scope.title    = question.title;
-        // scope.desc     = question.desc;
-        // scope.score    = question.score;
-        // scope.answered = question.answered;
-        // scope.options  = question.options; 
-
+        scope.selectOption = function(){
+          var resposta = this;
+          var valor = element;
+          console.log(valor);
+          scope.answered = true;
+        }
         scope.close = function(){
           $rootScope.isQuestion = false;
         }
@@ -725,7 +736,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.userData      = {}; 
 
     $rootScope.userGetData = function(){
-      ApiService.getUserData();
+      return ApiService.getUserData();
     };
 
     $rootScope.go = function (route) {

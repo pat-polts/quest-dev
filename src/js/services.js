@@ -23,7 +23,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               $rootScope.userData.userScore      = user.Pontuacao + 'pts';
               $rootScope.userData.userLastAnswer = user.UltimaPerguntaRespondida; 
 
-              // $rootScope.$apply();
+              return $rootScope.userData;
 
             }
            

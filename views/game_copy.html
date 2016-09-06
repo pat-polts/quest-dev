@@ -27,11 +27,18 @@
 	}
 </style>
 <div ng-if="error" >{{errorMessage}}</div> 
-<question ng-if="isQuestion" questio-data="questionData"></question> 
-<div ng-if="special">casa especial</div> 
-<div class="profile" ng-model="userData" ng-init="userGetData()">
-	<img src="dist/assets/img-maria-desenho.png">
-	<p>{{userData.userName}}</p>
-	<p>{{userData.userScore}}</p>
-</div> 
-<board score="score" active-house="activeHouse" answer="answer" correct-answer="correctAnswer" board-data="boardData" user-data="userData"></board>
+<div ng-init="userGetData()">
+	
+	<question ng-if="isQuestion" question-data="questionData"></question> 
+
+	<div ng-if="special">casa especial</div> 
+
+	<div class="profile" ng-init="userGetData()" >
+		<img src="dist/assets/img-maria-desenho.png">
+		<p ng-model="userName">{{userData.userName}}</p>
+		<p>{{userData.userScore}}</p>
+	</div> 
+
+	<board board-data="boardData" last-answer="userData.userLastAnswer"></board>
+
+</div>

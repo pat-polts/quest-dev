@@ -31,7 +31,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.userData      = {}; 
 
     $rootScope.userGetData = function(){
-      ApiService.getUserData();
+      return ApiService.getUserData();
     };
 
     $rootScope.go = function (route) {
