@@ -67,14 +67,14 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
       replace: true,
       scope: {
         score: '=score',
-        boardData: '=boardData'
+        boardData: '=boardData',
+        lastQuestion: '=lastQuestion'
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       link: function(scope, element, attribute){
             // console.log(element);
-        var w, h, px, py, loader, manifest, board, house, eHouse,shape, score, profile, loadHouse, question;
-
-        getCurrent();
+        var w, h, px, py, loader, manifest, board, house, eHouse,shape, profile, loadHouse, question,user;
+ 
         drawBoard(); 
         // var questions = BoardService.getQuestion();  
         function drawBoard(){
@@ -114,66 +114,34 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           return item
         }
 
-        function getCurrent(){   
-          
-          AuthService.logged();
-          $http.get('/api/user')
-            .then(function success(res){ 
-                if(res.status === 200){ 
+        function getCurrentUser(){   
+          var user = {};
+          user.score = $rootScope.userScore;
+          user.lastQ = $rootScope.userLastQ;
 
-                  if(res.data.user){
-                   $rootScope.activeHouse = res.data.user.UltimaPerguntaRespondida; 
-                  }
-                } 
-                return $rootScope.activeHouse;
-
-            }, function error(res){ 
-                if(res.status === 500){
-                  console.log("erro inesperado");
-                }
-            });   
-
-          if($rootScope.activeHouse  && $rootScope.activeHouse !== 0 ){
-            loadHouse = $rootScope.activeHouse;
-          }else{
-            loadHouse = 1;
-          }
-          
+          return user;
         }
         function handleComplete(){ 
-          var imgMarker    = loader.getResult("marker");
-          var imgMarkerMask = loader.getResult("currentMarker");
-          var markerStartX = 60;
-          var markerStartY = 210;
-          var markerX      = markerStartX * 5;
-          var boardPath    = BoardService.getBoard();
-          var boardData    = BoardService.getBoardData();
-          var total        = boardPath.length;
-          var markerArr    = [];
-
-          var curves = Math.floor(w / 3);
-          var seq1 = Math.floor(curves / 6);
-          var seq2 = Math.floor(curves / 7);
+          var userData = getCurrentUser();
 
           //tabuleiro
           board = new createjs.Shape();  
+          var imgBoard = loader.getResult("board");
             board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768);
             scope.stage.addChild(board); 
- 
-          // console.log(seq1);
-            var x1         =  seq1;
-            var x2         =  seq2;
-            var y1         = markerStartY;
-            var y2         = markerStartY + 40;
+
             var special    = false;  
-            var lastResp    = loadHouse;
+            var lastResp   = userData.lastQ;
             if(lastResp === 1){
               var current = 1;
-            } else{
+            }else if(lastResp === 17){
+              //apenas para user admin e enquanto todas questões não estão na api
+            } 
+            else{
                var current    = lastResp + 1;
             }
            
-            console.log(current);
+            console.log(lastResp);
              
 
             for (var i = 1; i < 32; i++) { 
@@ -236,7 +204,6 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           var line2y = Math.round(offsety) /  6;
 
           if(special) color = "#37d349";  
-
 
           switch(lines){
             case 1:
@@ -332,15 +299,15 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 //************************************
         function loadQuestion(q){  
           if(q){
-            $http.get('/api/question/'+q)
-              .then(function success(res){ 
-                if(res.data.question){
-                  $rootScope.isQuestion = true;  
-                  $rootScope.questionData = res.data.question;  
-                }
-              }, function error(res){ 
-                  console.log("erro ao obter pergunta");
-              }); 
+            // $http.get('/api/question/'+q)
+            //   .then(function success(res){ 
+            //     if(res.data.question){
+            //       $rootScope.isQuestion = true;  
+            //       $rootScope.questionData = res.data.question;  
+            //     }
+            //   }, function error(res){ 
+            //       console.log("erro ao obter pergunta");
+            //   }); 
           }
 
         }

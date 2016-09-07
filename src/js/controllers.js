@@ -1,4 +1,4 @@
-
+"use strict";
 //================================================
 //# App Controllers
 //================================================
@@ -28,26 +28,35 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
     $rootScope.isQuestion    = false;  
     $rootScope.questionData  = {};
 
-
+    //refazendo logica menos bagunçada
     $rootScope.userData      = {}; 
 
     $rootScope.userGetData = function(){
-      return ApiService.getUserData();
+      // return ApiService.getUserData();
     };
 
     $rootScope.go = function (route) {
       $location.path(route);
     };
- 
-    $rootScope.$watch('activeScore', function(value){
-        // console.log("has changed to: "+ value);
-        return $rootScope.activeScore;
-    }); 
-    $rootScope.$watch('activeHouse', function(value){
-      return $rootScope.activeHouse;
-    }); 
+
+    $rootScope.loadUserData = function(){
+       var promise = ApiService.getUserData();
+        promise.then(function resolveHandler(user){ 
+          $rootScope.userName  = user.name;
+          $rootScope.userScore = parseInt(user.score);
+          $rootScope.userLastQ = parseInt(user.lastQ);
+
+        }, function rejectHandler(error){ 
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+    }; 
+    console.log($rootScope.userLastQ);
+    //assistinda valores 
     $rootScope.$watch('isQuestion'); 
-    $rootScope.$watch('userData'); 
+    $rootScope.$watch('userLastQ'); 
+    $rootScope.$watch('userScore'); 
 
 }]);
 

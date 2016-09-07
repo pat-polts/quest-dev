@@ -15,7 +15,7 @@ module.exports = function(grunt) {
       },
       build: {
         files: {
-          'dist/js/global.min.js': 'dist/js/global.js'
+          '': ''
         }
       },
     },
@@ -46,10 +46,7 @@ module.exports = function(grunt) {
       task: {
         src: ['views/index.html'],
         cwd: '.',
-        options: {
-          dependencies: true,
-          devDependencies: true ,
-          overrides: {  }
+        options: { 
         }
       }
     },
@@ -67,7 +64,7 @@ module.exports = function(grunt) {
       files: ['src/styles/**/*.less','src/styles/stylesheet.less', 'src/styles/stylesheet.css'], 
       tasks: ['less','cssmin'],
       scripts: { 
-        files: ['src/**/*.js', 'dist/js/global.js'], tasks: ['concat'] 
+        files: ['src/**/*.js', 'dist/js/global.js'], tasks: ['concat', 'wiredep'] 
       } 
     }
 
@@ -85,6 +82,6 @@ module.exports = function(grunt) {
   // grunt.registerTask('watch', ['watch']);
 
 //---> Set wich tasks grunt should load when grunt is called  
-  grunt.registerTask('default', ['cssmin', 'less','concat']);
+  grunt.registerTask('default', ['cssmin', 'less', 'concat', 'wiredep','uglify']);
 
 };

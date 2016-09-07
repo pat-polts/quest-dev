@@ -1,3 +1,5 @@
+"use strict";
+
 var express    = require('express');
 var app        = express();
 var router     = express.Router();
@@ -9,12 +11,15 @@ var redisStore = require('connect-redis')(session);
 
 router.get('/api/login', function(req, res) {
     var env = process.env.API_END_POINT;
-    res.status(200).json.Stringfy({
+    res.status(200).send({
       api: process.env.API_END_POINT
     });
 });
 
 router.post('/login', function(req, res, next) {
+   if(req.path !== '/login'){
+      res.end();
+    }
   var api = process.env.API_LOGIN; 
 
   if(req.body.Login && req.body.Senha){ 
@@ -31,60 +36,63 @@ router.post('/login', function(req, res, next) {
     };
  
     httpClient.post(api, args, function (data, response) {
-      if(data){
-        res.status(200);
-        var sess  = req.session;
-          sess.token = data; 
-          sess.regenerate(function(err) {
-            if(err) res.end(err);
-          });
-         res.status(200);
-         res.send({
-            logged: true
-          });
+      if(data){    
+          req.session.token =  data;  
 
+          req.session.save(function(err){
+            if(err)res.end(err);
+
+              res.status(200).send({
+                logged: true
+              });
+
+          });
+         
       }else{
-        res.status(500);
-          res.send({
+        res.status(500).send({
             logged: false
-          }); 
+        }); 
       } 
     });
+
+  }else{
+    res.status(400).end();
   }
 
 });
 
-router.get('/login', function(req, res, next) {
+router.get('/session', function(req, res, next) {
   
 });
 
 router.get('/logout', function(req, res, next){
-  req.session.destroy(function(err) {
-    if(err) res.end(err);
+  if(req.path !== '/logout'){
+      res.end();
+    }
+  if(req,session){ 
+    req.session.destroy(function(err) {
+      if(err) res.end(err);
+       res.status(200).send({
+          logged: false
+        });
 
-   res.status(200);
-   res.send({
-      logged: false
     });
-
-  });
+  }
 });
 
 router.get('/status', function(req, res, next){ 
- 
-  var userLog = req.session; 
-  if(userLog.token){   
-    res.status(200);
-     res.send({
-        logged: true
-      });
 
+var userLog =  req.session.token; 
+  if(userLog){  
+        res.status(200).send({
+            logged: true
+        }); 
   }else{  
-   res.status(500);
-    res.send({
-        logged: false
-      }); 
-  } 
+        res.status(500).send({
+            logged: true
+        }); 
+  }
+
 });
  
 

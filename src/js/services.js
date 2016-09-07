@@ -1,3 +1,4 @@
+"use strict";
 //================================================
 //# App Factories
 //================================================
@@ -11,25 +12,31 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     var userApi = {};
 
-    userApi.getUserData = function(){
+    userApi.getUserData = function(){ 
+
+      var deferred = $q.defer();
       $rootScope.isLoading = true;
-        $http.get('/api/user')
+
+      $http.get('/api/user')
         .then(function success(res){ 
-            if(res.data.user){
-              $rootScope.isLoading = false;
-              var user = res.data.user;
-
-              $rootScope.userData.userName       = user.Nome;
-              $rootScope.userData.userScore      = user.Pontuacao; 
-
-            }
+            $rootScope.isLoading = false; 
+            if(res.status === 200){ 
+              if(res.data){ 
+                deferred.resolve(res.data.obj);
+              }
+            } 
            
         }, function error(res){
-          if(res.data.error){
-            $rootScope.error = true; 
-            $rootScope.errorMessage = res.data.error;  
-          }
-        }); 
+            if(res.status === 500){
+              if(res.data.error){ 
+                $rootScope.error = true; 
+                $rootScope.errorMessage = res.data.error;  
+                deferred.reject(res.data.error);
+              }
+            }
+        });
+
+        return deferred.promise; 
     };
  
     return userApi;
@@ -163,6 +170,9 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
          return boardData;
     };
  
+    game.getUser = function(){
+     //
+    };
     game.getGameApi = function(){
       return board;
     };

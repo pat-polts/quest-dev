@@ -27,7 +27,7 @@
 	}
 </style>
 <div ng-if="error" >{{errorMessage}}</div> 
-<div ng-init="userGetData()">
+<div ng-init="loadUserData()">
 	
 	<question ng-if="isQuestion" question-data="questionData"></question> 
 
@@ -35,10 +35,10 @@
 
 	<div class="profile" ng-init="userGetData()" >
 		<img src="dist/assets/img-maria-desenho.png">
-		<p ng-model="userName">{{userData.userName}}</p>
-		<p>{{userData.userScore}} pts</p>
+		<p ng-model="userName">{{userName}}</p>
+		<p>{{userScore}} pts</p>
 	</div> 
 
-	<board board-data="boardData" ng-bind="activeHouse"></board>
+	<board board-data="boardData" last-question="lastQ"></board>
 
 </div>

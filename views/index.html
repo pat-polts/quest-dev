@@ -13,9 +13,8 @@
     <!-- ## dependência diretamente entre o comentário bower:css ela será removida quando   ## --> 
     <!-- ## rodar o server que chama as tarefas default do grunt    ## --> 
 
-      <!-- bower:css -->
-      <link rel="stylesheet" href="../bower_components/angular-material/angular-material.css" />
-      <!-- endbower --> 
+     
+      <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css" />
 
       <!-- ## Css minificado gerado através do src/styles/stylesheet.css que é compilado     ## -->
       <!-- ## automaticamente por src/styles/stylesheet.less ## -->
@@ -32,18 +31,6 @@
       
       <div ng-view layout="row" layout-sm="column"></div>
     </div>
-<!-- 
-    <strong>Sugestão de rotas da paginas iniciais: </strong>
-    <br/><br/>
-    | <a href="/#/">Login</a>  
-    | <a href="/#/saudacoes">Saudações (Instruções 1) </a>  
-    | <a href="/#/mais-sobre">Mais sobre (Instruções 2) </a>  
-    | <a href="/#/vamos-jogar">Vamos Nessa (Instruções 3) </a>   -->
-
-    <!-- ## Dependências js do bower inseridas automaticamente pela tarefa do grunt wiredep ## -->
-    <!-- ## o wiredep injeta todos os pacotes dentro de bower_components, se inserir a      ## -->
-    <!-- ## dependência diretamente entre o comentário bower:js ela será removida quando    ## --> 
-    <!-- ## rodar o server que chama as tarefas default do grunt   ## --> 
 
       <script src="../bower_components/angular/angular.min.js"></script>
       <script src="../bower_components/angular-route/angular-route.min.js"></script>
@@ -53,10 +40,6 @@
       <script src="../bower_components/angular-animate/angular-animate.min.js"></script>
       <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
       <script src="../bower_components/angular-material/angular-material.min.js"></script>
-      
-
-    <!-- ## Script global gerado automaticamente pelo grunt concat, que junta os scripts do ## -->
-    <!-- ## do angular (main/controllers/services/directives) nesta ordem ## -->
 
       <script src="dist/js/global.js"></script> 
       <!-- js lib for canvas games -->

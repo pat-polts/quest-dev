@@ -13,26 +13,28 @@ var session      = require('express-session');
 var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
 
+if(!process.env.NODE_ENV){
+  app.use(function(req, res, next) {
+    var err = new Error('Sem o arquivo .env');
+    err.status = 500;
+    next(err);
+  });
+}
 if(process.env.REDIS_URL){
   var cli = redis.createClient(process.env.REDIS_URL);
 }else{
   var cli = redis.createClient();
 }
-// var RedisStore = require('connect-redis')(sessions);
-// var ci  = RedisStore.createClient();
-// var debug          = require('debug')('passport-mongo'); 
-// var session = require('client-sessions');
 
 //routes
 var userAuth = require('./routes/authenticate.js');
 var api      = require('./routes/api.js');
+var port     = process.env.PORT || 3000; 
+var hour     = 3600000
+var exp      = new Date(Date.now() + hour);
+var helmet   = require('helmet');
 
-var MemStore = session.MemoryStore;
-
-var port = process.env.PORT || 3000; 
-var hour = 3600000
-var exp = new Date(Date.now() + hour);
- 
+app.use(helmet());
 app.use('/views', express.static(path.join(__dirname, 'views'))); 
 app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
@@ -42,17 +44,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
-app.use(session({ 
+app.use(session({  
   store: new redisStore({ client: cli}),
   secret: process.env.APP_SECRET, 
   httpOnly: true,
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: { 
+    secure: true,
+    httpOnly: true,
+    domain: process.env.HOST || 'localhost',
+    path: '/' 
+  }
 })); 
 
 app.all('*',function(req, res, next){ 
   res.header("Access-Control-Allow-Origin", "localhost");
-  res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.header("Access-Control-Allow-Credentials", "true");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
