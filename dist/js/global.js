@@ -429,10 +429,12 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           var seq2 = Math.floor(curves / 7);
 
           //tabuleiro
-          board = new createjs.Shape();
+          board = new createjs.Shape(); 
+          var imgl = false;
           var imgBoard = loader.getResult("board");
-          board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, w, h);
-          scope.stage.addChild(board); 
+            board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768);
+            scope.stage.addChild(board); 
+ 
           // console.log(seq1);
             var x1         =  seq1;
             var x2         =  seq2;
