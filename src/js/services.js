@@ -205,6 +205,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
     var boardData = {}; 
 
     var game   = {}; 
+    var move = false;
+
     game.getQuestions = function(){ 
        $http.get('/api/questions')
          .then(function successCallback(res) {
@@ -226,12 +228,20 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
          return boardData;
     };
  
-    game.getUser = function(){
-     //
+    game.getNext = function(){
+     return move;
     };
+ 
+    game.loadNext = function(n){
+     if(n){
+      move = n;
+     }
+    };
+
     game.getGameApi = function(){
       return board;
     };
+
     game.createBoard = function(){
       var props = [];
 

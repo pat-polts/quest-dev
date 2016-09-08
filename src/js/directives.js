@@ -124,23 +124,13 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768); 
 
           scope.stage.addChild(board);   
-
-
-          if($rootScope.moveMarker !== 0){
-            var prev = parseInt($rootScope.moveMarker) -1;
-            var c = circle.$rootScope.moveMarker;
-            var cX = c.x;
-            var cY = c.y;
-            marker.x = cX;
-            marker.y = cY;
-
-          }
+ 
 
            setTimeout(function () {  
              boardStart();  
           },4000); 
 
-           // moveMarker();
+          
 
           createjs.Ticker.timingMode = createjs.Ticker.RAF;
           createjs.Ticker.addEventListener("tick", tick);   
@@ -204,8 +194,15 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
               }
 
             }
-            
-            loadQuestion(current);
+
+             
+            $rootScope.$watch('isQuestion',function(value){
+              if(value == false){
+                moveToNext();
+              }
+            });
+
+            return loadQuestion(current);
           
         }
 
@@ -320,19 +317,25 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
             scope.stage.addChild(marker); 
           }
 
-          
         }
 //************************************
 //  carrega a pegunta
 //************************************
+        function moveToNext(){
+          var next = BoardService.getNext();
+          if(next){
+            //console.log(maker.x);
+          }
+        };
         function loadQuestion(q = ''){ 
-    
+      
           if(q){  
            $rootScope.loadQuestionData(q);   
-
+            console.log(1);
             setTimeout(function () { 
+            console.log(1);
               $rootScope.isQuestion   = true;  
-            },500);  
+            },200);  
 
             // $rootScope.isQuestion = true; 
             // $http.get('/api/question/'+q)
@@ -491,10 +494,9 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
  
         scope.choose = function(){ 
           if(escolha !== ''){
-            $rootScope.isQuestion = false;  
-            var c = circle.next;
+            $rootScope.isQuestion = false;   
             var next = parseInt(scope.id) + 1;
-            return loadQuestion(next);
+            return BoardService.loadNext(next);
            //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
           }else{
               alert("Escolha uma das alternativas");

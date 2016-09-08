@@ -35,7 +35,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
      $rootScope.userLastQ;
      $rootScope.moveMarker = 0;
 
-    $rootScope.moveNext = function(next){
+    $rootScope.loadNextQuestion = function(next){
      $rootScope.moveMarker = next; 
      return $rootScope.moveMarker;
     };

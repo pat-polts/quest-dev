@@ -279,6 +279,8 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
     var boardData = {}; 
 
     var game   = {}; 
+    var move = false;
+
     game.getQuestions = function(){ 
        $http.get('/api/questions')
          .then(function successCallback(res) {
@@ -300,12 +302,20 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
          return boardData;
     };
  
-    game.getUser = function(){
-     //
+    game.getNext = function(){
+     return move;
     };
+ 
+    game.loadNext = function(n){
+     if(n){
+      move = n;
+     }
+    };
+
     game.getGameApi = function(){
       return board;
     };
+
     game.createBoard = function(){
       var props = [];
 
@@ -374,7 +384,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
      $rootScope.userLastQ;
      $rootScope.moveMarker = 0;
 
-    $rootScope.moveNext = function(next){
+    $rootScope.loadNextQuestion = function(next){
      $rootScope.moveMarker = next; 
      return $rootScope.moveMarker;
     };
@@ -669,23 +679,13 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768); 
 
           scope.stage.addChild(board);   
-
-
-          if($rootScope.moveMarker !== 0){
-            var prev = parseInt($rootScope.moveMarker) -1;
-            var c = circle.$rootScope.moveMarker;
-            var cX = c.x;
-            var cY = c.y;
-            marker.x = cX;
-            marker.y = cY;
-
-          }
+ 
 
            setTimeout(function () {  
              boardStart();  
           },4000); 
 
-           // moveMarker();
+          
 
           createjs.Ticker.timingMode = createjs.Ticker.RAF;
           createjs.Ticker.addEventListener("tick", tick);   
@@ -749,8 +749,15 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
               }
 
             }
-            
-            loadQuestion(current);
+
+             
+            $rootScope.$watch('isQuestion',function(value){
+              if(value == false){
+                moveToNext();
+              }
+            });
+
+            return loadQuestion(current);
           
         }
 
@@ -865,19 +872,25 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
             scope.stage.addChild(marker); 
           }
 
-          
         }
 //************************************
 //  carrega a pegunta
 //************************************
+        function moveToNext(){
+          var next = BoardService.getNext();
+          if(next){
+            //console.log(maker.x);
+          }
+        };
         function loadQuestion(q = ''){ 
-    
+      
           if(q){  
            $rootScope.loadQuestionData(q);   
-
+            console.log(1);
             setTimeout(function () { 
+            console.log(1);
               $rootScope.isQuestion   = true;  
-            },500);  
+            },200);  
 
             // $rootScope.isQuestion = true; 
             // $http.get('/api/question/'+q)
@@ -1036,10 +1049,9 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
  
         scope.choose = function(){ 
           if(escolha !== ''){
-            $rootScope.isQuestion = false;  
-            var c = circle.next;
+            $rootScope.isQuestion = false;   
             var next = parseInt(scope.id) + 1;
-            return loadQuestion(next);
+            return BoardService.loadNext(next);
            //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
           }else{
               alert("Escolha uma das alternativas");
