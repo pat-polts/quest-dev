@@ -16,16 +16,16 @@ body {
   left: 0px;
   overflow: hidden;
 }
-.container .layout-row {
+.container .content {
   position: relative;
   width: 1024px;
-  height: auto;
+  height: 768px;
   margin: 0px auto;
+  font-family: inherit;
 }
 .box-content {
   width: 100%;
   position: absolute;
-  border: 1px solid #e0e0e0;
   text-align: center;
   background: url('../../../dist/assets/bg-2.png') top center no-repeat;
   background-size: 100% 100%;
@@ -35,43 +35,31 @@ body {
   min-height: 180px;
   margin-top: 20%;
 }
-.box-content button {
-  margin-top: 5%;
-  color: #fff;
-  font-weight: bold;
-  background: #004e72;
-  border: none;
-  height: 3.3em;
-  width: 25%;
-  padding: 0px;
-  outline: none;
-  margin: 0px auto;
-  text-align: center;
-  font-size: 16px;
-  border-radius: 10em;
-  -moz-border-radius: 10em;
-  -webkit-border-radius: 10em;
-  -khtml-border-radius: 10em;
-  /* for old Konqueror browsers */
-}
 .login {
-  background: url('../../../dist/assets/bg-1.png') top center no-repeat !important;
+  background: url('../../../dist/assets/fundo-login.png') top center no-repeat !important;
+}
+.login-logo {
+  position: relative;
+  width: auto;
+  height: auto;
+  margin: 1em auto;
+}
+.login-logo:nth-of-type(2) {
+  margin: 1em auto 3em auto;
 }
 .form-login {
+  position: relative;
   color: #004e72;
   width: 45%;
-  position: absolute;
-  left: 27.5%;
-  bottom: 5%;
+  margin: 0px auto;
 }
 .form-login input,
 .form-login button {
   height: 3.3em;
-  width: 100%;
+  width: 100% !important;
   padding: 0px;
   outline: none;
   text-align: center;
-  font-size: 14px;
   border-radius: 10em;
   -moz-border-radius: 10em;
   -webkit-border-radius: 10em;
@@ -82,64 +70,34 @@ body {
   width: auto;
   height: auto;
 }
-.form-login label > p {
-  font-size: 14px;
-}
 .form-login label > input {
   color: #41779b !important;
   margin: 2% 0px;
+  font-size: 16px !important;
   border: 2px solid #004e72;
 }
 .form-login label:first-child > input {
   margin: 0px;
 }
 .form-login button {
+  font-size: 20px !important;
   color: #fff;
   font-weight: bold;
   background: #004e72;
   border: none;
-}
-.form-register {
-  color: #004e72;
-  width: 45%;
-  position: absolute;
-  left: 27.5%;
-  top: 5%;
-}
-.form-register input,
-.form-register button {
-  height: 3.3em;
-  width: 100%;
+  height: auto;
+  width: auto;
   padding: 0px;
   outline: none;
+  margin: 0px auto;
   text-align: center;
-  font-size: 14px;
+  font-size: inherit;
+  padding: 1em;
   border-radius: 10em;
   -moz-border-radius: 10em;
   -webkit-border-radius: 10em;
   -khtml-border-radius: 10em;
   /* for old Konqueror browsers */
-}
-.form-register label {
-  width: auto;
-  height: auto;
-}
-.form-register label > p {
-  font-size: 14px;
-}
-.form-register label > input {
-  color: #41779b !important;
-  margin: 2% 0px;
-  border: 2px solid #004e72;
-}
-.form-register label:first-child > input {
-  margin: 0px;
-}
-.form-register button {
-  color: #fff;
-  font-weight: bold;
-  background: #004e72;
-  border: none;
 }
 canvas {
   z-index: 101;
@@ -171,4 +129,49 @@ canvas {
   top: 2%;
   z-index: 102;
   border: 1px solid #9a9c9e;
+}
+button {
+  color: #fff;
+  font-weight: bold;
+  background: #004e72;
+  border: none;
+  height: auto;
+  width: auto;
+  padding: 0px;
+  outline: none;
+  margin: 0px auto;
+  text-align: center;
+  font-size: inherit;
+  padding: 1em;
+  border-radius: 10em;
+  -moz-border-radius: 10em;
+  -webkit-border-radius: 10em;
+  -khtml-border-radius: 10em;
+  /* for old Konqueror browsers */
+}
+::-webkit-input-placeholder {
+  color: #477499;
+  font-size: inherit;
+  text-align: center;
+  margin: 0 auto;
+}
+:-moz-placeholder {
+  /* Firefox 18- */
+  color: #477499;
+  font-size: inherit;
+  text-align: center;
+  margin: 0 auto;
+}
+::-moz-placeholder {
+  /* Firefox 19+ */
+  color: #477499;
+  font-size: inherit;
+  text-align: center;
+  margin: 0 auto;
+}
+:-ms-input-placeholder {
+  color: #477499;
+  font-size: inherit;
+  text-align: center;
+  margin: 0 auto;
 }

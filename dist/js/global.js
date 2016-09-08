@@ -28,11 +28,6 @@ quest.config(function ($routeProvider,$locationProvider) {
       }
       
     })
-    .when('/register', {
-      templateUrl: '../../views/register.html',
-      controller: 'authController',
-      restricted: true 
-    })
     .when('/mais-sobre', {
       templateUrl: '../../views/mais-sobre.html',
       restricted: true 
@@ -165,6 +160,32 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               }
           });
       }
+
+      return deferred.promise; 
+    };
+
+    userApi.getRanking = function(){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+
+        $http.get('/api/ranking')
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+              if(res.status === 200){  
+                  deferred.resolve(); 
+              } 
+             
+          }, function error(res){
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      
 
       return deferred.promise; 
     };
@@ -574,7 +595,6 @@ quest.directive('setHeight', function($timeout, $window){
           // manuall $digest required as resize event 
           scope.$digest();
        });
-    
 
     }
   }
@@ -618,13 +638,18 @@ quest.directive('setQuestion', function($timeout, $window){
 ***************************/
 quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  function($rootScope, $http, BoardService, AuthService){
     return{
-      restrict: 'EAC',
+      restrict: 'E',
       replace: true,
       transclude: true,
       scope: {
         score: '=score',
         boardData: '=boardData' 
       },
+      controller: ['$scope', function boardController($scope) {
+        $scope.moveToNext = function(next){
+          console.log(next);
+        }
+      }],
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
       // controller: function(scope, element,attribute){
       //   // $rootScope.moveEl = function(){
@@ -981,12 +1006,14 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 
 
 quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($rootScope, $http,BoardService){
-  return{  
+  return{   
+      restrict: 'E',
+      transclude: true,
       templateUrl: '../../views/templates/question_copy.html',
       scope: {
         questionData: '=questionData'
       },
-      link: function(scope, element, attribute){
+      link: function(scope, element, attribute,boardController){
         var question = scope.questionData; 
         var escolha = null;
         if(question){
@@ -1048,12 +1075,11 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
         }
  
         scope.choose = function(){ 
-          if(escolha !== ''){
-            $rootScope.isQuestion = false;   
-            var next = parseInt(scope.id) + 1;
-            return BoardService.loadNext(next);
+            $rootScope.isQuestion = false; 
+          if(escolha !== ''){   
+            // return BoardService.loadNext(next);
            //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
-          }else{
+          }else{ 
               alert("Escolha uma das alternativas");
           }
         }

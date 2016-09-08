@@ -13,13 +13,7 @@ var session      = require('express-session');
 var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
 
-if(!process.env.NODE_ENV){
-  app.use(function(req, res, next) {
-    var err = new Error('Sem o arquivo .env');
-    err.status = 500;
-    next(err);
-  });
-}
+
 if(process.env.REDIS_URL){
   var cli = redis.createClient(process.env.REDIS_URL);
 }else{

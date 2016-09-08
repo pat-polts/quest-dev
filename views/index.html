@@ -6,30 +6,25 @@
     <title>Quest Olaparibe</title>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1">   
-
-    <!-- ## Dependências css do bower inserida automaticamente pela tarefa do grunt wiredep ## -->
-    <!-- ## o wiredep injeta todos os pacotes dentro de bower_components, se inserir a      ## -->
-    <!-- ## dependência diretamente entre o comentário bower:css ela será removida quando   ## --> 
-    <!-- ## rodar o server que chama as tarefas default do grunt    ## --> 
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">    
      
       <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css" />
-
-      <!-- ## Css minificado gerado através do src/styles/stylesheet.css que é compilado     ## -->
-      <!-- ## automaticamente por src/styles/stylesheet.less ## -->
       <link rel="stylesheet" href="dist/css/stylesheet.min.css" />
 
   </head>
 
   <body ng-controller="mainController">
+
     <div class="container">
-      <div class="logout" ng-controller="logoutController" ng-if="userActive">
+
+      <!-- <div class="logout" ng-controller="logoutController" ng-if="userActive">
         <a ng-click='logout()' class="btn btn-default">Sair</a>
-      </div>
+      </div> -->
+
       <div ng-if="isLoading" class="loading" layout="row" layout-sm="column">Carregando</div> 
       
-      <div ng-view layout="row" layout-sm="column"></div>
+      <div ng-view class="content" layout="row" layout-sm="column"></div>
+
     </div>
 
       <script src="../bower_components/angular/angular.min.js"></script>

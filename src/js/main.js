@@ -28,11 +28,6 @@ quest.config(function ($routeProvider,$locationProvider) {
       }
       
     })
-    .when('/register', {
-      templateUrl: '../../views/register.html',
-      controller: 'authController',
-      restricted: true 
-    })
     .when('/mais-sobre', {
       templateUrl: '../../views/mais-sobre.html',
       restricted: true 

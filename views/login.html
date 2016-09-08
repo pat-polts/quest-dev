@@ -1,10 +1,14 @@
 <!-- # Tela Login  -->
-<div class="box-content" set-height>
-	<div class="logos">
-	<div class="logoastralogin"></div>
-	<div class="logoquestlogin"></div>
-	</div>
-<div ng-if="error" >{{errorMessage}}</div>
+<div class="box-content login" set-height>
+
+    <div ng-if="error" class="error">{{errorMessage}}</div>
+
+    <div class="login-logo">
+        <img src="dist/assets/logoastra.png" alt="Astraxeneca Logo">
+    </div>
+    <div class="login-logo">
+        <img src="dist/assets/logoquestlogin.png" alt="Quest Logo">
+    </div>
     <form class="form-login" ng-submit="login()"> 
         <label for="username"> 
           <input type="text" name="username" ng-model="loginForm.username" required placeholder="nome de usuário">
@@ -12,6 +16,7 @@
         <label for="password"> 
             <input type="password" name="password"  ng-model="loginForm.password" required placeholder="senha">
         </label>  
-        <button type="submit" class="btn btn-default" ng-disabled="disabled">Iniciar</button>    
+        <button type="submit">Iniciar</button>    
     </form>  
+
 </div>

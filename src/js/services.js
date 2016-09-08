@@ -94,6 +94,32 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
       return deferred.promise; 
     };
+
+    userApi.getRanking = function(){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+
+        $http.get('/api/ranking')
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+              if(res.status === 200){  
+                  deferred.resolve(); 
+              } 
+             
+          }, function error(res){
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      
+
+      return deferred.promise; 
+    };
  
     return userApi;
  

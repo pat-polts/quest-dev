@@ -131,16 +131,42 @@ router.post('/question',function(req,res,next){
 
       httpClient.post(api, args, function (data, response) {
         if(data){ 
-          console.log(data);
-           res.status(200);
-           res.send({
+           res.status(200).send({
               ok: true
             });
 
         }else{
-          res.status(500);
-            res.send({
+          res.status(500).send({
               ok: false
+            }); 
+        } 
+      });
+    }
+
+  }
+  
+});
+
+ 
+router.post('/ranking',function(req,res,next){
+ 
+  if(!req.session.token){
+     res.status(500).end('Sem usuario'); 
+  }else{
+    var token = req.session.token; 
+
+    var api = process.env.API_RANKING + token;
+
+      httpClient.get(api, function (data, response) {
+        if(data){ 
+          console.log(data);
+           res.status(200).send({
+              ok: true
+            });
+
+        }else{
+          res.status(500).send({
+              error: "erro"
             }); 
         } 
       });

@@ -20,18 +20,18 @@ body{
 	left: 0px;
 	overflow: hidden;
 
-	.layout-row{
+	.content{
 		position: relative;
 		width: 1024px;
-		height: auto;
+		height: 768px;
 		margin: 0px auto;
+		font-family: inherit;
 	}
 }
 
 .box-content{
 	width: 100%;
-	position: absolute; 
-	border: 1px solid #e0e0e0;
+	position: absolute;  
 	text-align: center;
 	background: url('../../../dist/assets/bg-2.png') top center no-repeat;
     background-size: 100% 100%;
@@ -41,38 +41,27 @@ body{
 	min-height: 180px;
 	margin-top: 20%;
 }
-.box-content button{
-	margin-top: 5%;
-	.default-button;
-}
+
 .login{
-	background: url('../../../dist/assets/bg-1.png') top center no-repeat !important; 
+	background: url('../../../dist/assets/fundo-login.png') top center no-repeat !important; 
 }
-.register{
+.login-logo{
+	position: relative;
+	width: auto;
+	height: auto;
+	margin: 1em auto;
 }
-
-// .box-login{  }
-// .box-register{ background: url('../../../dist/assets/bg-2.png') top center no-repeat; }
-
+.login-logo:nth-of-type(2){
+	margin: 1em auto 3em auto;
+}
 .form-login{
+	position: relative;
 	color: @base-blue;
-	width: 45%;
-	position: absolute;
-	left: 27.5%;
-	bottom: 5%;
+	width: 45%; 
+	margin: 0px auto;
 
 	.form-elements;
 
-}
-
-.form-register{
-	color: @base-blue;
-	width: 45%;
-	position: absolute;
-	left: 27.5%;
-	top: 5%;
-
-	.form-elements;
 }
 
 canvas{
@@ -104,3 +93,10 @@ canvas{
 	z-index: 102; 
 	border: 1px solid #9a9c9e;
 }
+
+button{
+	.default-button;
+}
+
+
+.default-placeholder;
