@@ -54,7 +54,7 @@ module.exports = function(grunt) {
 //---> Concat: concatanate javascript files into global.js
     concat: { 
       dist: {
-        src: ['src/js/main.js', 'src/js/services.js', 'src/js/directives.js', 'src/js/controllers.js'],
+        src: ['src/js/main.js', 'src/js/services.js', 'src/js/controllers.js', 'src/js/directives.js'],
         dest: 'dist/js/global.js',
       }
     },
@@ -82,6 +82,6 @@ module.exports = function(grunt) {
   // grunt.registerTask('watch', ['watch']);
 
 //---> Set wich tasks grunt should load when grunt is called  
-  grunt.registerTask('default', ['cssmin', 'less', 'concat', 'wiredep','uglify']);
+  grunt.registerTask('default', ['cssmin', 'less', 'concat', 'wiredep']);
 
 };

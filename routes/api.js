@@ -73,29 +73,31 @@ router.get('/user',function(req,res,next){
 });
  
 router.get('/question/:id',function(req,res,next){
-  if(req.originalUrl !== '/question/:id'){
-    res.end();
-  }
+ 
   if(!req.session.token){
      res.status(500).end('Sem usuario'); 
   }else{
+    var qId = req.params.id;
 
-    if(req.params.id){
+    if(qId){
       var token = req.session.token; 
-      var api = process.env.API_QUESTION_SINGLE + '/' + req.params.id + '/' + token;
+      var api = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
+
       httpClient.get(api, function (data, response) {
         if(data){ 
-          res.status(200);
-          res.send({
-            question: data
+    
+          res.status(200).send({
+            obj: data
           });
 
         }else{
-          res.status(500);
-            res.end("Não foi possivel obter pergunta"); 
+          res.status(500).send({
+            error: "Não foi possivel obter pergunta"
+          }); 
         } 
       });
     }
+
   }
 
 });

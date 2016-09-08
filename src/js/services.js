@@ -39,6 +39,62 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
         return deferred.promise; 
     };
  
+
+    userApi.getQuestionData = function(q){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+      if(q){
+        $http.get('/api/question/'+q)
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+              if(res.status === 200){ 
+                if(res.data){ 
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      }
+
+      return deferred.promise; 
+    };
+
+    userApi.setQuestionData = function(id,last){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+
+      if(id && last){
+        $http.get('/api/question/',{numer: id, valor: last})
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+              if(res.status === 200){  
+                  deferred.resolve(); 
+              } 
+             
+          }, function error(res){
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      }
+
+      return deferred.promise; 
+    };
+ 
     return userApi;
  
 }]);

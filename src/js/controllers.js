@@ -30,6 +30,15 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
 
     //refazendo logica menos bagunçada
     $rootScope.userData      = {}; 
+     $rootScope.userScore;
+     $rootScope.userName;
+     $rootScope.userLastQ;
+     $rootScope.moveMarker = 0;
+
+    $rootScope.moveNext = function(next){
+     $rootScope.moveMarker = next; 
+     return $rootScope.moveMarker;
+    };
 
     $rootScope.userGetData = function(){
       // return ApiService.getUserData();
@@ -44,7 +53,7 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
         promise.then(function resolveHandler(user){ 
           $rootScope.userName  = user.name;
           $rootScope.userScore = parseInt(user.score);
-          $rootScope.userLastQ = parseInt(user.lastQ);
+          $rootScope.userLastQ = parseInt(user.lastQ); 
 
         }, function rejectHandler(error){ 
           $rootScope.error = true;
@@ -52,11 +61,44 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cooki
         }); 
 
     }; 
-    console.log($rootScope.userLastQ);
+
+    $rootScope.loadQuestionData = function(data){
+       var promise = ApiService.getQuestionData(data);
+        promise.then(function resolveHandler(question){ 
+          $rootScope.questionData  = question; 
+          // console.log(question);
+
+        }, function rejectHandler(error){ 
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+    };
+
+    $rootScope.writeQuestionData = function(num,last){
+
+      if(num && last){
+
+       var promise = ApiService.setQuestionData(num,last);
+        promise.then(function resolveHandler(){ 
+          return true;
+
+        }, function rejectHandler(error){ 
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+      }
+
+    };  
+
     //assistinda valores 
+    $rootScope.$watch('moveMarker'); 
     $rootScope.$watch('isQuestion'); 
-    $rootScope.$watch('userLastQ'); 
-    $rootScope.$watch('userScore'); 
+    $rootScope.$watch('userLastQ', function(value){
+      return $rootScope.userLastQ;
+    }); 
+    $rootScope.$watch('userScore');  
 
 }]);
 

@@ -65,18 +65,22 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
     return{
       restrict: 'EAC',
       replace: true,
+      transclude: true,
       scope: {
         score: '=score',
-        boardData: '=boardData',
-        lastQuestion: '=lastQuestion'
+        boardData: '=boardData' 
       },
       template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
+      // controller: function(scope, element,attribute){
+      //   // $rootScope.moveEl = function(){
+      //   //   console.log(1);
+      //   // };
+      // },
       link: function(scope, element, attribute){
-            // console.log(element);
+   
         var w, h, px, py, loader, manifest, board, house, eHouse,shape, profile, loadHouse, question,user;
  
-        drawBoard(); 
-        // var questions = BoardService.getQuestion();  
+        drawBoard();   
         function drawBoard(){
           if (scope.stage) {
               scope.stage.autoClear = true;
@@ -93,61 +97,76 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
             {src: "current-marker.png", id: "currentMarker"},
             {src: "house-marker.png", id: "marker"},
             {src: "board.png", id: "board"}
-          ];
-          loader = new createjs.LoadQueue(false);
+          ]; 
+
+          loader = new createjs.LoadQueue(false);  
+          loader.addEventListener("progress", handleProgress);
           loader.addEventListener("complete", handleComplete);
           loader.loadManifest(manifest, true, "/dist/assets/");
+ 
         }
-        function createPaths(obj){
-          var item = [];
-          var indice = 0; 
-          var markerStartX = 60;
-          var markerStartY = 210;
-          var total = Object.keys(obj).length;
+        function handleProgress(){
+         //on progress, before loading
+          
 
-          for (var i = 0; i < total; i++) {
-              item[i] =  new createjs.Shape();
-              item[i].x =  markerStartX;
-              item[i].y = markerStartY;
+        }
+        function handleComplete(){  
+          
+          board        = new createjs.Shape();
+          var alertLoad    = new createjs.Shape();
+          var alertLoadTxt = new createjs.Text("Carregando informações", "22px Arial", "#c00");
+          var palcoW = w /2;
+          var palcoH = h / 2;
+          var palcoX = (w / 2) / 2;
+          var palcoY = (h / 2) / 2;
+          var imgBoard = loader.getResult("board");     
+
+          board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768); 
+
+          scope.stage.addChild(board);   
+
+
+          if($rootScope.moveMarker !== 0){
+            var prev = parseInt($rootScope.moveMarker) -1;
+            var c = circle.$rootScope.moveMarker;
+            var cX = c.x;
+            var cY = c.y;
+            marker.x = cX;
+            marker.y = cY;
+
           }
 
-          return item
+           setTimeout(function () {  
+             boardStart();  
+          },4000); 
+
+           // moveMarker();
+
+          createjs.Ticker.timingMode = createjs.Ticker.RAF;
+          createjs.Ticker.addEventListener("tick", tick);   
+        
         }
+        function loadingBoard(){
 
-        function getCurrentUser(){   
-          var user = {};
-          user.score = $rootScope.userScore;
-          user.lastQ = $rootScope.userLastQ;
+          // scope.stage.addChild(alertLoad, alertLoadTxt);  
 
-          return user;
+
         }
-        function handleComplete(){ 
-          var userData = getCurrentUser();
+        function boardStart(){
+        
+          var special    = false;  
+          var last        =  $rootScope.userLastQ;
+          if(last === 17){
+            var current = 1;
+          }else{
+            var current     =  $rootScope.userLastQ + 1;
 
-          //tabuleiro
-          board = new createjs.Shape();  
-          var imgBoard = loader.getResult("board");
-            board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768);
-            scope.stage.addChild(board); 
-
-            var special    = false;  
-            var lastResp   = userData.lastQ;
-            if(lastResp === 1){
-              var current = 1;
-            }else if(lastResp === 17){
-              //apenas para user admin e enquanto todas questões não estão na api
-            } 
-            else{
-               var current    = lastResp + 1;
-            }
-           
-            console.log(lastResp);
-             
-
+          }
+            
             for (var i = 1; i < 32; i++) { 
 
               if(i < 7){ 
-                 createMarker(current,1,i,special);
+                 createMarker(1,i,special);
 
               }else if(i > 6 && i < 13){  
                 if(i === 12){
@@ -156,15 +175,15 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
                   special = false;
                 }
                  
-                 createMarker(current,2,i,special); 
+                 createMarker(2,i,special); 
                              
               }else if(i > 13 && i < 20){
                 special = false;
-                 createMarker(current,3,i,special); 
+                 createMarker(3,i,special); 
                 
               }else if(i > 19 && i < 22){    
                 special = false;
-                 createMarker(current,4,i,special);     
+                 createMarker(4,i,special);     
 
               
               }else if(i > 22 && i < 29){   
@@ -173,32 +192,40 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
                 } else{
                   special = false;   
                 }
-                 createMarker(current,5,i,special);  
+                 createMarker(5,i,special);  
 
               } else{
                 if(i > 28 && i < 33){
 
                   special = false; 
-                 createMarker(current,6,i,special); 
+                 createMarker(6,i,special); 
                 } 
 
               }
 
             }
-
-           loadQuestion(current);
-           createjs.Ticker.timingMode = createjs.Ticker.RAF;
-           createjs.Ticker.addEventListener("tick", tick); 
-        
+            
+            loadQuestion(current);
+          
         }
 
-        function createMarker(current,lines,index,special){
+        function createMarker(lines,index,special){
+
+          
           var offsetx     = (w / 3);
           var offsety     = Math.round(h / 3);
           var color       = "white";
           var circle      = new createjs.Shape();
           var currentMark = loader.getResult("currentMarker");
-          var marker      = new createjs.Shape(); 
+          var marker      = new createjs.Shape();  
+          var last        =  $rootScope.userLastQ;
+          if(last === 17){
+            var current     =  1;    
+          }else{
+            var current     =  $rootScope.userLastQ + 1;
+          }
+          
+         
 
           var line1x = Math.round(offsetx) /  6;
           var line2y = Math.round(offsety) /  6;
@@ -243,7 +270,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
                 var y =  offsety + ( Math.round(line2y) * (10 - 7) ) + 10;
                }
                 var x = x3 + (19 * 2) * (19 - 14) + 19;
- // console.log(y);
+
             break;
             case 5:
               var y  =  offsety + ( Math.round(line2y) * (10 - 7) ) + 10;
@@ -281,24 +308,33 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           circle.y = y;
           circle.name = index; 
           circle.on("click", handleMarkClick);
+          circle.on("stagemousemove", handleData);
           
-          scope.stage.addChild(circle);  
-
+          scope.stage.addChild(circle);   
 
           if(current === index){
-
             marker.graphics.beginFill("#e8a612").drawRoundRect(0,0,31,45,17);
+            marker.name = current;
             marker.x = circle.x - 16;
             marker.y = circle.y - 20;
             scope.stage.addChild(marker); 
           }
+
           
         }
 //************************************
 //  carrega a pegunta
 //************************************
-        function loadQuestion(q){  
-          if(q){
+        function loadQuestion(q = ''){ 
+    
+          if(q){  
+           $rootScope.loadQuestionData(q);   
+
+            setTimeout(function () { 
+              $rootScope.isQuestion   = true;  
+            },500);  
+
+            // $rootScope.isQuestion = true; 
             // $http.get('/api/question/'+q)
             //   .then(function success(res){ 
             //     if(res.data.question){
@@ -311,18 +347,19 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           }
 
         }
-        function getUserObj(){
+        function handleData(){
+          // console.log($rootScope.userLastQ);
         }
 //************************************
 //  handle clique na casa
 //************************************
-        function handleMarkClick(){
+        function handleMarkClick(){ 
           var house     = this;
           var houseName = house.name;
           var alert     = new createjs.Shape();
           var next      = houseName + 1;
-          var prev      = houseName - 1;
-          var question  = scope.boardData.questions.data;
+          var prev      = $rootScope.userLastQ;
+          var question  = scope.boardData.questions;
 
           if(prev !==0 && !question[prev].Respondida){
             //Ops pulando casas
@@ -346,24 +383,19 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 //  handle clique na casa errada
 //************************************
         function handleWrongHouse(house){
-          // var alert = new createjs.Shape(); 
-          //   alert.graphics.beginFill("#fff").drawRoundRect(0,0, 500, 180, 10);
-          //   txt = new createjs.Text("Responda a "+house+"° pergunta para prosseguir!", "22px Arial", "#c00");
-          //   alert.x = 300;
-          //   alert.y = 300;
-          //   txt.x   = 350;
-          //   txt.y   = 350;
-          //   alert.on('click',function(event) {
-          //     scope.stage.removeChild(alert, txt);
-          //     moveMarker(next);
-          //   });
-          //   scope.stage.addChild(alert,txt);
+         alert("Responda a pergunta"+ house+ "antes de prosseguir");
         }
 //************************************
 //  move marcador
 //************************************
-        function moveMarker(q){
-         return loadQuestion(q);
+        function moveMarker(){
+          console.log(1);
+         if($rootScope.moveMarker){
+          console.log("move")
+          return loadQuestion($rootScope.userLasQ);
+         }else{
+          console.log("no move");
+         }
         }
 
         $rootScope.nextQuestion = function(q){
@@ -380,7 +412,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
         function onAnimationComplete(){
           console.log(this);
         }
-        function tick(event){
+        function tick(event){ 
           scope.stage.update(event);
         }
 
@@ -391,7 +423,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 
 
 quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($rootScope, $http,BoardService){
-  return{
+  return{  
       templateUrl: '../../views/templates/question_copy.html',
       scope: {
         questionData: '=questionData'
@@ -408,69 +440,65 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
           scope.answered = question.Respondida;
           scope.options  = question.Alternativas; 
           scope.correct  = question.ValorAlternativaCorreta; 
-        }
-          scope.choose = false;
+
+          $rootScope.userLastQ = scope.id;
+        } 
 
         scope.selectOption = function(){
           var el       = this; 
-          escolha  = el.alt.Valor;
           var resposta = el.$index; 
+          escolha      = el.alt.Valor;
+          // scope.answered = false;
+          // if(scope.answered){
+          //   alert("Ops! ja respondida, clique em pronto para prosseguir");
+          // }else{
+              if(escolha === scope.correct){
+                scope.choose = escolha;
+                scope.answered = true;
 
-          if(escolha === scope.correct){
-            //yep acertou!
-            $rootScope.activeScore = scope.score;
-            $rootScope.userData.userScore +=  parseInt($rootScope.activeScore);
-            console.log("yep");
-            console.log("Acertou, mais "+scope.score+" pontos");
-          } else{
-            console.log("ounch");
-            console.log("reposta certa seria: "+scope.correct);
-          }
-          scope.answered = true;
-          $rootScope.activeHouse = scope.id;
+                  $rootScope.userScore +=  parseInt(scope.score);
+                  // $rootScope.alertWin(userScore);
+                  alert("Yep! Resposta certa, você ganhou mais: "+scope.score +"pontos. Seu total atual é de: "+$rootScope.userScore);
+              } else{
+                  alert("Ounch! Resposta certa seria: "+scope.correct);
+              } 
 
-          $http.post('/api/question', {numero: scope.id, valor: escolha}, 
-            function success(res) {
-              if(res.status === 200){
-                console.log("ok, move next");
-              }            
-          }, function error(res){
-
-              if(res.status === 500){
-                console.log("erro ao gravar a pergunta");
-              }     
-
-          });
-
-          // console.log(el); 
         }
 
-        function loadQuestion(q){  
-          if(q){
-            console.log(q);
-            console.log($rootScope.userData.userScore);
-            $rootScope.isLoading = true;
-            $http.get('/api/question/'+q)
-              .then(function success(res){ 
-                $rootScope.isLoading = false;
-                if(res.data.question){
-                  $rootScope.isQuestion = true;  
-                  $rootScope.questionData = res.data.question;  
-                }
-              }, function error(res){ 
-                  console.log("erro ao obter pergunta");
-              }); 
+
+        function loadQuestion(q = ''){ 
+    
+          if(q){  
+           $rootScope.loadQuestionData(q);   
+
+            setTimeout(function () { 
+              $rootScope.isQuestion   = true;  
+            },500);  
+
+            // $rootScope.isQuestion = true; 
+            // $http.get('/api/question/'+q)
+            //   .then(function success(res){ 
+            //     if(res.data.question){
+            //       $rootScope.isQuestion = true;  
+            //       $rootScope.questionData = res.data.question;  
+            //     }
+            //   }, function error(res){ 
+            //       console.log("erro ao obter pergunta");
+            //   }); 
           }
 
         }
-        scope.choose = function(){
-          if(!escolha){
-            console.log("responda a pergunta");
+ 
+        scope.choose = function(){ 
+          if(escolha !== ''){
+            $rootScope.isQuestion = false;  
+            var c = circle.next;
+            var next = parseInt(scope.id) + 1;
+            return loadQuestion(next);
+           //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
+          }else{
+              alert("Escolha uma das alternativas");
           }
-          var next = parseInt($rootScope.activeHouse) + 1;
-          console.log(next);
-          $rootScope.isQuestion = false;
-          return loadQuestion(next);
         }
       }
 
