@@ -1,16 +1,22 @@
 <!-- # Tela Saudações -->
-<div class="box-content" set-height>
-	<div class="logoquest"></div>
-	<div class="logoastra"></div>
+<div class="box-content instrucoes" set-height>
 	<div ng-show="error">{{errorMessage}}</div>
-	<div class="info">
-	 <div class="instrucoes">
+	<div class="header">
+		<img src="dist/assets/logoquest.png" >
+		<img src="dist/assets/logoastra.png" >
+	</div> 
+	<div class="box-infos">
 
-	 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquam erat eget dolor faucibus, sed ullamcorper ex volutpat. Mauris ex ante, vehicula quis finibus quis, lacinia a lectus. Fusce eros metus, consequat at massa interdum, ornare mollis mauris. Aenean eleifend mauris nisl, tincidunt tempus urna pellentesque eu. Curabitur rutrum lacus sed lacus scelerisque consequat. Phasellus massa sapien, commodo ac blandit sed, rutrum et magna. Quisque varius imperdiet ante interdum pretium. Integer convallis vitae neque sed convallis. Praesent dignissim ex eu odio sagittis, a vestibulum leo egestas.</p>
+		 <div class="dialogos">
 
-	 </div>
+		 	<p>Olá Fulano de Tahl, meu nome é Olavo Paribe e a pedido da equipe de Olaparibe, serei seu Guia nessa expedição pelas sete maravilhas do mundo, que começa aqui no Rio de Janeiro, com Olaparibe.</p>
+		 	<p>Para chegarmos até a próxima etapa, teremos que encarar todos os desafios do nosso mapa.</p>
+
+		 </div>
+
+	 	<div class="personagem"> <img src="../../../dist/assets/personagem.png" ></div>    
+		
+	    <button type="button" ng-click="go('mais-sobre')">proximo</button>  
+	  
 	</div>
-    <button type="button" class="btn btn-default" ng-click="go('mais-sobre')">proximo</button>  
-
- <div class="personagem"> <img src="../../../dist/assets/personagem.png" ></div>    
 </div>

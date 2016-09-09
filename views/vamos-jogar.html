@@ -1,13 +1,22 @@
-<!-- # Vamos jogar -->
-<div class="box-content" set-height>
-	<div class="logoquest"></div>
-	<div class="logoastra"></div>
+<!-- # Tela Saudações -->
+<div class="box-content instrucoes" set-height>
 	<div ng-show="error">{{errorMessage}}</div>
-	<div class="info">
-		 <div class="instrucoes">
-		 	<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent aliquam erat eget dolor faucibus, sed ullamcorper ex volutpat. Mauris ex ante, vehicula quis finibus quis, lacinia a lectus. Fusce eros metus, consequat at massa interdum, ornare mollis mauris. Aenean eleifend mauris nisl, tincidunt tempus urna pellentesque eu. Curabitur rutrum lacus sed lacus scelerisque consequat. Phasellus massa sapien, commodo ac blandit sed, rutrum et magna. Quisque varius imperdiet ante interdum pretium. Integer convallis vitae neque sed convallis. Praesent dignissim ex eu odio sagittis, a vestibulum leo egestas.</p>
-		 </div>
+	<div class="header">
+		<img src="dist/assets/logoquest.png" >
+		<img src="dist/assets/logoastra.png" >
+	</div> 
+	<div class="box-infos">
+
+	 <div class="dialogos">
+
+	 	<p>Lembre-se. Esse é apenas o início da nossa jornada. Aindatemos mais  seis maravilhas a serem conquistadas pelo mundo antes de conquistarmos a oitava, o Olaparibe.
+	 	</p>
+
+	 	<p>Você está pronto?</p>
+
 	 </div>
-    <button type="button" class="btn btn-default" ng-click="go('game')" >Vamos nessa</button>
-     <div class="personagem"> <img src="../../../dist/assets/personagem.png" ></div>     
+ 	<div class="personagem"> <img src="../../../dist/assets/personagem.png" ></div>    
+	
+    <button type="button" ng-click="go('game')">vamos nessa</button>  
+  </div>
 </div>

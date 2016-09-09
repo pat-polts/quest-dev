@@ -26,6 +26,7 @@ body{
 		height: 768px;
 		margin: 0px auto;
 		font-family: inherit;
+		overflow: hidden;
 	}
 }
 
@@ -36,6 +37,7 @@ body{
 	background: url('../../../dist/assets/bg-2.png') top center no-repeat;
     background-size: 100% 100%;
     image-rendering: auto;
+	.border(1px, solid, #f4f4f4);
 }
 .info{
 	min-height: 180px;
@@ -63,12 +65,84 @@ body{
 	.form-elements;
 
 }
+.instrucoes{
+	background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important; 
 
-canvas{
-	z-index: 101;
-	position: relative;
+	.header{
+		position: relative;
+		width: 100%;
+		text-align: center;
+		height: auto;
+		clear: both;
+
+		img{
+			float: left;
+			width: auto;
+			height: auto;
+			margin: 2em 0px 0px 4em;
+		}
+
+		img:nth-child(2){
+			float: right;
+			margin: 3.8em 4em 0px 0px;
+		}
+	}
+
+	.box-infos{
+		width: 100%;
+		height: auto;
+		position: relative;
+
+		.dialogos{
+			width: 600px;
+			float: right;
+			margin: 2em 4em 0px 0px; 
+			clear: both;
+		}
+
+		.personagem{
+			position: absolute;
+			left: 0px;
+			bottom: -6em;
+		}
+
+		button{
+			width: 320px;
+			margin: 64% 5% 0 auto;
+		}
+	}
+}
+ 
+
+.dialogos{
+	background: #fff;
+	width: auto;
+	height: auto;
+	padding: 5em 4em;
+
+		p{
+			font-size: 20px;
+			color: @base-blue;
+			margin: 0px 0px 1em 0px;
+			text-align: left;
+			font-weight: 600;
+		}
+
+		p:last-child{
+			margin-bottom: 0px;
+		}
+
+	.border(3px, solid, @base-blue);
+	.border-radius(2em);
 }
 
+canvas{
+	position: relative;
+	z-index: 101;
+	width: 1024px;
+	height: 768px;
+}
+/* */
 .loading{
 	background: url('../../../dist/assets/loading01.png');
 	width: 100%;
@@ -76,13 +150,6 @@ canvas{
 	z-index: 120;
 }
 
-.instrucoes{
-	border: 3px solid @base-blue;
-	width: 45%;
-    margin: 0 auto;
-    padding: 2em;
-	.border-radius(2em);
-}
 .pergunta{ 
 	position: absolute; 
 	background: #f2f2f2;
