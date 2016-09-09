@@ -171,8 +171,6 @@ router.post('/ranking',function(req,res,next){
         } 
       });
     }
-
-  }
   
 });
 
