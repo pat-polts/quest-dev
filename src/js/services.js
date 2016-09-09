@@ -182,9 +182,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         })
         .error(function() {
           $rootScope.error = true; 
-          $rootScope.errorMessage = "Efetue login";   
+          $rootScope.errorMessage = "Erro ao obeter sessão, efetue o login novamente.";   
           deferred.reject();
-          return $location.path('/login');
+          
         }); 
 
           return deferred.promise;
