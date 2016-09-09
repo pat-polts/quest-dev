@@ -36,7 +36,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       templateUrl: '../../views/vamos-jogar.html',
       restricted: true
     })
-    .when('/game', {
+    .when('/jogar', {
       templateUrl: '../../views/game_copy.html',
       restricted: true
     }) 
@@ -44,22 +44,32 @@ quest.config(function ($routeProvider,$locationProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthService) { 
+
+quest.run(function ($rootScope, $location, $route, AuthService) { 
+var logged;
+
+  var promisse = AuthService.logged();
+    promisse.then(function success(){
+      logged = true;
+    }, function error(){
+      logged = false;
+    });
 
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
-      if(next && next.$$route && next.$$route.restricted){  
-          if(!AuthService.logged() === true){ 
-            $location.path('/login'); 
-           } 
+      if(next && next.$$route && next.$$route.restricted){
+        if(!logged){ 
+          $location.path('/login'); 
+        } 
       }
   });
+
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){       
-          if(!AuthService.logged()){ 
-             $location.path('/login'); 
-           } 
+        if(next && next.$$route && next.$$route.restricted){      
+        if(!logged){ 
+          $location.path('/login'); 
+        } 
       }
   });
  

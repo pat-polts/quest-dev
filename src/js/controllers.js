@@ -121,7 +121,7 @@ quest.controller('authController',
         return false;
       }
     };
-
+   
     $rootScope.login = function () {
 
       // initial values
@@ -130,8 +130,18 @@ quest.controller('authController',
       // $rootScope.isLoading = true;
 
       if($rootScope.checkFields()){
+         
+         var promise =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+            promise.then(function resolveHandler(){ 
+              return true;
 
-        return AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+            }, function rejectHandler(error){ 
+              $rootScope.error = true;
+              $rootScope.errorMessage = error;
+              return false;
+            }); 
+
+      
 
       }else{
         $rootScope.error = true;

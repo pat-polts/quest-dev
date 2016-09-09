@@ -74,7 +74,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           console.log(next);
         }
       }],
-      template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
+      template: '<canvas id="game" width="1024" height="768"></canvas>',
       // controller: function(scope, element,attribute){
       //   // $rootScope.moveEl = function(){
       //   //   console.log(1);
@@ -511,3 +511,20 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
 
   }
 }]); 
+
+
+
+quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/erro.html',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );        

@@ -8,14 +8,6 @@ var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
 var redisStore = require('connect-redis')(session);
 
-router.get('/login', function(req, res, next) {
-    var env = process.env.API_END_POINT;
-    res.status(200).json.Stringfy({
-      api: env
-    });
-    next();
-});
-
 router.get('/questions', function(req, res, next) {
   if(req.path !== '/questions' && req.route !== '/questions'){
       res.end();

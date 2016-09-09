@@ -1,5 +1,18 @@
 <!-- # Tela Login  --> 
-<div ng-if="error" >{{errorMessage}}</div> 
-<question ng-if="isQuestion"></question> 
-<div ng-if="special">casa especial</div> 
-<board score="score" active-house="activeHouse" answer="answer" correct-answer="correctAnswer" board-data="boardData"></board>
+
+<msg-erro>{{errorMessage}}</msg-erro> 
+<div ng-init="loadUserData()" ng-model="moveMarker">
+	
+	<question ng-if="isQuestion" question-data="questionData"></question> 
+
+	<div ng-if="special">casa especial</div> 
+
+	<div class="profile">
+		<img src="dist/assets/img-maria-desenho.png">
+		<p ng-model="userName">{{userName}}</p>
+		<p>{{userScore}} pts</p>
+	</div>  
+
+	<board board-data="boardData"></board>
+
+</div>

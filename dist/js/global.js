@@ -36,7 +36,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       templateUrl: '../../views/vamos-jogar.html',
       restricted: true
     })
-    .when('/game', {
+    .when('/jogar', {
       templateUrl: '../../views/game_copy.html',
       restricted: true
     }) 
@@ -44,22 +44,32 @@ quest.config(function ($routeProvider,$locationProvider) {
       redirectTo: '/login' 
     });
 });
-quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthService) { 
+
+quest.run(function ($rootScope, $location, $route, AuthService) { 
+var logged;
+
+  var promisse = AuthService.logged();
+    promisse.then(function success(){
+      logged = true;
+    }, function error(){
+      logged = false;
+    });
 
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
-      if(next && next.$$route && next.$$route.restricted){  
-          if(!AuthService.logged() === true){ 
-            $location.path('/login'); 
-           } 
+      if(next && next.$$route && next.$$route.restricted){
+        if(!logged){ 
+          $location.path('/login'); 
+        } 
       }
   });
+
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
-        if(next && next.$$route && next.$$route.restricted){       
-          if(!AuthService.logged()){ 
-             $location.path('/login'); 
-           } 
+        if(next && next.$$route && next.$$route.restricted){      
+        if(!logged){ 
+          $location.path('/login'); 
+        } 
       }
   });
  
@@ -215,27 +225,34 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         }); 
       };
 
+    
 
           // console.log(loginApi);
 
-      userAuth.login = function (username, password) {  
-        preventDefault(e);
-        var credentials = {Login: username, Senha: password };
-        var loginApi;
+      userAuth.login = function (username, password) {   
+        var credentials = {Login: username, Senha: password }; 
+        var deferred = $q.defer();
 
         $rootScope.isLoading = true;
 
         $http.post('/auth/login', credentials)
-        .then(function success(res){ 
-          $rootScope.isLoading = false;  
-          
-          return  $location.path('/');  
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+            
+            if(res.status === 200){
 
-        }, function error(res){
-          $rootScope.error = true; 
-          $rootScope.errorMessage = "Erro inesperado!";  
-        });       
-   
+              deferred.resolve("logado");
+            }
+
+          }, function error(res){
+            $rootScope.error = true; 
+            $rootScope.errorMessage = "Erro inesperado!";  
+
+            if(res.status === 500){
+              
+              deferred.reject("deslogado");
+            }
+          });       
       }; 
 
      userAuth.logged = function(){ 
@@ -247,7 +264,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           $rootScope.isLoading = false;  
             if(res.status === 200){
             
-               deferred.resolve(true);
+               deferred.resolve('sim');
               
             } 
         }, function error(res){
@@ -255,7 +272,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.error = true; 
             $rootScope.errorMessage = res.data.error;  
           }
-          deferred.reject(false);
+          deferred.reject('nao');
         });     
 
         return deferred.promise;
@@ -500,7 +517,7 @@ quest.controller('authController',
         return false;
       }
     };
-
+   
     $rootScope.login = function () {
 
       // initial values
@@ -509,8 +526,18 @@ quest.controller('authController',
       // $rootScope.isLoading = true;
 
       if($rootScope.checkFields()){
+         
+         var promise =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+            promise.then(function resolveHandler(){ 
+              return true;
 
-        return AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+            }, function rejectHandler(error){ 
+              $rootScope.error = true;
+              $rootScope.errorMessage = error;
+              return false;
+            }); 
+
+      
 
       }else{
         $rootScope.error = true;
@@ -659,7 +686,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           console.log(next);
         }
       }],
-      template: '<canvas id="game" width="1024" height="768" set-height></canvas>',
+      template: '<canvas id="game" width="1024" height="768"></canvas>',
       // controller: function(scope, element,attribute){
       //   // $rootScope.moveEl = function(){
       //   //   console.log(1);
@@ -1096,3 +1123,20 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
 
   }
 }]); 
+
+
+
+quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/erro.html',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );        

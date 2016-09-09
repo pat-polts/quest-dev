@@ -12,20 +12,22 @@ var router       = express.Router();
 var session      = require('express-session');
 var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
-var cli = redis.createClient();
+
+var port         = process.env.PORT || 3000; 
+var hour         = 3600000
+var exp          = new Date(Date.now() + hour); 
 
 if(process.env.REDIS_URL){
-  var credentials = {url: process.env.REDIS_URL, ttl :  260};
-}else{
-  var credentials = {hots: 'localhost', port: 6379, ttl :  260};
+  var options = {url: process.env.REDIS_URL, expire: exp };
+}else{ 
+  var options = {host: 'localhost', port: 6379, expire: exp};
 }
+
+var cli = redis.createClient({options});
 
 //routes
 var userAuth = require('./routes/authenticate.js');
 var api      = require('./routes/api.js');
-var port     = process.env.PORT || 3000; 
-var hour     = 3600000
-var exp      = new Date(Date.now() + hour);
 var helmet   = require('helmet');
 
 app.use(helmet());
@@ -39,7 +41,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(session({  
-  store: new redisStore({ credentials}),
+  store: new redisStore({ cli }),
   secret: process.env.APP_SECRET, 
   httpOnly: true,
   resave: false,
@@ -68,6 +70,11 @@ app.get('/', function(req, res, next) {
 });
 
 // Catch all errors
+
+cli.on("error", function (err) {
+    console.log("Error " + err);
+});
+
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
   err.status = 404;

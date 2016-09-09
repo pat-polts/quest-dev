@@ -148,27 +148,34 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         }); 
       };
 
+    
 
           // console.log(loginApi);
 
-      userAuth.login = function (username, password) {  
-        preventDefault(e);
-        var credentials = {Login: username, Senha: password };
-        var loginApi;
+      userAuth.login = function (username, password) {   
+        var credentials = {Login: username, Senha: password }; 
+        var deferred = $q.defer();
 
         $rootScope.isLoading = true;
 
         $http.post('/auth/login', credentials)
-        .then(function success(res){ 
-          $rootScope.isLoading = false;  
-          
-          return  $location.path('/');  
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+            
+            if(res.status === 200){
 
-        }, function error(res){
-          $rootScope.error = true; 
-          $rootScope.errorMessage = "Erro inesperado!";  
-        });       
-   
+              deferred.resolve("logado");
+            }
+
+          }, function error(res){
+            $rootScope.error = true; 
+            $rootScope.errorMessage = "Erro inesperado!";  
+
+            if(res.status === 500){
+              
+              deferred.reject("deslogado");
+            }
+          });       
       }; 
 
      userAuth.logged = function(){ 
@@ -180,7 +187,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           $rootScope.isLoading = false;  
             if(res.status === 200){
             
-               deferred.resolve(true);
+               deferred.resolve('sim');
               
             } 
         }, function error(res){
@@ -188,7 +195,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.error = true; 
             $rootScope.errorMessage = res.data.error;  
           }
-          deferred.reject(false);
+          deferred.reject('nao');
         });     
 
         return deferred.promise;

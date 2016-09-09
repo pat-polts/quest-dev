@@ -1,14 +1,18 @@
 <!-- # Tela Login  -->
 <div class="box-content login" set-height>
 
-    <div ng-if="error" class="error">{{errorMessage}}</div>
+    <div ng-if="error" class="error">
+        <p class="error-msg">{{errorMessage}}</p>
+    </div>
 
     <div class="login-logo">
         <img src="dist/assets/logoastra.png" alt="Astraxeneca Logo">
     </div>
+    
     <div class="login-logo">
         <img src="dist/assets/logoquestlogin.png" alt="Quest Logo">
     </div>
+
     <form class="form-login" ng-submit="login()"> 
         <label for="username"> 
           <input type="text" name="username" ng-model="loginForm.username" required placeholder="nome de usuário">
