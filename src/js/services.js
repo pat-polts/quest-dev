@@ -152,7 +152,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           // console.log(loginApi);
 
       userAuth.login = function (username, password) {  
- 
+        preventDefault(e);
         var credentials = {Login: username, Senha: password };
         var loginApi;
 
@@ -176,32 +176,43 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var deferred = $q.defer();
 
         $http.get('/auth/status')
-          
-        .success(function(res){ 
-          deferred.resolve();
-        })
-        .error(function() {
-          $rootScope.error = true; 
-          $rootScope.errorMessage = "Erro ao obeter sessão, efetue o login novamente.";   
-          deferred.reject();
-          
-        }); 
+        .then(function success(res){ 
+          $rootScope.isLoading = false;  
+            if(res.status === 200){
+            
+               deferred.resolve(true);
+              
+            } 
+        }, function error(res){
+          if(res.data.error){           
+            $rootScope.error = true; 
+            $rootScope.errorMessage = res.data.error;  
+          }
+          deferred.reject(false);
+        });     
 
-          return deferred.promise;
+        return deferred.promise;
 
       };
 
       userAuth.logout = function(){ 
-        $http.get('/auth/logout')
-          .then(function success(res){ 
-            $rootScope.isLoading = false;  
-            if(!res.data.logged){
+        var deferred = $q.defer();
 
-              return $location.path('/login');
+        $http.get('/auth/logout')
+        .then(function success(res){ 
+            $rootScope.isLoading = false;  
+              if(res.status === 200){
+                 deferred.resolve();
+              } 
+          }, function error(res){
+            if(res.data.error){           
+              $rootScope.error = true; 
+              $rootScope.errorMessage = res.data.error;  
             }
-          }, function error(res){  
-             console.log("erro ao deslogar");
-          });      
+            deferred.reject();
+          }); 
+
+        return deferred.promise;    
 
       };
  

@@ -12,12 +12,12 @@ var router       = express.Router();
 var session      = require('express-session');
 var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
-
+var cli = redis.createClient();
 
 if(process.env.REDIS_URL){
-  var cli = redis.createClient(process.env.REDIS_URL);
+  var credentials = {url: process.env.REDIS_URL, ttl :  260};
 }else{
-  var cli = redis.createClient();
+  var credentials = {hots: 'localhost', port: 6379, ttl :  260};
 }
 
 //routes
@@ -39,16 +39,15 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(session({  
-  store: new redisStore({ client: cli}),
+  store: new redisStore({ credentials}),
   secret: process.env.APP_SECRET, 
   httpOnly: true,
-  resave: true,
+  resave: false,
   saveUninitialized: true,
   cookie: { 
     secure: true,
     httpOnly: true,
-    domain: process.env.HOST || 'localhost',
-    path: '/' 
+    expires: exp
   }
 })); 
 

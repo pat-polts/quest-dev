@@ -37,16 +37,21 @@ router.post('/login', function(req, res, next) {
  
     httpClient.post(api, args, function (data, response) {
       if(data){    
-          req.session.token =  data;  
+        req.session.destroy(function(){
+          //
+        });
+        var sess = {token: data};
+          req.session.key =  sess;  
 
-          req.session.save(function(err){
-            if(err)res.end(err);
 
               res.status(200).send({
                 logged: true
               });
 
-          });
+          // req.session.save(function(err){
+          //   if(err)res.end(err);
+
+          // });
          
       }else{
         res.status(500).send({
@@ -66,31 +71,32 @@ router.get('/session', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next){
-  if(req.path !== '/logout'){
-      res.end();
-    }
-  if(req,session){ 
-    req.session.destroy(function(err) {
-      if(err) res.end(err);
-       res.status(200).send({
-          logged: false
+  if(req.session.key){ 
+    req.session.destroy(function() {
+        res.status(200).send({
+          msg: "Usuario deslogado"
         });
-
+    });
+  }else{
+      req.session.destroy(function() {
+        res.status(200).send({
+          msg: "Usuario deslogado"
+        });
     });
   }
 });
 
 router.get('/status', function(req, res, next){ 
 
-var userLog =  req.session.token; 
-  if(userLog){  
-        res.status(200).send({
-            logged: true
-        }); 
+  var userLog = req.session.token; 
+  if(req.session.key){  
+    res.status(200).send({
+      msg: 'usuario logado'
+    }); 
   }else{  
-        res.status(500).send({
-            logged: true
-        }); 
+    res.status(500).send({
+      error: 'usuario não logado'
+    }); 
   }
 
 });

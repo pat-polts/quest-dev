@@ -49,8 +49,7 @@ quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthServic
   $rootScope.$on('$routeChangeStart',
     function (event, next, current) {
       if(next && next.$$route && next.$$route.restricted){  
-          if(!AuthService.logged()){
-          event.preventDefault(); 
+          if(!AuthService.logged() === true){ 
             $location.path('/login'); 
            } 
       }
@@ -58,8 +57,7 @@ quest.run(function ($rootScope, $location, $route, $http, $rootScope, AuthServic
   $rootScope.$on('$stateChangeStart',
     function (event, next, current) { 
         if(next && next.$$route && next.$$route.restricted){       
-          if(!AuthService.logged()){
-          event.preventDefault(); 
+          if(!AuthService.logged()){ 
              $location.path('/login'); 
            } 
       }
