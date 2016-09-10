@@ -27,3 +27,5 @@
 
 <p>Atualizar pacotes</p>
 <code>npm update && bower update</code>
+
+<p>add npm session store</p>
