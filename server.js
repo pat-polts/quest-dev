@@ -7,33 +7,31 @@ var bodyParser   = require('body-parser');
 var mongoose     = require('mongoose');
 var hash         = require('bcrypt-nodejs');
 var path         = require('path'); 
-var app          = express();
-var router       = express.Router();
 var session      = require('express-session');
 var redis        = require("redis");
 var redisStore   = require('connect-redis')(session);
+var MemoryStore = require('session-memory-store')(session);
+
+var app          = express();
+var router       = express.Router();
 
 var port         = process.env.PORT || 3000; 
-var hour         = 3600000
+var hour         = 3600000; 
+var check        = 1440;
 var exp          = new Date(Date.now() + hour); 
 
-if(process.env.REDIS_URL){
-  var options = {url: process.env.REDIS_URL, expire: exp };
-}else{ 
-  var options = {host: 'localhost', port: 6379, expire: exp};
-}
 
-var cli = redis.createClient({options});
-
-//routes
 var userAuth = require('./routes/authenticate.js');
 var api      = require('./routes/api.js');
 var helmet   = require('helmet');
 
+if(process.env.REDIS_URL){
+  var options = {url: process.env.REDIS_URL, expire: exp };
+}
+
+var cli = redis.createClient({options});
+
 app.use(helmet());
-app.use('/views', express.static(path.join(__dirname, 'views'))); 
-app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
-app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -41,7 +39,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.set('trust proxy', 1);
 app.use(session({  
-  store: new redisStore({ cli }),
+  store: new MemoryStore({ expires: exp, checkperiod: check }),
   secret: process.env.APP_SECRET, 
   httpOnly: true,
   resave: false,
@@ -52,6 +50,13 @@ app.use(session({
     expires: exp
   }
 })); 
+
+
+app.use('/views', express.static(path.join(__dirname, 'views'))); 
+app.use('/dist', express.static(path.join(__dirname, 'dist'))); 
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
+
+
 
 app.all('*',function(req, res, next){ 
   res.header("Access-Control-Allow-Origin", "localhost");

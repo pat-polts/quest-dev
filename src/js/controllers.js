@@ -126,26 +126,24 @@ quest.controller('authController',
 
       // initial values
       $rootScope.error    = false;
-      $rootScope.disabled = false; 
+      $rootScope.disabled = true; 
       // $rootScope.isLoading = true;
 
       if($rootScope.checkFields()){
          
-         var promise =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
-            promise.then(function resolveHandler(){ 
-              return true;
-
-            }, function rejectHandler(error){ 
+       var promisse =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+          promisse.then(function success(logged){
+            if(logged){
+              $location.path('/');
+            }
+          }, function error(){
               $rootScope.error = true;
-              $rootScope.errorMessage = error;
-              return false;
-            }); 
-
-      
+              $rootScope.errorMessage = res.data.error;
+          });
 
       }else{
         $rootScope.error = true;
-        $rootScope.errorMessage = "Preencha os campos para prosseguir";
+        $rootScope.errorMessage = "Preencha os campos para prosseguir"; 
       }
 
     };  

@@ -41,22 +41,21 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     }) 
     .otherwise({
-      redirectTo: '/login' 
+      redirectTo: '/' 
     });
 });
 
 quest.run(function ($rootScope, $location, $route, AuthService) { 
-var logged;
 
   var promisse = AuthService.logged();
     promisse.then(function success(){
-      logged = true;
+      var logged = true;
     }, function error(){
-      logged = false;
+      var logged = false;
     });
 
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current) {
+    function (next, current) {
       if(next && next.$$route && next.$$route.restricted){
         if(!logged){ 
           $location.path('/login'); 
@@ -65,7 +64,7 @@ var logged;
   });
 
   $rootScope.$on('$stateChangeStart',
-    function (event, next, current) { 
+    function (next, current) { 
         if(next && next.$$route && next.$$route.restricted){      
         if(!logged){ 
           $location.path('/login'); 

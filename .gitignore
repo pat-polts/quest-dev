@@ -13,4 +13,5 @@ npm-debug.log
 /dist/js/*
 dist/css/*
 .idea
+.idea/
 dump.rdb

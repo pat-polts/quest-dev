@@ -41,22 +41,21 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     }) 
     .otherwise({
-      redirectTo: '/login' 
+      redirectTo: '/' 
     });
 });
 
 quest.run(function ($rootScope, $location, $route, AuthService) { 
-var logged;
 
   var promisse = AuthService.logged();
     promisse.then(function success(){
-      logged = true;
+      var logged = true;
     }, function error(){
-      logged = false;
+      var logged = false;
     });
 
   $rootScope.$on('$routeChangeStart',
-    function (event, next, current) {
+    function (next, current) {
       if(next && next.$$route && next.$$route.restricted){
         if(!logged){ 
           $location.path('/login'); 
@@ -65,7 +64,7 @@ var logged;
   });
 
   $rootScope.$on('$stateChangeStart',
-    function (event, next, current) { 
+    function (next, current) { 
         if(next && next.$$route && next.$$route.restricted){      
         if(!logged){ 
           $location.path('/login'); 
@@ -231,7 +230,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
       userAuth.login = function (username, password) {   
         var credentials = {Login: username, Senha: password }; 
-        var deferred = $q.defer();
+        var deferred    = $q.defer();
 
         $rootScope.isLoading = true;
 
@@ -240,8 +239,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.isLoading = false;  
             
             if(res.status === 200){
-
-              deferred.resolve("logado");
+              console.log(res);
+              deferred.resolve(res.data.logged);
             }
 
           }, function error(res){
@@ -249,10 +248,12 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.errorMessage = "Erro inesperado!";  
 
             if(res.status === 500){
-              
-              deferred.reject("deslogado");
+              console.log(res);
+              deferred.reject(res.data.error);
             }
           });       
+
+          return deferred.promise;
       }; 
 
      userAuth.logged = function(){ 
@@ -264,7 +265,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           $rootScope.isLoading = false;  
             if(res.status === 200){
             
-               deferred.resolve('sim');
+               deferred.resolve();
               
             } 
         }, function error(res){
@@ -272,7 +273,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.error = true; 
             $rootScope.errorMessage = res.data.error;  
           }
-          deferred.reject('nao');
+          deferred.reject();
         });     
 
         return deferred.promise;
@@ -522,26 +523,24 @@ quest.controller('authController',
 
       // initial values
       $rootScope.error    = false;
-      $rootScope.disabled = false; 
+      $rootScope.disabled = true; 
       // $rootScope.isLoading = true;
 
       if($rootScope.checkFields()){
          
-         var promise =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
-            promise.then(function resolveHandler(){ 
-              return true;
-
-            }, function rejectHandler(error){ 
+       var promisse =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+          promisse.then(function success(logged){
+            if(logged){
+              $location.path('/');
+            }
+          }, function error(){
               $rootScope.error = true;
-              $rootScope.errorMessage = error;
-              return false;
-            }); 
-
-      
+              $rootScope.errorMessage = res.data.error;
+          });
 
       }else{
         $rootScope.error = true;
-        $rootScope.errorMessage = "Preencha os campos para prosseguir";
+        $rootScope.errorMessage = "Preencha os campos para prosseguir"; 
       }
 
     };  

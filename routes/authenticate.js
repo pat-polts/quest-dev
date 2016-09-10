@@ -27,21 +27,19 @@ router.post('/login', function(req, res, next) {
     };
  
     httpClient.post(api, args, function (data, response) {
-      if(data){    
-        req.session.destroy(function(){
-          //
-          console.log(req.session);
-        });
-        var sess = {token: data};
-          req.session.key =  sess;  
-
-          res.status(200).send({
-            logged: true
-          });
+      if(data){     
+          req.session.user =  data;  
+          req.session.save(function(erro){
+            if(erro) res.end("sem sessão");
+            res.status(200).send({
+              logged: 'ok'
+            });
          
+          });
+ 
       }else{
         res.status(500).send({
-            error: false
+            error: "usuario ou login incorreto"
         }); 
       } 
     });
@@ -57,30 +55,24 @@ router.get('/session', function(req, res, next) {
 });
 
 router.get('/logout', function(req, res, next){
-  if(req.session.key){ 
+  if(req.session){ 
     req.session.destroy(function() {
         res.status(200).send({
           msg: "Usuario deslogado"
         });
     });
-  }else{
-      req.session.destroy(function() {
-        res.status(200).send({
-          msg: "Usuario deslogado"
-        });
-    });
   }
+  res.redirect('/login');
 });
 
 router.get('/status', function(req, res, next){ 
-
-  var userLog = req.session.token; 
-  if(req.session.key){  
+ 
+  if(req.session){  
     res.status(200).send({
       msg: 'usuario logado'
     }); 
   }else{  
-    res.status(500).send({
+    res.send({
       error: 'usuario não logado'
     }); 
   }

@@ -154,7 +154,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
       userAuth.login = function (username, password) {   
         var credentials = {Login: username, Senha: password }; 
-        var deferred = $q.defer();
+        var deferred    = $q.defer();
 
         $rootScope.isLoading = true;
 
@@ -163,8 +163,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.isLoading = false;  
             
             if(res.status === 200){
-
-              deferred.resolve("logado");
+              console.log(res);
+              deferred.resolve(res.data.logged);
             }
 
           }, function error(res){
@@ -172,10 +172,12 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.errorMessage = "Erro inesperado!";  
 
             if(res.status === 500){
-              
-              deferred.reject("deslogado");
+              console.log(res);
+              deferred.reject(res.data.error);
             }
           });       
+
+          return deferred.promise;
       }; 
 
      userAuth.logged = function(){ 
@@ -187,7 +189,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           $rootScope.isLoading = false;  
             if(res.status === 200){
             
-               deferred.resolve('sim');
+               deferred.resolve();
               
             } 
         }, function error(res){
@@ -195,7 +197,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.error = true; 
             $rootScope.errorMessage = res.data.error;  
           }
-          deferred.reject('nao');
+          deferred.reject();
         });     
 
         return deferred.promise;
