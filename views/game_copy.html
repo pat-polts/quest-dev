@@ -1,44 +1,218 @@
-<!-- # Tela Login  --> 
-<style type="text/css">
-.pergunta{
-	z-index: 104;
-}
-	.profile{
+<style>
+
+	/* Tabuleiro*/
+	.tabuleiro-inicio,.tabuleiro-sinais,.tabuleiro-vantagens,.tabuleiro-stackholders,.tabuleiro-cristo,.tabuleiro-final{
+		font-weight: bold;
 		position: absolute;
-	    z-index: 103;
-	    height: 150px;
-    	width: 50%;
-    	bottom: 1%;
+		font-size: 1.2em;
+		color: #FFFFFF;
 	}
-	.profile > img{
+	.tabuleiro-inicio{
+		margin-top:160px;
+		margin-left:90px;
+	}
+	.tabuleiro-sinais{
+		margin-top:480px;
+		margin-left:240px;
+	}
+	.tabuleiro-vantagens{
+		margin-top:300px;
+		margin-left:560px;
+	}
+	.tabuleiro-stackholders{
+		margin-top:430px;
+		margin-left:700px;
+	}
+	.tabuleiro-cristo{
+		margin-top:630px;
+		margin-left:740px;
+	}
+
+	.myContainer-tabuleiro{
+		background: url("./../dist/assets/board.png") no-repeat;
+		height: 768px;
+		width: 1023px;
+		margin: 0 auto 0;
+		border: 1px solid transparent;
+	}
+	.bloco-1 {
+		margin-top: 210px;
+		margin-left:80px
+	}
+	.bloco-2{
+		margin-top: 250px;
+		margin-left: 290px;
+	}
+	.bloco-3 {
+		margin-top: -20px;
+		margin-left: 330px;
+	}
+	.bloco-4{
+		margin-top: -120px;
+		margin-left: 540px;
+	}
+	.bloco-5{
+		margin-left: 580px;
+		margin-top: -100px;
 		float: left;
-		width: 8em;
-		height: 8em;
 	}
-	.profile > p{
+	.bloco-6{
+		margin-top: -44px;
+		margin-left: 874px;
+	}
+	.casas-bloco-1,.casas-bloco-2,.casas-bloco-3,.casas-bloco-4,.casas-bloco-5,.casas-bloco-6 {
+		width: 20px;
+		height: 20px;
+		border-radius: 50%;
+		background-color: #FFFFFF;
+		border: 1px solid transparent;
+		float:left;
+		margin-left: 20px;
+	}
+.casas-bloco-2, .casas-bloco-4 ,.casas-bloco-6 {
+		float: none;
+		margin-top: 20px;
+	}
+
+	.myPanel-user-tabuleiro{
+		border: 1px solid transparent;
+		margin: 100px auto 20px 20px;
+	}
+	.myBox-imageHead{
+		width: 130px;
+		height: 130px;
+		border-radius: 50%;
 		float: left;
-	    width: 75%;
-	    font-weight: bold;
-	    font-size: 16px;
-	    clear: right;
-	    color: #ffc80f;
-	    text-align: left;
-	    padding-left: 3%;
+		text-align: center;
 	}
+	.myImg{
+		margin: 10px;
+		text-align: center;
+	}
+	.myBox-imageHead{
+		border: 5px solid #e8a612;
+	}
+	.myButton-ranking{
+		border: 4px solid #e8a612;
+	}
+	.myData-user{
+		border: 1px solid transparent;
+		float: left;
+		width: auto;
+		height: 40px;
+		margin-left: 40px;
+	}
+
+	.myUser-score,
+	.myPts,
+	.myUser-name{
+		font-size: 1.8em;
+		color: #e8a612;
+		font-weight: bold;
+	}
+
+	.myButton-ranking{
+		height: 90px;
+		color: #FFFFFF;
+		background-color: #004e72;
+		font-size: 1.5em;
+		border-radius: 20px;
+		margin-top: 20px;
+		height: auto;
+	}
+	.myButton-ranking:active:hover{
+		background-color: #144672;
+	}
+	/*./tabuleiro*/
+
+
+
+	.myTitle-question p{
+		height: 100%;
+		max-height: 200px;
+		white-space: pre-wrap;
+		overflow-y: scroll;
+	}
+		.bg-green {
+		background-color: #4cae4c;
+	}
+
 </style>
-<div ng-if="error" >{{errorMessage}}</div> 
-<div ng-init="loadUserData()" ng-model="moveMarker">
-	
-	<question ng-if="isQuestion" question-data="questionData"></question> 
+<div class="myContainer-tabuleiro">
+	<div class="tabuleiro-inicio">Inicio</div>
+	<div class="tabuleiro-sinais">Sinais e<br>sintomas</div>
+	<div class="tabuleiro-vantagens">Vantagens e<br>desvantagens</div>
+	<div class="tabuleiro-stackholders">Stackholders</div>
+	<div class="tabuleiro-cristo">Cristo Redentor<br>Final</div>
+	<div class="bloco-1">
+		<div class="casas-bloco-1" ng-click="openQuiz(1)"  id="1"  ></div>
+		<div ng-click="openQuiz(2)"  id="2"  class="casas-bloco-1"></div>
+		<div ng-click="openQuiz(3)"  id="3"  class="casas-bloco-1"></div>
+		<div ng-click="openQuiz(4)"  id="4"  class="casas-bloco-1"></div>
+		<div ng-click="openQuiz(5)"  id="5"  class="casas-bloco-1"></div>
+		<div ng-click="openQuiz(6)"  id="6"  class="casas-bloco-1"></div>
+	</div>
+	<div class="bloco-2">
 
-	<div ng-if="special">casa especial</div> 
+			<div ng-click="openQuiz(7)"  id="7"  class="casas-bloco-2"></div>
 
-	<div class="profile">
-		<img src="dist/assets/img-maria-desenho.png">
-		<p ng-model="userName">{{userName}}</p>
-		<p>{{userScore}} pts</p>
-	</div>  
+			<div ng-click="openQuiz(8)"  id="8"  class="casas-bloco-2"></div>
 
-	<board board-data="boardData"></board>
+			<div ng-click="openQuiz(9)"  id="9"  class="casas-bloco-2"></div>
+
+			<div ng-click="openQuiz(10)" id="10" class="casas-bloco-2"></div>
+
+			<div ng-click="openQuiz(11)" id="11" class="casas-bloco-2"></div>
+
+			<div ng-click="openQuiz(12)" id="12" class="casas-bloco-2 bg-green"></div>
+
+	</div>
+	<div class="bloco-3">
+		<div ng-click="openQuiz(13)" id="13" class="casas-bloco-3"></div>
+		<div ng-click="openQuiz(14)" id="14" class="casas-bloco-3"></div>
+		<div ng-click="openQuiz(15)" id="15" class="casas-bloco-3"></div>
+
+		<div ng-click="openQuiz(16)" id="16" class="casas-bloco-3"></div>
+		<div ng-click="openQuiz(17)" id="17" class="casas-bloco-3"></div>
+		<div ng-click="openQuiz(18)" id="18" class="casas-bloco-3"></div>
+	</div>
+
+	<div class="bloco-4">
+			<div ng-click="openQuiz(20)" id="20" class="casas-bloco-4"></div>
+
+			<div ng-click="openQuiz(19)" id="19" class="casas-bloco-4"></div>
+
+	</div>
+	<div class="bloco-5">
+		<div ng-click="openQuiz(21)" id="21" class="casas-bloco-5 bg-green"></div>
+		<div ng-click="openQuiz(22)" id="22" class="casas-bloco-5"></div>
+		<div ng-click="openQuiz(23)" id="23" class="casas-bloco-5"></div>
+		<div ng-click="openQuiz(24)" id="24" class="casas-bloco-5"></div>
+		<div ng-click="openQuiz(25)" id="25" class="casas-bloco-5"></div>
+		<div ng-click="openQuiz(26)" id="26" class="casas-bloco-5 bg-green"></div>
+		<div ng-click="openQuiz(27)" id="27" class="casas-bloco-5"></div>
+		<div ng-click="openQuiz(28)" id="28" class="casas-bloco-5"></div>
+	</div>
+	<div class="bloco-6">
+
+			<div ng-click="openQuiz(29)" id="29" class="casas-bloco-6"></div>
+
+			<div ng-click="openQuiz(30)" id="30" class="casas-bloco-6"></div>
+
+	</div>
+	<div class="myPanel-user-tabuleiro">
+		<div class="myBox-imageHead">
+			<div class="myImg">
+				<img src="dist/assets/cabeca-personagem.png" width="80px">
+			</div>
+		</div>
+		<div class="myData-user">
+			<span class="myUser-name">{{user.name}}Manoel Silva</span>
+			<br>
+			<span class="myUser-score">{{user.score}}100</span><span class="myPts">pts</span>
+			<br>
+			<a  href="#!/ranking"><div class="myButton-ranking">Ranking</div></a>
+		</div>
+	</div>
 
 </div>

@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('questAstrazeneca.questions', [])
+angular.module('questApp', ['ngRoute','ngCookies'])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/tabuleiro', {
             templateUrl: 'tabuleiro/tabuleiro.html',
