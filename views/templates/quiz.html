@@ -1,0 +1,28 @@
+<div class="myContainer-quiz">
+    <div class="myPanel-quiz" id="{{question._id}}">
+
+        <div class="myTitle-question">
+            <span class="text-left">{{question._id}} - {{question.title}}</span>
+        </div>
+        <div ng-repeat="alternative in question.alternatives">
+
+               <button
+                       type="radio"
+                       id="{{alternative._id}}X"
+                       class="myAlterntive-option {{alternative.class}}"
+                       ng-bind="alternative._id"
+                       ng-click="setAlternative(alternative)">
+               </button>
+               <button
+                       id="{{alternative._id}}"
+                       class="myAlternative {{alternative.class}}"
+                       ng-bind="alternative.content"
+                       ng-click="setAlternative(alternative)">
+               </button>
+
+        </div>
+        <div class="myButton-done">
+            <button ng-if="showButtonPronto"  ng-click="incrementScore(optionSelected)" class="myButton-pronto">pronto</button>
+        </div>
+    </div>
+</div>

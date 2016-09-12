@@ -6,21 +6,20 @@ var session    = require('express-session');
 var bodyparser = require('body-parser');  
 var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
-var redisStore = require('connect-redis')(session);
+
 
 router.get('/questions', function(req, res, next) {
-  if(req.path !== '/questions' && req.route !== '/questions'){
-      res.end();
-    } 
-  if(!req.session.token){
-    res.end('Ops! Sua sessão expirou'); 
-  }else{
-     var env = process.env.API_QUESTION + req.session.token;
+
+  i 
+     var env = process.env.API_QUESTION + '/YWRtaW46MTIz';
 
       httpClient.get(env, function (data, response) {
+        
+      console.log(data);
         if(data){ 
+          console.log(data);
           res.status(200).send({
-            data
+            obj: data
           });
 
         }else{
@@ -28,31 +27,31 @@ router.get('/questions', function(req, res, next) {
             res.send({
               error: "Não foi possivel carregar as questoes"
             }); 
-            next();
         } 
       });
-  }
+  
     
 
 });
  
 router.get('/user',function(req,res,next){
 
-  if(!req.session.token){
-     res.status(500).end('Sem usuario'); 
-  }else{
+  var token = 'YWRtaW46MTIz';  
+  if(token){
+    var api = process.env.API_USER + token; 
+    var user = {};
 
-  var token = req.session.token; 
-
-  var api = process.env.API_USER + token; 
-  var user = {};
-      httpClient.get(api, function (data, response) {
+      var args = {  
+        headers: { "Content-Type": "application/json" }
+      }; 
+      httpClient.get(api, args, function (data, response) {
         if(data){  
           user.name  = data.Nome;
           user.score = data.Pontuacao;
           user.lastQ = data.UltimaPerguntaRespondida; 
-
+          
           res.status(200).send({obj: user});
+        
        
 
         }else{
@@ -61,18 +60,19 @@ router.get('/user',function(req,res,next){
         } 
       });
   }
+  
 
 });
  
 router.get('/question/:id',function(req,res,next){
  
-  if(!req.session.token){
-     res.status(500).end('Sem usuario'); 
-  }else{
+  // if(!req.session.user){
+  //    res.status(500).end('Sem usuario'); 
+  // }else{
     var qId = req.params.id;
 
     if(qId){
-      var token = req.session.token; 
+      var token = 'YWRtaW46MTIz'; 
       var api = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
 
       httpClient.get(api, function (data, response) {
@@ -90,19 +90,15 @@ router.get('/question/:id',function(req,res,next){
       });
     }
 
-  }
+  // }
 
 });
 
  
 router.post('/question',function(req,res,next){
-  if(req.originalUrl !== '/question'){
-    res.end();
-  }
-  if(!req.session.token){
-     res.status(500).end('Sem usuario'); 
-  }else{
-    var token = req.session.token; 
+ 
+  
+    var token = 'YWRtaW46MTIz'; 
 
     var api = process.env.API_SEND_QUESTION + token;
 
@@ -112,13 +108,7 @@ router.post('/question',function(req,res,next){
 
       var args = { 
         data: { NumeroPergunta: req.body.numero, ValorAlternativaRespondida: req.body.valor},
-        headers: { "Content-Type": "application/json" },
-        requestConfig: {
-          timeout: 1000, //request timeout in milliseconds 
-          noDelay: true, //Enable/disable the Nagle algorithm 
-          keepAlive: true, //Enable/disable keep-alive functionalityidle socket. 
-          keepAliveDelay: 1000 //and optionally set the initial delay before the first keepalive probe is sent 
-        }
+        headers: { "Content-Type": "application/json" }
       };
 
       httpClient.post(api, args, function (data, response) {
@@ -135,17 +125,13 @@ router.post('/question',function(req,res,next){
       });
     }
 
-  }
   
 });
 
  
 router.post('/ranking',function(req,res,next){
- 
-  if(!req.session.token){
-     res.status(500).end('Sem usuario'); 
-  }else{
-    var token = req.session.token; 
+  
+    var token = 'YWRtaW46MTIz'; 
 
     var api = process.env.API_RANKING + token;
 
@@ -153,7 +139,7 @@ router.post('/ranking',function(req,res,next){
         if(data){ 
           console.log(data);
            res.status(200).send({
-              ok: true
+              obj: data
             });
 
         }else{
@@ -162,7 +148,7 @@ router.post('/ranking',function(req,res,next){
             }); 
         } 
       });
-    }
+    
   
 });
 

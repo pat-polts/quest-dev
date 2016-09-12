@@ -8,18 +8,17 @@
 **********************/
 
 quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location', 'AuthService',
-  function ($rootScope, $q, $timeout, $http, $location,AuthService) {
+  function ($rootScope, $q, $timeout, $http, $location, AuthService) {
 
     var userApi = {};
 
     userApi.getUserData = function(){ 
-
-      var deferred = $q.defer();
       $rootScope.isLoading = true;
 
-      $http.get('/api/user')
-        .then(function success(res){ 
-            $rootScope.isLoading = false; 
+      var deferred = $q.defer(); 
+      $headers = {"Content-Type": "application/json" };
+      $http({method: 'GET', url: '/api/user', headers: $headers})
+        .then(function success(res){   
             if(res.status === 200){ 
               if(res.data){ 
                 deferred.resolve(res.data.obj);
@@ -27,8 +26,10 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
             } 
            
         }, function error(res){
+              /*retorno de erro | string*/ 
             if(res.status === 500){
               if(res.data.error){ 
+
                 $rootScope.error = true; 
                 $rootScope.errorMessage = res.data.error;  
                 deferred.reject(res.data.error);
@@ -48,6 +49,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
         $http.get('/api/question/'+q)
           .then(function success(res){ 
               $rootScope.isLoading = false; 
+
+                  if(!res.data.user){
+                     deferred.reject("sessão expirou");
+                  }
+
               if(res.status === 200){ 
                 if(res.data){ 
                   deferred.resolve(res.data.obj);
@@ -55,6 +61,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               } 
              
           }, function error(res){
+            $rootScope.isLoading = false; 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -68,20 +75,49 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
       return deferred.promise; 
     };
 
+    userApi.getQuestions = function(){ 
+
+      var deferred = $q.defer(); 
+     
+        $http.get('/api/questions')
+          .then(function success(res){  
+            console.log(res);
+              if(res.status === 200){ 
+                if(res.data.obj){ 
+                  console.log(res.data.obj);
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){ 
+
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+
+          });
+      
+
+      return deferred.promise; 
+    };
+
     userApi.setQuestionData = function(id,last){ 
 
       var deferred = $q.defer();
       $rootScope.isLoading = true;
 
       if(id && last){
-        $http.get('/api/question/',{numer: id, valor: last})
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
+        $http.get('/api/question/',{numero: id, valor: last})
+          .then(function success(res){  
               if(res.status === 200){  
                   deferred.resolve(); 
               } 
              
-          }, function error(res){
+          }, function error(res){ 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -104,10 +140,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           .then(function success(res){ 
               $rootScope.isLoading = false; 
               if(res.status === 200){  
-                  deferred.resolve(); 
+                  deferred.resolve(res.data.obj); 
               } 
              
           }, function error(res){
+            $rootScope.isLoading = false; 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -153,9 +190,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           // console.log(loginApi);
 
       userAuth.login = function (username, password) {   
-        var credentials = {Login: username, Senha: password }; 
         var deferred    = $q.defer();
 
+        var credentials = {login: username, senha: password }; 
         $rootScope.isLoading = true;
 
         $http.post('/auth/login', credentials)
@@ -163,7 +200,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.isLoading = false;  
             
             if(res.status === 200){
-              console.log(res);
+              // console.log(res);
               deferred.resolve(res.data.logged);
             }
 
@@ -172,8 +209,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             $rootScope.errorMessage = "Erro inesperado!";  
 
             if(res.status === 500){
-              console.log(res);
-              deferred.reject(res.data.error);
+              // console.log(res);
+              deferred.reject("nao logado");
             }
           });       
 
@@ -189,15 +226,14 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           $rootScope.isLoading = false;  
             if(res.status === 200){
             
-               deferred.resolve();
+               deferred.resolve(res.data.logged);
               
             } 
         }, function error(res){
           if(res.data.error){           
-            $rootScope.error = true; 
-            $rootScope.errorMessage = res.data.error;  
+            $rootScope.setErro = res.data.error;
+            deferred.reject(res.data.error);
           }
-          deferred.reject();
         });     
 
         return deferred.promise;
@@ -236,8 +272,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 **********************/
 quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiService', 
   function($rootScope, $q, $timeout, $http, ApiService){
-      var deferred = $q.defer();
-    var score  = 0;
+
+    var deferred    = $q.defer();
+    var score       = 0;
     var totalHouses = 30;
     var houses = {
           'score' : '10',
@@ -247,31 +284,23 @@ quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiServ
           'x': 0,
           'y':0
     };
-    var board = [1,2,3,4,5,6];
+    var board     = [1,2,3,4,5,6];
     var boardData = {}; 
-
-    var game   = {}; 
-    var move = false;
+    var game      = {}; 
+    var move      = false;
 
     game.getQuestions = function(){ 
-       $http.get('/api/questions')
-         .then(function successCallback(res) {
-            $rootScope.isLoading = false;
-
-             if(res.status === 200){
- 
-                boardData.questions = res.data;
-             }
-
-         }, function errorCallback(res) {
-            if(res.status === 500){
-                console.log("erro ao pegar questao");
-             }else{
-                console.log("erro desconhecido");
-             }
-         });
-
-         return boardData;
+      var promise = ApiService.getQuestionData();
+        promise.then(function successHandle(data){
+            console.log(data);
+            $rootScope.boardData.push(data);
+         console.log($rootScope.boardData);
+        },function successHandle(erro){
+            if(erro){
+              console.log(erro);
+            }
+        });
+       
     };
  
     game.getNext = function(){

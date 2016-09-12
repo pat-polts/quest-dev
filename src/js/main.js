@@ -20,12 +20,7 @@ quest.config(function ($routeProvider,$locationProvider) {
     })
     .when('/logout', {
       controller: 'authController',
-      restricted: true,
-      resolve: {
-        load: function($rootScope, AuthService){
-          return AuthService.logout();
-        }
-      }
+      restricted: true
       
     })
     .when('/mais-sobre', {
@@ -37,7 +32,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     })
     .when('/jogar', {
-      templateUrl: '../../views/game_copy.html',
+      templateUrl: '../../views/game.html',
       restricted: true
     }) 
     .otherwise({
@@ -46,30 +41,20 @@ quest.config(function ($routeProvider,$locationProvider) {
 });
 
 quest.run(function ($rootScope, $location, $route, AuthService) { 
-
-  var promisse = AuthService.logged();
-    promisse.then(function success(){
-      var logged = true;
-    }, function error(){
-      var logged = false;
-    });
-
-  $rootScope.$on('$routeChangeStart',
-    function (next, current) {
+$rootScope.$on('$routeChangeStart', function (next, current) {
       if(next && next.$$route && next.$$route.restricted){
-        if(!logged){ 
-          $location.path('/login'); 
+        if(!AuthService.logged()){ 
+         $location.path('/login'); 
         } 
       }
   });
-
-  $rootScope.$on('$stateChangeStart',
-    function (next, current) { 
+$rootScope.$on('$stateChangeStart',function (next, current) { 
         if(next && next.$$route && next.$$route.restricted){      
-        if(!logged){ 
-          $location.path('/login'); 
-        } 
+          if(!AuthService.logged()){ 
+            console.log(next);
+           $location.path('/login'); 
+          } 
       }
-  });
+});
  
 });

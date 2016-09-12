@@ -1,0 +1,17 @@
+<div class="myContainer-ranking">
+    <div class="myPanel-ranking">
+
+        <div ng-repeat="user in ranking">
+            <div class="myRanking-item">
+                <button class=" myRanking-position">{{user.Posicao}}º </button>
+                <button class="  myRanking-user-name" ng-bind="user.Email"></button>
+                <button class=" myRanking-user-score">{{user.Pontuacao}}<small>pts</small></button>
+            </div>
+        </div>
+        <div class="myRanking-group-buttons">
+            <a  href="#!/tabuleiro"><button class="myRanking-button-voltar">voltar</button></a>
+            <a  href="#!/tabuleiro"><button class="myRanking-button-pronto" >pronto</button></a>
+        </div>
+
+    </div>
+</div>

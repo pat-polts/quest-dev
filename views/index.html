@@ -9,7 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">    
      
       <link rel="stylesheet" href="../bower_components/angular-material/angular-material.min.css" />
-      <link rel="stylesheet" href="dist/css/stylesheet.min.css" />
+      <link rel="stylesheet" href="dist/css/stylesheet.min.css" /> 
 
   </head>
 
@@ -21,9 +21,9 @@
         <a ng-click='logout()' class="btn btn-default">Sair</a>
       </div> -->
 
-      <div ng-if="isLoading" class="loading" layout="row" layout-sm="column">Carregando</div> 
+      <div ng-if="isLoading" class="loading" layout="row" layout-sm="column"></div> 
       
-      <div ng-view class="content" layout="row" layout-sm="column"></div>
+      <div ng-view class="content" layout="row" layout-sm="column" ng-init="logged()"></div>
 
     </div>
 
@@ -36,11 +36,11 @@
       <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
       <script src="../bower_components/angular-material/angular-material.min.js"></script>
 
-      <script src="dist/js/global.js"></script> 
       <!-- js lib for canvas games -->
       <script src="dist/js/easeljs-0.8.2.min.js"></script> 
       <script src="dist/js/preloadjs-0.6.2.min.js"></script> 
       <script src="dist/js/tweenjs-0.6.2.min.js"></script> 
+      <script src="dist/js/global.js"></script> 
 
 
   </body> 

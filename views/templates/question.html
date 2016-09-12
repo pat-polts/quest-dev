@@ -1,4 +1,28 @@
-<div class="pergunta" set-question >
-	<button ng-click="close()">Fechar</button>
+<div class="myContainer-quiz">
+    <div class="myPanel-quiz" id="{{question.Numero}}">
 
+        <div class="myTitle-question">
+            <p class="text-left">{{question.Numero}} - {{question.Titulo}}</p>
+        </div>
+        <div ng-repeat="alternative in question.Alternativas">
+
+            <button
+                    type="radio"
+                    id="{{alternative.Valor}}X"
+                    class="myAlterntive-option {{alternative.class}}"
+                    ng-bind="alternative.Valor"
+                    ng-click="setAlternative(alternative)">
+            </button>
+            <button
+                    id="{{alternative.Valor}}"
+                    class="myAlternative {{alternative.class}}"
+                    ng-bind="alternative.DescricaoAlternativa"
+                    ng-click="setAlternative(alternative)">
+            </button>
+
+        </div>
+        <div class="myButton-done">
+            <button ng-if="showButtonPronto"  ng-click="incrementScore(optionSelected)" class="myButton-pronto">pronto</button>
+        </div>
+    </div>
 </div>

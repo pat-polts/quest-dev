@@ -15,3 +15,4 @@ dist/css/*
 .idea
 .idea/
 dump.rdb
+user/

@@ -1,18 +1,17 @@
 <!-- # Tela Login  --> 
 
 <msg-erro>{{errorMessage}}</msg-erro> 
-<div ng-init="loadUserData()" ng-model="moveMarker">
+<div >
 	
-	<question ng-if="isQuestion" question-data="questionData"></question> 
+	<question ng-if="isQuestion" question-data="questionData"></question>
+	<ranking ng-if="isRanking"></ranking>
+	<!-- <sepecial></sepecial> -->
+	<!-- <final></final> -->
 
-	<div ng-if="special">casa especial</div> 
-
-	<div class="profile">
-		<img src="dist/assets/img-maria-desenho.png">
-		<p ng-model="userName">{{userName}}</p>
-		<p>{{userScore}} pts</p>
-	</div>  
-
-	<board board-data="boardData"></board>
+<div ng-init="loadUserData()">
+	<tabuleiro></tabuleiro>
+</div>
+	
+	<!-- <board board-data="boardData"></board> -->
 
 </div>

@@ -20,12 +20,7 @@ quest.config(function ($routeProvider,$locationProvider) {
     })
     .when('/logout', {
       controller: 'authController',
-      restricted: true,
-      resolve: {
-        load: function($rootScope, AuthService){
-          return AuthService.logout();
-        }
-      }
+      restricted: true
       
     })
     .when('/mais-sobre', {
@@ -37,7 +32,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     })
     .when('/jogar', {
-      templateUrl: '../../views/game_copy.html',
+      templateUrl: '../../views/game.html',
       restricted: true
     }) 
     .otherwise({
@@ -46,569 +41,24 @@ quest.config(function ($routeProvider,$locationProvider) {
 });
 
 quest.run(function ($rootScope, $location, $route, AuthService) { 
-
-  var promisse = AuthService.logged();
-    promisse.then(function success(){
-      var logged = true;
-    }, function error(){
-      var logged = false;
-    });
-
-  $rootScope.$on('$routeChangeStart',
-    function (next, current) {
+$rootScope.$on('$routeChangeStart', function (next, current) {
       if(next && next.$$route && next.$$route.restricted){
-        if(!logged){ 
-          $location.path('/login'); 
+        if(!AuthService.logged()){ 
+         $location.path('/login'); 
         } 
       }
   });
-
-  $rootScope.$on('$stateChangeStart',
-    function (next, current) { 
+$rootScope.$on('$stateChangeStart',function (next, current) { 
         if(next && next.$$route && next.$$route.restricted){      
-        if(!logged){ 
-          $location.path('/login'); 
-        } 
+          if(!AuthService.logged()){ 
+            console.log(next);
+           $location.path('/login'); 
+          } 
       }
-  });
+});
  
 });
 
-"use strict";
-//================================================
-//# App Factories
-//================================================
-
-/*********************
-  UserService
-**********************/
-
-quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location', 'AuthService',
-  function ($rootScope, $q, $timeout, $http, $location,AuthService) {
-
-    var userApi = {};
-
-    userApi.getUserData = function(){ 
-
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
-
-      $http.get('/api/user')
-        .then(function success(res){ 
-            $rootScope.isLoading = false; 
-            if(res.status === 200){ 
-              if(res.data){ 
-                deferred.resolve(res.data.obj);
-              }
-            } 
-           
-        }, function error(res){
-            if(res.status === 500){
-              if(res.data.error){ 
-                $rootScope.error = true; 
-                $rootScope.errorMessage = res.data.error;  
-                deferred.reject(res.data.error);
-              }
-            }
-        });
-
-        return deferred.promise; 
-    };
- 
-
-    userApi.getQuestionData = function(q){ 
-
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
-      if(q){
-        $http.get('/api/question/'+q)
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
-              if(res.status === 200){ 
-                if(res.data){ 
-                  deferred.resolve(res.data.obj);
-                }
-              } 
-             
-          }, function error(res){
-              if(res.status === 500){
-                if(res.data.error){ 
-                  $rootScope.error = true; 
-                  $rootScope.errorMessage = res.data.error;  
-                  deferred.reject(res.data.error);
-                }
-              }
-          });
-      }
-
-      return deferred.promise; 
-    };
-
-    userApi.setQuestionData = function(id,last){ 
-
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
-
-      if(id && last){
-        $http.get('/api/question/',{numer: id, valor: last})
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
-              if(res.status === 200){  
-                  deferred.resolve(); 
-              } 
-             
-          }, function error(res){
-              if(res.status === 500){
-                if(res.data.error){ 
-                  $rootScope.error = true; 
-                  $rootScope.errorMessage = res.data.error;  
-                  deferred.reject(res.data.error);
-                }
-              }
-          });
-      }
-
-      return deferred.promise; 
-    };
-
-    userApi.getRanking = function(){ 
-
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
-
-        $http.get('/api/ranking')
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
-              if(res.status === 200){  
-                  deferred.resolve(); 
-              } 
-             
-          }, function error(res){
-              if(res.status === 500){
-                if(res.data.error){ 
-                  $rootScope.error = true; 
-                  $rootScope.errorMessage = res.data.error;  
-                  deferred.reject(res.data.error);
-                }
-              }
-          });
-      
-
-      return deferred.promise; 
-    };
- 
-    return userApi;
- 
-}]);
-
-/*********************
-  AuthService
-**********************/
-
-quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
-  function ($rootScope, $q, $timeout, $http, $cookies, $location) {
-
-      var user     = null; 
-      var userAuth = {}; 
-      var hour     = 3600000
-      var exp      = new Date(Date.now() + hour);
-
-      userAuth.api = function(){ 
-        $http.get('/api')
-        .success(function(response, status){ 
-          return response.api; 
-        })
-        .error(function() {
-          $rootScope.error = true; 
-          $rootScope.errorMessage = "Problemas com a api";   
-        }); 
-      };
-
-    
-
-          // console.log(loginApi);
-
-      userAuth.login = function (username, password) {   
-        var credentials = {Login: username, Senha: password }; 
-        var deferred    = $q.defer();
-
-        $rootScope.isLoading = true;
-
-        $http.post('/auth/login', credentials)
-          .then(function success(res){ 
-            $rootScope.isLoading = false;  
-            
-            if(res.status === 200){
-              console.log(res);
-              deferred.resolve(res.data.logged);
-            }
-
-          }, function error(res){
-            $rootScope.error = true; 
-            $rootScope.errorMessage = "Erro inesperado!";  
-
-            if(res.status === 500){
-              console.log(res);
-              deferred.reject(res.data.error);
-            }
-          });       
-
-          return deferred.promise;
-      }; 
-
-     userAuth.logged = function(){ 
-
-        var deferred = $q.defer();
-
-        $http.get('/auth/status')
-        .then(function success(res){ 
-          $rootScope.isLoading = false;  
-            if(res.status === 200){
-            
-               deferred.resolve();
-              
-            } 
-        }, function error(res){
-          if(res.data.error){           
-            $rootScope.error = true; 
-            $rootScope.errorMessage = res.data.error;  
-          }
-          deferred.reject();
-        });     
-
-        return deferred.promise;
-
-      };
-
-      userAuth.logout = function(){ 
-        var deferred = $q.defer();
-
-        $http.get('/auth/logout')
-        .then(function success(res){ 
-            $rootScope.isLoading = false;  
-              if(res.status === 200){
-                 deferred.resolve();
-              } 
-          }, function error(res){
-            if(res.data.error){           
-              $rootScope.error = true; 
-              $rootScope.errorMessage = res.data.error;  
-            }
-            deferred.reject();
-          }); 
-
-        return deferred.promise;    
-
-      };
- 
- 
- 
-    return userAuth;
-
-}]); //AuthService ends
-
-/*********************
-  BoardService
-**********************/
-quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiService', 
-  function($rootScope, $q, $timeout, $http, ApiService){
-      var deferred = $q.defer();
-    var score  = 0;
-    var totalHouses = 30;
-    var houses = {
-          'score' : '10',
-          'question' : ['title', 'options', 'correct'],
-          'answer' : '',
-          'special' : false,
-          'x': 0,
-          'y':0
-    };
-    var board = [1,2,3,4,5,6];
-    var boardData = {}; 
-
-    var game   = {}; 
-    var move = false;
-
-    game.getQuestions = function(){ 
-       $http.get('/api/questions')
-         .then(function successCallback(res) {
-            $rootScope.isLoading = false;
-
-             if(res.status === 200){
- 
-                boardData.questions = res.data;
-             }
-
-         }, function errorCallback(res) {
-            if(res.status === 500){
-                console.log("erro ao pegar questao");
-             }else{
-                console.log("erro desconhecido");
-             }
-         });
-
-         return boardData;
-    };
- 
-    game.getNext = function(){
-     return move;
-    };
- 
-    game.loadNext = function(n){
-     if(n){
-      move = n;
-     }
-    };
-
-    game.getGameApi = function(){
-      return board;
-    };
-
-    game.createBoard = function(){
-      var props = [];
-
-      for (var i = 0; i < totalHouses; i++) {
-        props[i] = houses;
-      }
-
-      return props;
-    };
-
-    game.getBoard = function(){
-      // for (var i = 0; i < 6; i++) {
-      //   board.push(i);
-      // }
-      return board;
-    };
-
-    game.getBoardData = function(){
-      return boardData;
-    };
-
-    game.getHouses = function(){
-      return houses;
-    };
-
-    game.getScore = function(){
-      return score;
-    };
-
-    return game;
-}]);
-"use strict";
-//================================================
-//# App Controllers
-//================================================
-
-/***********************
-  Main
-************************/
-
-quest.controller('mainController', ['$rootScope', '$scope', '$location', '$cookies', 'AuthService', 'BoardService', 'ApiService',
-  function ($rootScope, $scope, $location, $cookies, AuthService, BoardService, ApiService) {
-
-    $rootScope.isLoading = false;
-    $rootScope.activePage   = $location.path(); 
-    $rootScope.userActive   = false;
-    $rootScope.question     = false;
-    $rootScope.special      = false;
-    $rootScope.currentLevel = null;
-    $rootScope.currentScore = null;
-    $rootScope.levels       = [];
-    $rootScope.score        = BoardService.getScore();
-    $rootScope.boardData    = BoardService.getQuestions();
-
-    $rootScope.activeHouse = false;
-    $rootScope.activeScore = false;
-    $rootScope.answer        = 0;
-    $rootScope.correctAnswer = 0;
-    $rootScope.isQuestion    = false;  
-    $rootScope.questionData  = {};
-
-    //refazendo logica menos bagunçada
-    $rootScope.userData      = {}; 
-     $rootScope.userScore;
-     $rootScope.userName;
-     $rootScope.userLastQ;
-     $rootScope.moveMarker = 0;
-
-    $rootScope.loadNextQuestion = function(next){
-     $rootScope.moveMarker = next; 
-     return $rootScope.moveMarker;
-    };
-
-    $rootScope.userGetData = function(){
-      // return ApiService.getUserData();
-    };
-
-    $rootScope.go = function (route) {
-      $location.path(route);
-    };
-
-    $rootScope.loadUserData = function(){
-       var promise = ApiService.getUserData();
-        promise.then(function resolveHandler(user){ 
-          $rootScope.userName  = user.name;
-          $rootScope.userScore = parseInt(user.score);
-          $rootScope.userLastQ = parseInt(user.lastQ); 
-
-        }, function rejectHandler(error){ 
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
-
-    }; 
-
-    $rootScope.loadQuestionData = function(data){
-       var promise = ApiService.getQuestionData(data);
-        promise.then(function resolveHandler(question){ 
-          $rootScope.questionData  = question; 
-          // console.log(question);
-
-        }, function rejectHandler(error){ 
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
-
-    };
-
-    $rootScope.writeQuestionData = function(num,last){
-
-      if(num && last){
-
-       var promise = ApiService.setQuestionData(num,last);
-        promise.then(function resolveHandler(){ 
-          return true;
-
-        }, function rejectHandler(error){ 
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
-
-      }
-
-    };  
-
-    //assistinda valores 
-    $rootScope.$watch('moveMarker'); 
-    $rootScope.$watch('isQuestion'); 
-    $rootScope.$watch('userLastQ', function(value){
-      return $rootScope.userLastQ;
-    }); 
-    $rootScope.$watch('userScore');  
-
-}]);
-
-/***********************
-  Login
-************************/
-
-quest.controller('authController',
-  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService',
-  function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
-
-    $rootScope.isLoading  = false;
-    $rootScope.userActive = null; 
- 
-
-    $rootScope.checkFields = function(){
-      if($scope.loginForm.username && $scope.loginForm.password){
-        return true;
-      }else{
-        return false;
-      }
-    };
-   
-    $rootScope.login = function () {
-
-      // initial values
-      $rootScope.error    = false;
-      $rootScope.disabled = true; 
-      // $rootScope.isLoading = true;
-
-      if($rootScope.checkFields()){
-         
-       var promisse =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
-          promisse.then(function success(logged){
-            if(logged){
-              $location.path('/');
-            }
-          }, function error(){
-              $rootScope.error = true;
-              $rootScope.errorMessage = res.data.error;
-          });
-
-      }else{
-        $rootScope.error = true;
-        $rootScope.errorMessage = "Preencha os campos para prosseguir"; 
-      }
-
-    };  
-
-
-    $rootScope.logged = function(){
-      AuthService.logged();
-    };
-
-
-}]);
-
-/***********************
-  Logout
-************************/
-quest.controller('logoutController',
-  ['$rootScope', '$scope', '$location', 'AuthService',
-  function ($rootScope, $scope, $location, AuthService) {
-    $rootScope.isLoading = false;
-
-    $rootScope.logout = function () {
-
-      // call logout from service
-      // AuthService.logout()
-      //   .then(function () {
-      //     $rootScope.userActive = false;
-      //     $location.path('/login');
-      //   });
-
-    };
-
-}]);
-
-/***********************
-  Register
-************************/
-
-quest.controller('registerController',
-  ['$rootScope', '$scope', '$location', 'AuthService',
-  function ($rootScope, $scope, $location, AuthService) {
-    $rootScope.isLoading = false;
-
-    $rootScope.register = function () {
-
-      // initial values
-      $rootScope.error = false;
-      $rootScope.disabled = false;
-      $rootScope.userActive = false;
-
-      // // call register from service
-      // AuthService.register($scope.registerForm.username, $scope.registerForm.password)
-      //   // handle success
-      //   .then(function () {
-      //     $location.path('/login');
-      //     $rootScope.disabled = false;
-      //     $scope.registerForm = {};
-      //   })
-      //   // handle error
-      //   .catch(function () {
-      //     $rootScope.error = true;
-      //     $rootScope.errorMessage = "Something went wrong!";
-      //     $rootScope.disabled = false;
-      //     $scope.registerForm = {};
-      //   });
-
-    };
-
-}]);
 //================================================
 //# App Directives
 //================================================
@@ -1044,45 +494,50 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
   return{   
       restrict: 'E',
       transclude: true,
-      templateUrl: '../../views/templates/question_copy.html',
-      scope: {
-        questionData: '=questionData'
+      templateUrl: '../../views/templates/question.html',
+      scope: { 
       },
       link: function(scope, element, attribute,boardController){
-        var question = scope.questionData; 
-        var escolha = null;
-        if(question){
+         var question;
+        scope.load = false;
 
-          scope.id     = question.Numero;
-          scope.title    = question.Titulo;
-          scope.desc     = question.Descricao;
-          scope.score    = question.ValorPontuacao;
-          scope.answered = question.Respondida;
-          scope.options  = question.Alternativas; 
-          scope.correct  = question.ValorAlternativaCorreta; 
+          $rootScope.isLoading = true;
+        //espera caregar conteudo antes de setar vars
+        setTimeout(function () { 
+          scope.load           = true;
+        },2000);
 
-          $rootScope.userLastQ = scope.id;
-        } 
+        if(scope.load){
+          question         = scope.questionData; 
+          $rootScope.isLoading = false;
+          var index =  parseInt($rootScope.userLastQ) - 1;
 
-        scope.selectOption = function(){
-          var el       = this; 
-          var resposta = el.$index; 
-          escolha      = el.alt.Valor;
-          // scope.answered = false;
-          // if(scope.answered){
-          //   alert("Ops! ja respondida, clique em pronto para prosseguir");
-          // }else{
-              if(escolha === scope.correct){
-                scope.choose = escolha;
-                scope.answered = true;
+          var escolha = null;
 
-                  $rootScope.userScore +=  parseInt(scope.score);
-                  // $rootScope.alertWin(userScore);
-                  alert("Yep! Resposta certa, você ganhou mais: "+scope.score +"pontos. Seu total atual é de: "+$rootScope.userScore);
-              } else{
-                  alert("Ounch! Resposta certa seria: "+scope.correct);
-              } 
+                if(question){
 
+                  // scope.id       = question.Numero;
+                  // scope.title    = question.Titulo;
+                  // scope.desc     = question.Descricao;
+                  // scope.score    = question.ValorPontuacao;
+                  // scope.answered = question.Respondida;
+                  // scope.options  = question.Alternativas; 
+                  // scope.correct  = question.ValorAlternativaCorreta; 
+
+                  scope.isSelected = false;
+                  index = scope.id;
+                } 
+
+                scope.selectOption = function(){
+
+                  var el       = this; 
+                  var resposta = el.$index; 
+                  console.log(el.element);
+
+                  escolha      = el.alt.Valor;
+
+                }
+        
         }
 
 
@@ -1109,14 +564,25 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
 
         }
  
-        scope.choose = function(){ 
-            $rootScope.isQuestion = false; 
-          if(escolha !== ''){   
-            // return BoardService.loadNext(next);
-           //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
-          }else{ 
-              alert("Escolha uma das alternativas");
-          }
+        scope.choose = function(){  
+          // scope.answered = false;
+            if(escolha){
+              $rootScope.isQuestion = false;
+              if(escolha === scope.correct){
+                scope.choose = escolha;
+                scope.answered = true;
+                $rootScope.userScore +=  parseInt(scope.score);
+                  // $rootScope.alertWin(userScore);
+                 
+              }
+            }else{
+                scope.choose = escolha;
+                scope.answered = true;
+              } 
+
+               if(scope.id !== 30){
+                    $rootScope.seQuestion(scope.id,scope.choose);
+               }
         }
       }
 
@@ -1138,4 +604,839 @@ quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardServi
       
   }
 
- } ] );        
+ } ] );   
+
+
+quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/ranking.html',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );   
+quest.directive('tabuleiro', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/tabuleiro.html',
+      scope: {  
+      },
+      link: function(scope, element, attribute){  
+          var questions = $rootScope.questionData;   
+        scope.load = false;
+          $rootScope.isLoading = true;
+            setTimeout(function () { 
+              scope.user           = $rootScope.userData;
+              $rootScope.isLoading = false;
+              scope.load           = true;
+            },200);
+              console.log(questions);
+
+            if(scope.load){
+
+            }
+        // var total      = pgt.length + 1; 
+        var totalCasas = 30;
+        var active     = false;
+        var especial   = false;
+        var index      = 20;
+        scope.casas    = [];
+        scope.blocos = [];
+        var isActive = false;
+
+        for (var i = 0; i < totalCasas; i++) {
+
+            if(i === 11 || i === 20 || i === 25){
+              special = true;
+            }
+
+            if(i === index){
+              isActive = true;
+            }
+
+            scope.casas.push({"id": i, "index": index, "isActive": isActive});
+         
+          
+        } 
+        var bloco_0 = scope.casas.slice(0,6);
+        var bloco_1 = scope.casas.slice(6,12);
+        var bloco_2 = scope.casas.slice(12,18);
+        var bloco_3 = scope.casas.slice(18,20);
+        var bloco_4 = scope.casas.slice(20,28);
+        var bloco_5 = scope.casas.slice(28,30);
+
+        scope.blocos = [
+          {"id": 0, "bloco": bloco_0 }, 
+          {"id": 1, "bloco":  bloco_1 }, 
+          {"id": 2, "bloco":  bloco_2 }, 
+          {"id": 3, "bloco":  bloco_3 }, 
+          {"id": 4, "bloco":  bloco_4 }, 
+          {"id": 5, "bloco":  bloco_5 } 
+        ];
+       
+          // console.log(scope.blocos[0].bloco[0]);   
+        scope.getQuizz = function(id){  
+          return $rootScope.loadNextQuestion(id);   
+        };
+
+        scope.openRank = function(){
+          $rootScope.isQuestion = false;
+          $rootScope.isRanking  = true;
+        };
+      }
+      
+  }
+
+ } ] );   
+
+quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/fase-completa.html',
+      scope: {  
+      },
+      link: function(scope, element, attribute){  
+         //
+
+      }
+ }
+ 
+ }]);        
+"use strict";
+//================================================
+//# App Factories
+//================================================
+
+/*********************
+  UserService
+**********************/
+
+quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location', 'AuthService',
+  function ($rootScope, $q, $timeout, $http, $location, AuthService) {
+
+    var userApi = {};
+
+    userApi.getUserData = function(){ 
+      $rootScope.isLoading = true;
+
+      var deferred = $q.defer(); 
+      $headers = {"Content-Type": "application/json" };
+      $http({method: 'GET', url: '/api/user', headers: $headers})
+        .then(function success(res){   
+            if(res.status === 200){ 
+              if(res.data){ 
+                deferred.resolve(res.data.obj);
+              }
+            } 
+           
+        }, function error(res){
+              /*retorno de erro | string*/ 
+            if(res.status === 500){
+              if(res.data.error){ 
+
+                $rootScope.error = true; 
+                $rootScope.errorMessage = res.data.error;  
+                deferred.reject(res.data.error);
+              }
+            }
+        });
+
+        return deferred.promise; 
+    };
+ 
+
+    userApi.getQuestionData = function(q){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+      if(q){
+        $http.get('/api/question/'+q)
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+
+                  if(!res.data.user){
+                     deferred.reject("sessão expirou");
+                  }
+
+              if(res.status === 200){ 
+                if(res.data){ 
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){
+            $rootScope.isLoading = false; 
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      }
+
+      return deferred.promise; 
+    };
+
+    userApi.getQuestions = function(){ 
+
+      var deferred = $q.defer(); 
+     
+        $http.get('/api/questions')
+          .then(function success(res){  
+            console.log(res);
+              if(res.status === 200){ 
+                if(res.data.obj){ 
+                  console.log(res.data.obj);
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){ 
+
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+
+          });
+      
+
+      return deferred.promise; 
+    };
+
+    userApi.setQuestionData = function(id,last){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+
+      if(id && last){
+        $http.get('/api/question/',{numero: id, valor: last})
+          .then(function success(res){  
+              if(res.status === 200){  
+                  deferred.resolve(); 
+              } 
+             
+          }, function error(res){ 
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      }
+
+      return deferred.promise; 
+    };
+
+    userApi.getRanking = function(){ 
+
+      var deferred = $q.defer();
+      $rootScope.isLoading = true;
+
+        $http.get('/api/ranking')
+          .then(function success(res){ 
+              $rootScope.isLoading = false; 
+              if(res.status === 200){  
+                  deferred.resolve(res.data.obj); 
+              } 
+             
+          }, function error(res){
+            $rootScope.isLoading = false; 
+              if(res.status === 500){
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+          });
+      
+
+      return deferred.promise; 
+    };
+ 
+    return userApi;
+ 
+}]);
+
+/*********************
+  AuthService
+**********************/
+
+quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
+  function ($rootScope, $q, $timeout, $http, $cookies, $location) {
+
+      var user     = null; 
+      var userAuth = {}; 
+      var hour     = 3600000
+      var exp      = new Date(Date.now() + hour);
+
+      userAuth.api = function(){ 
+        $http.get('/api')
+        .success(function(response, status){ 
+          return response.api; 
+        })
+        .error(function() {
+          $rootScope.error = true; 
+          $rootScope.errorMessage = "Problemas com a api";   
+        }); 
+      };
+
+    
+
+          // console.log(loginApi);
+
+      userAuth.login = function (username, password) {   
+        var deferred    = $q.defer();
+
+        var credentials = {login: username, senha: password }; 
+        $rootScope.isLoading = true;
+
+        $http.post('/auth/login', credentials)
+          .then(function success(res){ 
+            $rootScope.isLoading = false;  
+            
+            if(res.status === 200){
+              // console.log(res);
+              deferred.resolve(res.data.logged);
+            }
+
+          }, function error(res){
+            $rootScope.error = true; 
+            $rootScope.errorMessage = "Erro inesperado!";  
+
+            if(res.status === 500){
+              // console.log(res);
+              deferred.reject("nao logado");
+            }
+          });       
+
+          return deferred.promise;
+      }; 
+
+     userAuth.logged = function(){ 
+
+        var deferred = $q.defer();
+
+        $http.get('/auth/status')
+        .then(function success(res){ 
+          $rootScope.isLoading = false;  
+            if(res.status === 200){
+            
+               deferred.resolve(res.data.logged);
+              
+            } 
+        }, function error(res){
+          if(res.data.error){           
+            $rootScope.setErro = res.data.error;
+            deferred.reject(res.data.error);
+          }
+        });     
+
+        return deferred.promise;
+
+      };
+
+      userAuth.logout = function(){ 
+        var deferred = $q.defer();
+
+        $http.get('/auth/logout')
+        .then(function success(res){ 
+            $rootScope.isLoading = false;  
+              if(res.status === 200){
+                 deferred.resolve();
+              } 
+          }, function error(res){
+            if(res.data.error){           
+              $rootScope.error = true; 
+              $rootScope.errorMessage = res.data.error;  
+            }
+            deferred.reject();
+          }); 
+
+        return deferred.promise;    
+
+      };
+ 
+ 
+ 
+    return userAuth;
+
+}]); //AuthService ends
+
+/*********************
+  BoardService
+**********************/
+quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiService', 
+  function($rootScope, $q, $timeout, $http, ApiService){
+
+    var deferred    = $q.defer();
+    var score       = 0;
+    var totalHouses = 30;
+    var houses = {
+          'score' : '10',
+          'question' : ['title', 'options', 'correct'],
+          'answer' : '',
+          'special' : false,
+          'x': 0,
+          'y':0
+    };
+    var board     = [1,2,3,4,5,6];
+    var boardData = {}; 
+    var game      = {}; 
+    var move      = false;
+
+    game.getQuestions = function(){ 
+      var promise = ApiService.getQuestionData();
+        promise.then(function successHandle(data){
+            console.log(data);
+            $rootScope.boardData.push(data);
+         console.log($rootScope.boardData);
+        },function successHandle(erro){
+            if(erro){
+              console.log(erro);
+            }
+        });
+       
+    };
+ 
+    game.getNext = function(){
+     return move;
+    };
+ 
+    game.loadNext = function(n){
+     if(n){
+      move = n;
+     }
+    };
+
+    game.getGameApi = function(){
+      return board;
+    };
+
+    game.createBoard = function(){
+      var props = [];
+
+      for (var i = 0; i < totalHouses; i++) {
+        props[i] = houses;
+      }
+
+      return props;
+    };
+
+    game.getBoard = function(){
+      // for (var i = 0; i < 6; i++) {
+      //   board.push(i);
+      // }
+      return board;
+    };
+
+    game.getBoardData = function(){
+      return boardData;
+    };
+
+    game.getHouses = function(){
+      return houses;
+    };
+
+    game.getScore = function(){
+      return score;
+    };
+
+    return game;
+}]);
+"use strict";
+//================================================
+//# App Controllers
+//================================================
+
+/* quizz */
+quest.controller('QuizCtrl', function($scope, $http, Question, $timeout,$cookieStore,UserAPI) {
+    /**
+     * redireciona para a tela de login caso o usuario seja invalido
+     */
+    if(!$cookieStore.get('user')){
+        location.href = '#!/user';
+     }
+    /**
+     * Request a Array<question> of the quizAPI
+     * @return question
+     */
+    var questions = [];
+    var count     =0;
+    var i         = 0;
+
+    Question.query(function (result) {
+        questions=result;
+        $scope.question = questions[count++];
+    }, function (errors) {
+        console.log(errors);
+    });
+
+    /**
+     * Abre uma nova questão se hourerem  questoes
+     * a serem respondidas, senão mostar a potuação
+     * dbtido pelo usuario
+     */
+    function openNewQuestion() {
+        i = count++;
+        if(questions[i]){
+            $scope.question = questions[i];
+        }else{
+            $scope.question = [];
+            location.href = '#!/tabuleiro';
+        }
+    };
+    $scope.setAlternative = function (alternative) {
+        $scope.showButtonPronto= true;
+        $scope.optionSelected = alternative;
+    };
+    /**
+     * A cada alternativa selecionada e incrementado ao score do usuario o valor
+     * correspondente dessa, caso seja a correta.
+     * @param alternative
+     */
+    $scope.incrementScore = function (alternative) {
+       var alternatives = questions[i].alternatives;
+        alternative.class = 'orange';
+        /**
+         * seta um intervalo de 3 segundos apos a alternativa ser selecionada.
+         */
+        $timeout(openNewQuestion, 3000);
+        /**
+         * Pinta a alternaticva correta com a cor verde
+         * e a selecionada com a cor laranja.
+         */
+        $scope.question.alternatives = alternatives.filter(function (alternative) {
+            document.getElementById(alternative._id+'X').disabled = true;
+            document.getElementById(alternative._id).disabled = true;
+            $scope.showButtonPronto= false;
+            if(alternative.right == true ){
+                alternative.class="green"
+            }
+             return true;
+        });
+        $scope.user = $cookieStore.get('user');
+        var data = {
+            "userId":$scope.user._id,
+            "alternative":alternative,
+            "question":questions[i]
+        };
+        /**
+         * Incrementa o valor da alternativa ao score do usuario e salva o historico das
+         * questoes respondidas no servidor .
+         * @return user //atualizado
+         */
+        UserAPI.putUser(data)
+            .then(function success(response) {
+                    console.log(response.data);
+                    $scope.user = response.data;
+            },
+            function errorCallback(error) {
+                console.log(error)
+            });
+
+    };
+  }
+);
+/***********************
+  Main
+************************/
+
+quest.controller('mainController', ['$rootScope', '$scope', '$location', '$q', 'AuthService', 'BoardService', 'ApiService',
+  function ($rootScope, $scope, $location, $q, AuthService, BoardService, ApiService) {
+
+    $rootScope.isLoading = false;
+    $rootScope.activePage   = $location.path(); 
+    $rootScope.userActive   = false;
+    $rootScope.question     = false;
+    $rootScope.special      = false;
+    $rootScope.currentLevel = null;
+    $rootScope.currentScore = null;
+    $rootScope.levels       = [];
+    $rootScope.score        = BoardService.getScore();
+    $rootScope.boardData    = BoardService.getQuestions();
+
+    $rootScope.activeHouse = false;
+    $rootScope.activeScore = false;
+    $rootScope.answer        = 0;
+    $rootScope.correctAnswer = 0;
+    $rootScope.isQuestion    = false;  
+    $rootScope.isRanking = false;
+    $rootScope.questionData  = {};
+
+    //refazendo logica menos bagunçada
+    $rootScope.userData      = {}; 
+    $rootScope.rankData      = {}; 
+     $rootScope.userScore;
+     $rootScope.userName;
+     $rootScope.userLastQ;
+     $rootScope.moveMarker = 0;
+
+     $rootScope.openRank = function(){
+      console.log("ranking");
+        $rootScope.isRanking = true;
+     };
+
+    $rootScope.loadNextQuestion = function(next){
+     $rootScope.moveMarker = next;  
+    };
+
+    $rootScope.userGetData = function(){
+      // return ApiService.getUserData();
+    };
+
+    $rootScope.userQuestionData = function(){
+     var promise =  AuthService.getQuestions();
+     promise.then(function succesHandle(data){
+      console.log(data);
+      $rootScope.questionData.push(data);
+      $rootScope.$apply;
+     },function errorHandler(erro){
+
+     });
+
+    };
+
+    $rootScope.go = function (route) {
+      $location.path(route);
+    };
+
+    $rootScope.loadRankData = function(){
+    
+       var promise = ApiService.getRanking();
+        promise.then(function resolveHandler(rank){ 
+        $rootScope.isLoading = false;
+        console.log(rank)
+         //  $rootScope.rankData.userName  = user.name;
+         //  $rootScope.rankData.userScore = parseInt(user.score);
+         //  $rootScope.rankData.userLastQ = parseInt(user.lastQ);  
+         // $rootScope.$apply;
+
+        }, function rejectHandler(error){ 
+          $rootScope.isLoading = false;
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+      
+
+    }; 
+
+    $rootScope.loadUserData = function(){
+     
+       var promise = ApiService.getUserData();
+        promise.then(function resolveHandler(user){ 
+        $rootScope.isLoading = false;
+          $rootScope.userData.userName  = user.name;
+          $rootScope.userData.userScore = parseInt(user.score);
+          $rootScope.userData.userLastQ = parseInt(user.lastQ);  
+         $rootScope.$apply;
+
+        }, function rejectHandler(error){ 
+          $rootScope.isLoading = false;
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+      
+
+    }; 
+
+    $rootScope.loadQuestionData = function(data){
+     
+       var promise = ApiService.getQuestionData(data);
+        promise.then(function resolveHandler(question){ 
+
+          $rootScope.questionData  = question; 
+
+        }, function rejectHandler(error){ 
+
+          $rootScope.setErro(error);
+        }); 
+     
+
+    };
+
+    $rootScope.writeQuestionData = function(num,last){
+
+      if(num && last){
+
+       var promise = ApiService.setQuestionData(num,last);
+        promise.then(function resolveHandler(){ 
+          return true;
+
+        }, function rejectHandler(error){ 
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+        }); 
+
+      }
+
+    };  
+
+    $rootScope.setErro = function(erro){
+          $rootScope.isLoading = false;
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+    };
+
+    $rootScope.logged = function(){ 
+      var promisse = AuthService.logged();
+        promisse.then(function success(logged){
+          $location.path('/');
+          
+        }, function error(erro){
+           $location.path('/login');
+        });
+    };
+
+
+    //assistinda valores 
+    $rootScope.$watch('moveMarker'); 
+    $rootScope.$watch('isQuestion');  
+    $rootScope.$watch('userData', function(value){
+       //
+    });  
+
+}]);
+
+/***********************
+  Login
+************************/
+
+quest.controller('authController',
+  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService',
+  function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
+
+    $rootScope.isLoading  = false;
+    $rootScope.userActive = null; 
+
+
+/*
+# retorna true se logado ou string se erro
+*/
+    $rootScope.logged = function(){
+       var promise = AuthService.logged();
+        promise.then(function resolveHandler(log){ 
+           
+            return log; 
+
+        }, function rejectHandler(error){  
+            return $rootScope.setErro(error);
+        }); 
+
+    }; 
+
+ 
+
+    $rootScope.checkFields = function(){
+      if($scope.loginForm.username && $scope.loginForm.password){
+        return true;
+      }else{
+        return false;
+      }
+    };
+   
+    $rootScope.login = function () {
+
+      // initial values
+      $rootScope.error    = false;
+      $rootScope.disabled = true; 
+      // $rootScope.isLoading = true;
+
+      if($rootScope.checkFields()){
+         
+       var promisse =  AuthService.login($scope.loginForm.username, $scope.loginForm.password);
+          promisse.then(function success(logged){
+            if(logged === "ok"){
+              $location.path('/');
+            }else{
+              $location.path('/');
+            }
+          }, function error(erro){
+              $rootScope.error = true;
+              $rootScope.errorMessage = erro;
+          });
+
+      }else{
+        $rootScope.error = true;
+        $rootScope.errorMessage = "Preencha os campos para prosseguir"; 
+      }
+
+    };  
+ 
+
+}]);
+
+/***********************
+  Logout
+************************/
+quest.controller('logoutController',
+  ['$rootScope', '$scope', '$location', 'AuthService',
+  function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
+
+    $rootScope.logout = function () {
+
+      // call logout from service
+      // AuthService.logout()
+      //   .then(function () {
+      //     $rootScope.userActive = false;
+      //     $location.path('/login');
+      //   });
+
+    };
+
+}]);
+
+/***********************
+  Register
+************************/
+
+quest.controller('registerController',
+  ['$rootScope', '$scope', '$location', 'AuthService',
+  function ($rootScope, $scope, $location, AuthService) {
+    $rootScope.isLoading = false;
+
+    $rootScope.register = function () {
+
+      // initial values
+      $rootScope.error = false;
+      $rootScope.disabled = false;
+      $rootScope.userActive = false;
+
+      // // call register from service
+      // AuthService.register($scope.registerForm.username, $scope.registerForm.password)
+      //   // handle success
+      //   .then(function () {
+      //     $location.path('/login');
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   })
+      //   // handle error
+      //   .catch(function () {
+      //     $rootScope.error = true;
+      //     $rootScope.errorMessage = "Something went wrong!";
+      //     $rootScope.disabled = false;
+      //     $scope.registerForm = {};
+      //   });
+
+    };
+
+}]);

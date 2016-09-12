@@ -433,45 +433,50 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
   return{   
       restrict: 'E',
       transclude: true,
-      templateUrl: '../../views/templates/question_copy.html',
-      scope: {
-        questionData: '=questionData'
+      templateUrl: '../../views/templates/question.html',
+      scope: { 
       },
       link: function(scope, element, attribute,boardController){
-        var question = scope.questionData; 
-        var escolha = null;
-        if(question){
+         var question;
+        scope.load = false;
 
-          scope.id     = question.Numero;
-          scope.title    = question.Titulo;
-          scope.desc     = question.Descricao;
-          scope.score    = question.ValorPontuacao;
-          scope.answered = question.Respondida;
-          scope.options  = question.Alternativas; 
-          scope.correct  = question.ValorAlternativaCorreta; 
+          $rootScope.isLoading = true;
+        //espera caregar conteudo antes de setar vars
+        setTimeout(function () { 
+          scope.load           = true;
+        },2000);
 
-          $rootScope.userLastQ = scope.id;
-        } 
+        if(scope.load){
+          question         = scope.questionData; 
+          $rootScope.isLoading = false;
+          var index =  parseInt($rootScope.userLastQ) - 1;
 
-        scope.selectOption = function(){
-          var el       = this; 
-          var resposta = el.$index; 
-          escolha      = el.alt.Valor;
-          // scope.answered = false;
-          // if(scope.answered){
-          //   alert("Ops! ja respondida, clique em pronto para prosseguir");
-          // }else{
-              if(escolha === scope.correct){
-                scope.choose = escolha;
-                scope.answered = true;
+          var escolha = null;
 
-                  $rootScope.userScore +=  parseInt(scope.score);
-                  // $rootScope.alertWin(userScore);
-                  alert("Yep! Resposta certa, você ganhou mais: "+scope.score +"pontos. Seu total atual é de: "+$rootScope.userScore);
-              } else{
-                  alert("Ounch! Resposta certa seria: "+scope.correct);
-              } 
+                if(question){
 
+                  // scope.id       = question.Numero;
+                  // scope.title    = question.Titulo;
+                  // scope.desc     = question.Descricao;
+                  // scope.score    = question.ValorPontuacao;
+                  // scope.answered = question.Respondida;
+                  // scope.options  = question.Alternativas; 
+                  // scope.correct  = question.ValorAlternativaCorreta; 
+
+                  scope.isSelected = false;
+                  index = scope.id;
+                } 
+
+                scope.selectOption = function(){
+
+                  var el       = this; 
+                  var resposta = el.$index; 
+                  console.log(el.element);
+
+                  escolha      = el.alt.Valor;
+
+                }
+        
         }
 
 
@@ -498,14 +503,25 @@ quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($r
 
         }
  
-        scope.choose = function(){ 
-            $rootScope.isQuestion = false; 
-          if(escolha !== ''){   
-            // return BoardService.loadNext(next);
-           //$rootScope.writeQuestionData(scope.id,$rootScope.userLastQ);
-          }else{ 
-              alert("Escolha uma das alternativas");
-          }
+        scope.choose = function(){  
+          // scope.answered = false;
+            if(escolha){
+              $rootScope.isQuestion = false;
+              if(escolha === scope.correct){
+                scope.choose = escolha;
+                scope.answered = true;
+                $rootScope.userScore +=  parseInt(scope.score);
+                  // $rootScope.alertWin(userScore);
+                 
+              }
+            }else{
+                scope.choose = escolha;
+                scope.answered = true;
+              } 
+
+               if(scope.id !== 30){
+                    $rootScope.seQuestion(scope.id,scope.choose);
+               }
         }
       }
 
@@ -527,4 +543,109 @@ quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardServi
       
   }
 
- } ] );        
+ } ] );   
+
+
+quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/ranking.html',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );   
+quest.directive('tabuleiro', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/tabuleiro.html',
+      scope: {  
+      },
+      link: function(scope, element, attribute){  
+          var questions = $rootScope.questionData;   
+        scope.load = false;
+          $rootScope.isLoading = true;
+            setTimeout(function () { 
+              scope.user           = $rootScope.userData;
+              $rootScope.isLoading = false;
+              scope.load           = true;
+            },200);
+              console.log(questions);
+
+            if(scope.load){
+
+            }
+        // var total      = pgt.length + 1; 
+        var totalCasas = 30;
+        var active     = false;
+        var especial   = false;
+        var index      = 20;
+        scope.casas    = [];
+        scope.blocos = [];
+        var isActive = false;
+
+        for (var i = 0; i < totalCasas; i++) {
+
+            if(i === 11 || i === 20 || i === 25){
+              special = true;
+            }
+
+            if(i === index){
+              isActive = true;
+            }
+
+            scope.casas.push({"id": i, "index": index, "isActive": isActive});
+         
+          
+        } 
+        var bloco_0 = scope.casas.slice(0,6);
+        var bloco_1 = scope.casas.slice(6,12);
+        var bloco_2 = scope.casas.slice(12,18);
+        var bloco_3 = scope.casas.slice(18,20);
+        var bloco_4 = scope.casas.slice(20,28);
+        var bloco_5 = scope.casas.slice(28,30);
+
+        scope.blocos = [
+          {"id": 0, "bloco": bloco_0 }, 
+          {"id": 1, "bloco":  bloco_1 }, 
+          {"id": 2, "bloco":  bloco_2 }, 
+          {"id": 3, "bloco":  bloco_3 }, 
+          {"id": 4, "bloco":  bloco_4 }, 
+          {"id": 5, "bloco":  bloco_5 } 
+        ];
+       
+          // console.log(scope.blocos[0].bloco[0]);   
+        scope.getQuizz = function(id){  
+          return $rootScope.loadNextQuestion(id);   
+        };
+
+        scope.openRank = function(){
+          $rootScope.isQuestion = false;
+          $rootScope.isRanking  = true;
+        };
+      }
+      
+  }
+
+ } ] );   
+
+quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/fase-completa.html',
+      scope: {  
+      },
+      link: function(scope, element, attribute){  
+         //
+
+      }
+ }
+ 
+ }]);        
