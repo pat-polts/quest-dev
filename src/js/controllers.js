@@ -26,6 +26,16 @@ quest.controller('tabuleiro',
     $rootScope.gameRank       = [];
     $rootScope.questionEspecial     = [];
 
+
+    
+
+        $rootScope.sortElement = function(arr){
+          var newEl;
+            newEl = arr.sort(function(){
+              return 0.3 - Math.random();
+          }); 
+        };
+
     $rootScope.setUserCookies = function(name,score,last){
       $cookies.putObject('nome', name);
       $cookies.putObject('pontos', score);

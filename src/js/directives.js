@@ -741,6 +741,12 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
 
  } ] );   
 
+/********************************************************************************************
+* SINAIS E SINTOMAS :: especial 1
+* diretiva: <sinais-e-sintomas ng-if ="isSpecial1" data="questionEspecial"></sinais-e-sintomas>
+* html: question-especial-1.html
+* dados: api $rootScope.loadQuestionE1()
+/********************************************************************************************/
 
 quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, $http, ApiService){
 
@@ -749,11 +755,16 @@ quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, 
       templateUrl: '../../views/templates/question-especial-1.html',
       scope: {
         data: '='
-      },
+      },    
+
       link: function(scope, element, attribute){
         console.log($rootScope.questionEspecial);
         var data = $rootScope.questionEspecial[0];
-        scope.erroMsg = $rootScope.errorMessage; 
+        var indice = 0; 
+          scope.isSelected = false;
+          scope.data = '';
+          scope.erroMsg = $rootScope.errorMessage; 
+          scope.btnTxt = 'pronto'; 
           scope.id = data.Numero;
           scope.titulo = data.Titulo;
           scope.opcoes = data.AlternativasEspeciais;
@@ -766,23 +777,63 @@ quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, 
         scope.listA = [];
         scope.listB = []; 
 
-          var sortArr = function(arr){
-            var newArr;
-            newArr = arr.sort(function(){
-              return 0.5 - Math.random();
-            }); 
-          }
-    
-        sortArr(scope.opcoes);  
-        scope.listA = scope.opcoes.slice(0,total);
+        $rootScope.sortElement(scope.opcoes);  
+
+        scope.listA = scope.opcoes.slice(indice,total);
         scope.listB = scope.opcoes.slice(total,totalList); 
 
 
-        scope.selectOption = function(id){
-            scope.selecionadas.push(id);
+        scope.listChange = function(list, id){
+             
+              var data = {relacoes: list, valor: id}; 
+              scope.selecionadas.push(data);
+              
+        }
+   
+        scope.onDragComplete=function(data,evt){
+           console.log("drag success, data:", data);
+        }
+        scope.onDropComplete=function(data,evt){
+            console.log("drop success, data:", data);
+        }
+        scope.selectOption = function(list,id){
+            // scope.selecionadas.push(id);
+            var drags = [];  
+            scope.isSelected = true;
+            var option = scope.corretas[list].Relacoes;
+            var acertou = compareCorrect(option,id,list); 
+            if(drags){
+              drags.push({relacoes: list, valor: id, acertou: true});
+            }else{
+              drags.push({relacoes: list, valor: id, acertou: false});
+            }
+            scope.listChange(list,id);  
+    
+        }
 
-            
-        console.log(scope.selecionadas);
+        var compareCorrect = function(a,b,list){
+          var corrects = a.split(',');
+          var newSelecteds = [];
+            var lists = {};
+    
+          corrects.forEach(function(el,index,arr){
+            if(corrects[index] == b){
+              //
+             // lists += {list: {"correct": true, "valor": b }};
+            return true;
+            }else{
+             false;
+            }
+
+          }); 
+             // newSelecteds.push(lists);
+           
+
+        };
+
+        scope.check = function(){ 
+            $rootScope.isSpecial1 = false;
+            $rootScope.$apply;
         }
 
 

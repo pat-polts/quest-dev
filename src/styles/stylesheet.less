@@ -380,7 +380,7 @@ canvas{
             width: 100px;
             background: @base-blue;
 
-            animation: loadmove 2s linear infinite alternate;
+            animation: loadmove 6s linear infinite alternate;
         .border-radius(24px);
 
 
@@ -484,17 +484,19 @@ canvas{
 
         ul.colA{
            float: left;
-           clear: left;
         }
 
         ul.colB{
            float: right;
+           clear: right;
         }
     ul{
         display: block;
         width: 44%;
         margin: 0px;
         padding: 0px;
+        height: auto;
+        max-height: 768px;
         text-align: center;
 
 
@@ -505,7 +507,9 @@ canvas{
             padding: 0;
             text-align: center;
         }
-    }
+        li.selected{
+
+        }
 
     .card{
         width: 75%;
@@ -522,8 +526,26 @@ canvas{
         background: url('../../dist/assets/corpo-feminino.png');
         position: absolute;
         top: 18%;
-        left42.5%;
+        left:42.5%;
+        width: 156px;
+        height: 556px;
     }
+
+    button{
+        font-size: 2em;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        left: 34%;
+        bottom: 2%;
+    }
+
+
+    [ng-drop].drag-enter{
+        .border(2px, solid, @base-yellow);
+    }
+
+
 }
 .myContainer-ranking{
     img{
@@ -857,4 +879,6 @@ small{
     border-radius: 10px;
     border: 2px solid #32407c;
     font-size: 1.5em;
+}
+
 }

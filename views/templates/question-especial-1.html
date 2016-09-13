@@ -1,20 +1,22 @@
 <div class="especial1">
 <p>{{titulo}}</p>
 <div class="mulher"></div>
-<ul class="colB">
-	
-	<p>Podem Não estar</p>
-	<li class="col-b" ng-repeat="optB in listB" ng-click="selectOption(optB.Valor)">
-	<div class="card" >{{  optB.DescricaoAlternativa }}</div>
-	</li>
-</ul>
-<ul class="colA">
+<ul class="colA"  ng-drop="true" ng-drop-success="onDropComplete($data,$event)" >
 	<p>Podem estar</p>
-	<li class="col-a" ng-repeat="optA in listA" ng-click="selectOption(optA.Valor)">
+	<li class="col-a v{{optA.Valor}}" ng-repeat="optA in listA" ng-click="selectOption(0,optA.Valor)">
 		<div class="card" >
 			{{ optA.DescricaoAlternativa }}
 		</div>
 	</li> 
 </ul>
+<ul class="colB" >
+	
+	<p>Podem Não estar</p>
+	<li class="col-b" ng-repeat="optB in listB" ng-click="selectOption(1,optB.Valor)" ng-class="{selected: isSelected}" >
+	<div class="card" >{{  optB.DescricaoAlternativa }}</div>
+	</li>
+</ul>
+
+<button ng-if="isSelected" ng-click="check()">{{btnTxt}}</button>
 	
 </div>

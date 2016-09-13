@@ -26,10 +26,10 @@ body {
 }
 @keyframes loadmove {
   0% {
-    left: 5px;
+    width: 100px;
   }
   100% {
-    left: 450px;
+    width: 540px;
   }
 }
 .box-content {
@@ -408,7 +408,7 @@ canvas {
   height: 34px;
   width: 100px;
   background: #004e72;
-  animation: loadmove 2s linear infinite alternate;
+  animation: loadmove 6s linear infinite alternate;
   border-radius: 24px;
   -moz-border-radius: 24px;
   -webkit-border-radius: 24px;
@@ -508,6 +508,14 @@ canvas {
   width: 100%;
   height: 100%;
   z-index: 106;
+  /*****
+** TODO: otimizar/integrar
+*****/
+  /* app css stylesheet */
+  /*.................................................................................*/
+  /*./tabuleiro*/
+  /*Quiz........................................*/
+  /*Ranking ..........................................*/
 }
 .especial1 p {
   font-size: 2em;
@@ -515,16 +523,18 @@ canvas {
 }
 .especial1 ul.colA {
   float: left;
-  clear: left;
 }
 .especial1 ul.colB {
   float: right;
+  clear: right;
 }
 .especial1 ul {
   display: block;
-  width: 49%;
+  width: 44%;
   margin: 0px;
   padding: 0px;
+  height: auto;
+  max-height: 768px;
   text-align: center;
 }
 .especial1 ul li {
@@ -534,7 +544,7 @@ canvas {
   padding: 0;
   text-align: center;
 }
-.especial1 .card {
+.especial1 ul .card {
   width: 75%;
   height: auto;
   padding: 2.1%;
@@ -548,18 +558,31 @@ canvas {
   -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
-.especial1 .mulher {
+.especial1 ul .mulher {
   background: url('../../dist/assets/corpo-feminino.png');
   position: absolute;
-  top: 20px;
-  left: 25%;
+  top: 18%;
+  left: 42.5%;
+  width: 156px;
+  height: 556px;
 }
-.myContainer-ranking img {
+.especial1 ul button {
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 34%;
+  bottom: 2%;
+}
+.especial1 ul [ng-drop].drag-enter {
+  border: 2px solid #e8a612;
+}
+.especial1 .myContainer-ranking img {
   width: 275px;
   float: left;
   margin: 2% 0 0 2%;
 }
-.myContainer-ranking h1 {
+.especial1 .myContainer-ranking h1 {
   color: #004e72;
   font-weight: bold;
   font-size: 4em;
@@ -568,13 +591,13 @@ canvas {
   width: 350px;
   float: right;
 }
-.myContainer-ranking h1 small {
+.especial1 .myContainer-ranking h1 small {
   font-size: .6em !important;
   color: #004e72;
   font-weight: normal;
   margin: 0 0 0 -11px;
 }
-.myContainer-ranking .rank-content {
+.especial1 .myContainer-ranking .rank-content {
   position: relative;
   top: 2%;
   left: 2%;
@@ -583,11 +606,11 @@ canvas {
   overflow: hidden;
   margin: 0 0 7% 0;
 }
-.myContainer-ranking .rank-content .rank {
+.especial1 .myContainer-ranking .rank-content .rank {
   overflow: auto;
   height: 460px;
 }
-.myContainer-ranking ul {
+.especial1 .myContainer-ranking ul {
   display: block;
   list-style-type: none;
   width: 100%;
@@ -596,7 +619,7 @@ canvas {
   padding: 2%;
   margin-left: 2%;
 }
-.myContainer-ranking ul li {
+.especial1 .myContainer-ranking ul li {
   display: inline-block;
   width: 100%;
   height: auto;
@@ -604,7 +627,7 @@ canvas {
   margin: 0px 0px 1%  0px;
   padding: 0px;
 }
-.myContainer-ranking ul li p.posicao {
+.especial1 .myContainer-ranking ul li p.posicao {
   width: 5%;
   height: auto;
   background: #004e72;
@@ -621,7 +644,7 @@ canvas {
   -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
-.myContainer-ranking ul li p.nome {
+.especial1 .myContainer-ranking ul li p.nome {
   width: 50%;
   height: auto;
   padding: 2%;
@@ -639,7 +662,7 @@ canvas {
   -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
-.myContainer-ranking ul li p.pontos {
+.especial1 .myContainer-ranking ul li p.pontos {
   width: 10%;
   height: auto;
   color: #e8a612;
@@ -652,13 +675,13 @@ canvas {
   border: none;
   font-weight: bold;
 }
-.myContainer-ranking ul li p.pontos small {
+.especial1 .myContainer-ranking ul li p.pontos small {
   font-size: .6em !important;
   color: rgba(0, 78, 114, 0.6);
   font-weight: normal !important;
   margin: 0 0 0 -12px !important;
 }
-button {
+.especial1 button {
   color: #fff;
   font-weight: bold;
   background: #004e72;
@@ -677,69 +700,62 @@ button {
   -khtml-border-radius: 10em;
   /* for old Konqueror browsers */
 }
-::-webkit-input-placeholder {
+.especial1 ::-webkit-input-placeholder {
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-:-moz-placeholder {
+.especial1 :-moz-placeholder {
   /* Firefox 18- */
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-::-moz-placeholder {
+.especial1 ::-moz-placeholder {
   /* Firefox 19+ */
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-:-ms-input-placeholder {
+.especial1 :-ms-input-placeholder {
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-/*****
-** TODO: otimizar/integrar
-*****/
-/* app css stylesheet */
-/*.................................................................................*/
-.myImg {
+.especial1 .myImg {
   margin: 10px;
   text-align: center;
 }
-.myButton-ranking {
+.especial1 .myButton-ranking {
   border: 4px solid #e8a612;
 }
-.myData-user {
+.especial1 .myData-user {
   border: 1px solid transparent;
   float: left;
   width: auto;
   height: 40px;
   margin-left: 40px;
 }
-.myUser-score,
-.myPts,
-.myUser-name,
-.myButton-ranking {
+.especial1 .myUser-score,
+.especial1 .myPts,
+.especial1 .myUser-name,
+.especial1 .myButton-ranking {
   font-size: 1.8em;
   color: #e8a612;
   font-weight: bold;
 }
-.myButton-ranking {
+.especial1 .myButton-ranking {
   position: absolute;
   z-index: 110;
 }
-/*./tabuleiro*/
-/*Quiz........................................*/
-.myContainer-quiz {
+.especial1 .myContainer-quiz {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
 }
-.myPanel-quiz {
+.especial1 .myPanel-quiz {
   margin-top: 120px;
   width: 765px;
   margin-right: auto;
@@ -747,19 +763,19 @@ button {
   border: 3px solid transparent;
   background: transparent;
 }
-.myTitle-question {
+.especial1 .myTitle-question {
   width: 100%;
   padding: 5px;
   border: 2px solid #32407c;
   border-radius: 10px;
 }
-.myTitle-question p {
+.especial1 .myTitle-question p {
   height: 100%;
   max-height: 200px;
   white-space: pre-wrap;
   overflow-y: scroll;
 }
-.myAlterntive-option {
+.especial1 .myAlterntive-option {
   width: 12%;
   margin-top: 10px;
   padding: 5px;
@@ -769,7 +785,7 @@ button {
   background-color: #32407c;
   color: #FFFFFF;
 }
-.myAlternative {
+.especial1 .myAlternative {
   height: 75px;
   width: 87%;
   padding: 5px;
@@ -777,24 +793,24 @@ button {
   border-radius: 10px;
   border: 2px solid #32407c;
 }
-.myAlternativa:hover {
+.especial1 .myAlternativa:hover {
   background-color: #32407c;
 }
-.myAlterntive-option:active {
+.especial1 .myAlterntive-option:active {
   background-color: #e8a612;
   box-shadow: inset 2px;
 }
-.myAlternativa:active {
+.especial1 .myAlternativa:active {
   background-color: #e8a612;
   box-shadow: inset 2px;
 }
-.myButton-done {
+.especial1 .myButton-done {
   width: 200px;
   margin-top: 20px;
   margin-right: auto;
   margin-left: auto;
 }
-.myButton-pronto {
+.especial1 .myButton-pronto {
   display: block;
   width: 100%;
   text-align: center;
@@ -802,7 +818,7 @@ button {
   border-radius: 10px;
   border: 4px solid #32407c;
 }
-.myScore {
+.especial1 .myScore {
   width: 200px;
   height: 200px;
   border: 2px solid #000;
@@ -816,8 +832,7 @@ button {
   font-size: 6em;
   padding: 30px;
 }
-/*Ranking ..........................................*/
-.myContainer-ranking {
+.especial1 .myContainer-ranking {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
   height: 768px;
   width: 1024px;
@@ -825,7 +840,7 @@ button {
   position: absolute;
   z-index: 110;
 }
-.myPanel-ranking {
+.especial1 .myPanel-ranking {
   width: 690px;
   height: 100%;
   max-height: 500px;
@@ -837,13 +852,13 @@ button {
   background: transparent;
   overflow-y: scroll;
 }
-.myRanking-item {
+.especial1 .myRanking-item {
   margin-top: 10px;
   height: 65px;
   margin-right: auto;
   margin-left: auto;
 }
-.myRanking-position {
+.especial1 .myRanking-position {
   width: 65px;
   height: 100%;
   margin-left: 10px;
@@ -855,7 +870,7 @@ button {
   border-radius: 15px;
   color: #FFFFFF;
 }
-.myRanking-user-name {
+.especial1 .myRanking-user-name {
   width: 70%;
   height: 100%;
   margin-left: 15px;
@@ -866,7 +881,7 @@ button {
   border-radius: 10px;
   text-align: center;
 }
-.myRanking-user-score {
+.especial1 .myRanking-user-score {
   width: 65px;
   height: 100%;
   padding-top: 5px;
@@ -876,12 +891,12 @@ button {
   font-weight: bold;
   color: #e8a612;
 }
-small {
+.especial1 small {
   color: #32407c;
   font-size: 0.5em;
   font-weight: normal;
 }
-.myRanking-group-buttons {
+.especial1 .myRanking-group-buttons {
   width: 70%;
   height: 60px;
   position: absolute;
@@ -890,8 +905,8 @@ small {
   left: auto;
   text-align: center;
 }
-.myRanking-button-voltar,
-.myRanking-button-pronto {
+.especial1 .myRanking-button-voltar,
+.especial1 .myRanking-button-pronto {
   width: 100px;
   height: 40px;
   border-radius: 10px;

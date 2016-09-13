@@ -2,7 +2,7 @@
 //# App configs
 //================================================
 
-var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies']);
+var quest = angular.module('questApp', ['ngRoute', 'ngMaterial','ngCookies', 'ngDraggable']);
 
 
 quest.config(function ($routeProvider,$locationProvider) {
