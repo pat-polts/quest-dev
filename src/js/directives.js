@@ -595,20 +595,6 @@ quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardServi
  } ] );   
 
 
-quest.directive('especialUm', ['$rootScope',  function($rootScope, $http,ApiService){
-
- return{   
-      restrict: 'E', 
-      templateUrl: '../../views/templates/especial-1.html',
-      scope: {
-      },
-      link: function(scope, element, attribute){
-        scope.erroMsg = $rootScope.errorMessage;
-      }
-      
-  }
-
- } ] );
 quest.directive('loadingGame', ['$rootScope',  function($rootScope, $http,ApiService){
 
  return{   
@@ -717,12 +703,30 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
    
 
         scope.openQ = function(id){
-          var el = this.$index + 1; 
-          var prev;
-          if(id == 11){
+          var el = id; 
+          var pgt = el + 1;
+          switch(id){
+            case 11 :
+              //special
+              $rootScope.loadQuestionE1();
+            break;   
+            case 20 :
+              //special
+            break;   
+            case 24 :
+              //special
+            break;  
+            default:
+              //simples
+              $rootScope.loadQuestion(pgt); 
+            break;   
+          }
+          if(el == 11){
+            var pgt = el;
+            console.log("especial1: "+pgt);
+            // $rootScope.loadQuestion(12);
 
           }else{
-            $rootScope.loadQuestion(el); 
           }
             
         };
@@ -736,6 +740,31 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
   }
 
  } ] );   
+
+
+quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, $http, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/question-especial-1.html',
+      scope: {
+        data: '='
+      },
+      link: function(scope, element, attribute){
+        console.log(data);
+        scope.erroMsg = $rootScope.errorMessage;
+        if(data.length !== 0){
+          scope.id = data.Numero;
+          scope.titulo = data.Titulo;
+          scope.opcoes = data.AlternativasEspeciais;
+          scope.corretas = data.RespostasCorretasEspeciais;
+          
+        }
+      }
+      
+  }
+
+ } ] );
 
 quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
 

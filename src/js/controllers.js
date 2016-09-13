@@ -24,6 +24,7 @@ quest.controller('tabuleiro',
     $rootScope.users          = [];
     $rootScope.optionSelected = false;
     $rootScope.gameRank       = [];
+    $rootScope.questionEspecial     = [];
 
     $rootScope.setUserCookies = function(name,score,last){
       $cookies.putObject('nome', name);
@@ -77,8 +78,7 @@ quest.controller('tabuleiro',
 
 
     $rootScope.loadQuestion = function(id){ 
-  
-
+      console.log(id);
       var question         =  ApiService.getQuestionData(id);
       $rootScope.isLoading = true;
       $rootScope.userQuestion = [];
@@ -87,6 +87,23 @@ quest.controller('tabuleiro',
         $rootScope.isQuestion     = true;
         $rootScope.isLoading  = false;
         $rootScope.$apply;
+
+       },function errorHandler(erro){
+          $rootScope.isLoading = false; 
+          console.log(erro);
+       });
+         
+    };
+
+    $rootScope.loadQuestionE1 = function(){ 
+      var question         =  ApiService.getQuestionE1();
+      $rootScope.isLoading = true;
+      $rootScope.questionEspecial = [];
+        question.then(function succesHandle(data){
+          $rootScope.questionEspecial.push(data);  
+          $rootScope.isLoading  = false;
+          $rootScope.isSpecial1    = true;
+          $rootScope.$apply;
 
        },function errorHandler(erro){
           $rootScope.isLoading = false; 

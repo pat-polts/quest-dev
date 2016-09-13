@@ -190,11 +190,11 @@ router.get('/ranking',function(req,res,next){
   
 });
 
-router.get('/especial',function(req,res,next){
+router.get('/especial1', function(req,res,next){
   
     var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
-
-    var api = process.env.API_QUESTION_ESPECIAL + token;
+    var id = 'E1';
+    var api = process.env.API_QUESTION_ESPECIAL + id + '/' + token;
 
       httpClient.get(api, function (data, response) {
         if(data){  
@@ -211,7 +211,7 @@ router.get('/especial',function(req,res,next){
     
   
 });
-router.post('/especial',function(req,res,next){
+router.post('/especial1',function(req,res,next){
   
     var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
 

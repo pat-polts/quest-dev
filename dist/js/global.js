@@ -656,20 +656,6 @@ quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardServi
  } ] );   
 
 
-quest.directive('especialUm', ['$rootScope',  function($rootScope, $http,ApiService){
-
- return{   
-      restrict: 'E', 
-      templateUrl: '../../views/templates/especial-1.html',
-      scope: {
-      },
-      link: function(scope, element, attribute){
-        scope.erroMsg = $rootScope.errorMessage;
-      }
-      
-  }
-
- } ] );
 quest.directive('loadingGame', ['$rootScope',  function($rootScope, $http,ApiService){
 
  return{   
@@ -778,12 +764,30 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
    
 
         scope.openQ = function(id){
-          var el = this.$index + 1; 
-          var prev;
-          if(id == 11){
+          var el = id; 
+          var pgt = el + 1;
+          switch(id){
+            case 11 :
+              //special
+              $rootScope.loadQuestionE1();
+            break;   
+            case 20 :
+              //special
+            break;   
+            case 24 :
+              //special
+            break;  
+            default:
+              //simples
+              $rootScope.loadQuestion(pgt); 
+            break;   
+          }
+          if(el == 11){
+            var pgt = el;
+            console.log("especial1: "+pgt);
+            // $rootScope.loadQuestion(12);
 
           }else{
-            $rootScope.loadQuestion(el); 
           }
             
         };
@@ -797,6 +801,31 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
   }
 
  } ] );   
+
+
+quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, $http, ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/question-especial-1.html',
+      scope: {
+        data: '='
+      },
+      link: function(scope, element, attribute){
+        console.log(data);
+        scope.erroMsg = $rootScope.errorMessage;
+        if(data.length !== 0){
+          scope.id = data.Numero;
+          scope.titulo = data.Titulo;
+          scope.opcoes = data.AlternativasEspeciais;
+          scope.corretas = data.RespostasCorretasEspeciais;
+          
+        }
+      }
+      
+  }
+
+ } ] );
 
 quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
 
@@ -936,19 +965,53 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
       return deferred.promise; 
     };
 
+
+
+    userApi.getQuestionE1 = function(){ 
+
+      var deferred = $q.defer();  
+     
+        $http.get('/api/especial1')
+          .then(function success(res){  
+              if(res.status === 200){ 
+                if(res.data.obj.length !== 0){  
+                console.log(res.data.obj);
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){ 
+
+              if(res.status === 500){ 
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+
+          });
+      
+
+      return deferred.promise; 
+    };
+
     userApi.getRanking = function(){ 
 
       var deferred = $q.defer(); 
 
+          $rootScope.isLoading  = true;
         $http.get('/api/ranking')
           .then(function success(res){  
               if(res.status === 200){  
                 if(res.data.obj){
+                  $rootScope.isLoading  = false;
                   deferred.resolve(res.data.obj); 
                 }
               } 
              
           }, function error(res){ 
+          $rootScope.isLoading  = false;
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -1177,6 +1240,7 @@ quest.controller('tabuleiro',
     $rootScope.users          = [];
     $rootScope.optionSelected = false;
     $rootScope.gameRank       = [];
+    $rootScope.questionEspecial     = [];
 
     $rootScope.setUserCookies = function(name,score,last){
       $cookies.putObject('nome', name);
@@ -1230,8 +1294,7 @@ quest.controller('tabuleiro',
 
 
     $rootScope.loadQuestion = function(id){ 
-  
-
+      console.log(id);
       var question         =  ApiService.getQuestionData(id);
       $rootScope.isLoading = true;
       $rootScope.userQuestion = [];
@@ -1240,6 +1303,23 @@ quest.controller('tabuleiro',
         $rootScope.isQuestion     = true;
         $rootScope.isLoading  = false;
         $rootScope.$apply;
+
+       },function errorHandler(erro){
+          $rootScope.isLoading = false; 
+          console.log(erro);
+       });
+         
+    };
+
+    $rootScope.loadQuestionE1 = function(){ 
+      var question         =  ApiService.getQuestionE1();
+      $rootScope.isLoading = true;
+      $rootScope.questionEspecial = [];
+        question.then(function succesHandle(data){
+          $rootScope.questionEspecial.push(data);  
+          $rootScope.isLoading  = false;
+          $rootScope.isSpecial1    = true;
+          $rootScope.$apply;
 
        },function errorHandler(erro){
           $rootScope.isLoading = false; 
