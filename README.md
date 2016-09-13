@@ -29,3 +29,7 @@
 <code>npm update && bower update</code>
 
 <p>add npm session store</p>
+
+<p style="color: #c00;">** Atualizações **</p>
+
+<code>npm update && bower update</code>
