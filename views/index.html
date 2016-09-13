@@ -21,7 +21,8 @@
         <a ng-click='logout()' class="btn btn-default">Sair</a>
       </div> -->
 
-      <div ng-if="isLoading" class="loading" layout="row" layout-sm="column"></div> 
+        <loading-game ng-if="isLoading"></loading-game>
+      <!-- <div ng-if="isLoading" class="loading" layout="row" layout-sm="column"></div>  -->
       
       <div ng-view class="content" layout="row" layout-sm="column"></div>
 

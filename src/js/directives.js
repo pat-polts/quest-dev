@@ -613,7 +613,7 @@ quest.directive('loadingGame', ['$rootScope',  function($rootScope, $http,ApiSer
 
  return{   
       restrict: 'E', 
-      templateUrl: '',
+      templateUrl: '../../views/templates/loading.html',
       scope: {
       },
       link: function(scope, element, attribute){

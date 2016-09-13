@@ -34,10 +34,10 @@ quest.controller('tabuleiro',
     $rootScope.loadData = function(){
       var user      = ApiService.getUserData();
       var questions =  ApiService.getQuestions();
-      $rootScope.isLoadingGame = true;
+      $rootScope.isLoading = true;
       //load user info to user globals
        user.then(function succesHandle(data){
-          $rootScope.isLoadingGame  = false;
+          $rootScope.isLoading  = false;
           $rootScope.userName       = data.name;
           $rootScope.userScore      = data.score;
           $rootScope.userLastAnswer = data.lastQ;
@@ -54,20 +54,20 @@ quest.controller('tabuleiro',
 
        },function errorHandler(erro){
           console.log(erro);
-          $rootScope.isLoadingGame = false; 
+          $rootScope.isLoading = false; 
        });
         
       //load user info to user globals
        questions.then(function succesHandle(data){  
-          $rootScope.isLoadingGame = true; 
+          $rootScope.isLoading = true; 
 
           $rootScope.userQuestions.push(data); 
-          $rootScope.isLoadingGame     = false;
+          $rootScope.isLoading     = false;
           $rootScope.$apply;
 
          
        },function errorHandler(erro){
-          $rootScope.isLoadingGame = false; 
+          $rootScope.isLoading = false; 
           console.log(erro);
        });
 
@@ -80,16 +80,16 @@ quest.controller('tabuleiro',
   
 
       var question         =  ApiService.getQuestionData(id);
-      $rootScope.isLoadingGame = true;
+      $rootScope.isLoading = true;
       $rootScope.userQuestion = [];
      question.then(function succesHandle(data){
         $rootScope.userQuestion.push(data);  
         $rootScope.isQuestion     = true;
-        $rootScope.isLoadingGame  = false;
+        $rootScope.isLoading  = false;
         $rootScope.$apply;
 
        },function errorHandler(erro){
-          $rootScope.isLoadingGame = false; 
+          $rootScope.isLoading = false; 
           console.log(erro);
        });
          
@@ -99,12 +99,15 @@ quest.controller('tabuleiro',
         var question = ApiService.setQuestionData(id, val);
         // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
  
-         question.then(function succesHandle(data){    
+      $rootScope.isLoading = true;
+         question.then(function succesHandle(data){  
+             $rootScope.isLoading = false;  
               console.log("gravou "+data); 
               $rootScope.userScore = score; 
               $rootScope.$apply;
 
-           },function errorHandler(erro){ 
+           },function errorHandler(erro){  
+             $rootScope.isLoading = false;  
               console.log(erro);
            });
     };
@@ -125,12 +128,13 @@ quest.controller('tabuleiro',
     $rootScope.userGetData = function(){
       // return ApiService.getUserData();
     };
-     $rootScope.openRank = function(){ 
+     $rootScope.openRank = function(){  
+        $rootScope.isLoading = true;  
         $rootScope.isRanking = true;
          var rank = ApiService.getRanking(); 
  
-         rank.then(function succesHandle(data){    
-         // console.log(data); 
+         rank.then(function succesHandle(data){  
+              $rootScope.isLoading = false;  
               $rootScope.gameRank.push(data); 
               $rootScope.$apply;
 
