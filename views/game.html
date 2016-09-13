@@ -1,17 +1,26 @@
 <!-- # Tela Login  --> 
 
 <msg-erro>{{errorMessage}}</msg-erro> 
-<div >
+<div ng-init="loadData()" ng-controller="tabuleiro" class="board">
 	
-	<question ng-if="isQuestion" question-data="questionData"></question>
-	<ranking ng-if="isRanking"></ranking>
+<!-- 	<question ng-if="isQuestion"  ></question>
+	<ranking ng-if="isRanking"></ranking> -->
 	<!-- <sepecial></sepecial> -->
 	<!-- <final></final> -->
 
-<div ng-init="loadUserData()">
-	<tabuleiro></tabuleiro>
-</div>
-	
-	<!-- <board board-data="boardData"></board> -->
+	<tabuleiro board-data="userQuestions" ></tabuleiro>
 
+        <div class="user-info">
+            <figure>
+                <img src="../dist/assets/cabeca-personagem.png">
+            </figure>
+
+            <span>{{userName}}</span>
+           
+            <span>{{userScore | number}} pts</span>
+              
+            <button ng-click="openRank()">Ranking</button>
+        </div> 
+	<question ng-if="isQuestion" pergunta="userQuestion"></question>
+	<ranking ng-if="isRanking" ranking="gameRank"></ranking>
 </div>

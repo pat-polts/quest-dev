@@ -1,4 +1,4 @@
-<div class="board">
+
     <div class="tabuleiro-inicio">Inicio</div>
     <div class="tabuleiro-sinais">Sinais e<br>sintomas</div>
     <div class="tabuleiro-vantagens">Vantagens e<br>desvantagens</div>
@@ -6,24 +6,11 @@
     <div class="tabuleiro-cristo">Cristo Redentor<br>Final</div>
     <ul>
         
-        <div ng-repeat="b in blocos" class="bloco-{{b.id}}" ng-ig="load"> 
+        <div ng-repeat="b in blocos" class="bloco-{{b.id}}" > 
         
-            <li ng-repeat="c in blocos[$index].bloco" ng-click="getQuizz(c.id)"  id="bloco-{{c.id}}}" class="casas-bloco-{{b.id}}" ng-class="{selected: c.isActive}"> </li>
+            <li ng-repeat="c in blocos[$index].bloco" ng-click="openQ()"  id="bloco-{{c.id}}" class="casas-bloco-{{b.id}}" ng-class="{ultimaReposta: c.isSelected}"></li>
 
                  
         </div>
 
     </ul>
-        <div class="user-info" ng-model="userData" ng-if="load">
-            <figure>
-                <img src="../dist/assets/cabeca-personagem.png">
-            </figure>
-
-            <span>{{user.userName}}</span>
-           
-            <span>{{user.userScore | number}} pts</span>
-              
-            <button ng-click="openRank()">Ranking</button>
-        </div> 
-
-</div>

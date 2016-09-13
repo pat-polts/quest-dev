@@ -16,22 +16,23 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
       $rootScope.isLoading = true;
 
       var deferred = $q.defer(); 
-      $headers = {"Content-Type": "application/json" };
-      $http({method: 'GET', url: '/api/user', headers: $headers})
+      $http.get('/api/user')
         .then(function success(res){   
+          $rootScope.isLoading = false;
             if(res.status === 200){ 
-              if(res.data){ 
+              if(res.data.obj){ 
+
                 deferred.resolve(res.data.obj);
               }
             } 
            
-        }, function error(res){
-              /*retorno de erro | string*/ 
+        }, function error(res){ 
+          $rootScope.isLoading = false;
             if(res.status === 500){
               if(res.data.error){ 
-
-                $rootScope.error = true; 
+                $rootScope.error        = true; 
                 $rootScope.errorMessage = res.data.error;  
+
                 deferred.reject(res.data.error);
               }
             }
@@ -43,25 +44,18 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.getQuestionData = function(q){ 
 
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
+      var deferred = $q.defer(); 
       if(q){
         $http.get('/api/question/'+q)
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
-
-                  if(!res.data.user){
-                     deferred.reject("sessão expirou");
-                  }
+          .then(function success(res){    
 
               if(res.status === 200){ 
-                if(res.data){ 
+                if(res.data.obj){ 
                   deferred.resolve(res.data.obj);
                 }
               } 
              
-          }, function error(res){
-            $rootScope.isLoading = false; 
+          }, function error(res){ 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -78,13 +72,13 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
     userApi.getQuestions = function(){ 
 
       var deferred = $q.defer(); 
+      $rootScope.isLoading     = true;
      
         $http.get('/api/questions')
           .then(function success(res){  
-            console.log(res);
               if(res.status === 200){ 
-                if(res.data.obj){ 
-                  console.log(res.data.obj);
+                if(res.data.obj.length !== 0){  
+                  $rootScope.isLoading     = false;
                   deferred.resolve(res.data.obj);
                 }
               } 
@@ -92,6 +86,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           }, function error(res){ 
 
               if(res.status === 500){
+                  $rootScope.isLoading     = false;
                 if(res.data.error){ 
                   $rootScope.error = true; 
                   $rootScope.errorMessage = res.data.error;  
@@ -111,13 +106,18 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
       $rootScope.isLoading = true;
 
       if(id && last){
-        $http.get('/api/question/',{numero: id, valor: last})
+        $http.post('/api/question/',{numero: id, valor: last})
           .then(function success(res){  
-              if(res.status === 200){  
-                  deferred.resolve(); 
+            $rootScope.isLoading = false;
+              if(res.status === 200){ 
+                if(res.data.obj){
+                   deferred.resolve(res.data.obj); 
+                } 
+                 
               } 
              
           }, function error(res){ 
+            $rootScope.isLoading = false;
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -140,7 +140,9 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           .then(function success(res){ 
               $rootScope.isLoading = false; 
               if(res.status === 200){  
+                if(res.data.obj){
                   deferred.resolve(res.data.obj); 
+                }
               } 
              
           }, function error(res){
@@ -201,7 +203,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
             
             if(res.status === 200){
               // console.log(res);
-              deferred.resolve(res.data.logged);
+              if(res.data.logged){
+                 deferred.resolve(res.data.logged);
+              }
             }
 
           }, function error(res){
@@ -210,7 +214,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
             if(res.status === 500){
               // console.log(res);
-              deferred.reject("nao logado");
+              if(res.data.error){
+                deferred.reject(res.data.error);
+              }
             }
           });       
 

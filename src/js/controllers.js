@@ -3,100 +3,163 @@
 //# App Controllers
 //================================================
 
-/* quizz */
-quest.controller('QuizCtrl', function($scope, $http, Question, $timeout,$cookieStore,UserAPI) {
-    /**
-     * redireciona para a tela de login caso o usuario seja invalido
-     */
-    if(!$cookieStore.get('user')){
-        location.href = '#!/user';
-     }
-    /**
-     * Request a Array<question> of the quizAPI
-     * @return question
-     */
-    var questions = [];
-    var count     =0;
-    var i         = 0;
+quest.controller('tabuleiro',
+  ['$rootScope', '$location','$q', '$cookies', 'ApiService',
+  function ($rootScope, $location, $q, $cookies, ApiService) {
+    // $rootScope.activePage     = $location.path(); 
+    $rootScope.isLoading      = false;
+    $rootScope.userLogged     = null;
+    $rootScope.userName       = null;
+    $rootScope.userEmail      = null;
+    $rootScope.userScore      = 0;
+    $rootScope.userLastAnswer = null;
+    $rootScope.userQuestions = [];
+    $rootScope.userQuestion = [];
 
-    Question.query(function (result) {
-        questions=result;
-        $scope.question = questions[count++];
-    }, function (errors) {
-        console.log(errors);
-    });
+    $rootScope.users = [];
+    $rootScope.optionSelected = false;
+    $rootScope.gameRank = [];
 
-    /**
-     * Abre uma nova questão se hourerem  questoes
-     * a serem respondidas, senão mostar a potuação
-     * dbtido pelo usuario
-     */
-    function openNewQuestion() {
-        i = count++;
-        if(questions[i]){
-            $scope.question = questions[i];
-        }else{
-            $scope.question = [];
-            location.href = '#!/tabuleiro';
-        }
+    $rootScope.setUserCookies = function(name,score,last){
+      $cookies.putObject('nome', name);
+      $cookies.putObject('pontos', score);
+      $cookies.putObject('ultima', last);
     };
-    $scope.setAlternative = function (alternative) {
-        $scope.showButtonPronto= true;
-        $scope.optionSelected = alternative;
-    };
-    /**
-     * A cada alternativa selecionada e incrementado ao score do usuario o valor
-     * correspondente dessa, caso seja a correta.
-     * @param alternative
-     */
-    $scope.incrementScore = function (alternative) {
-       var alternatives = questions[i].alternatives;
-        alternative.class = 'orange';
-        /**
-         * seta um intervalo de 3 segundos apos a alternativa ser selecionada.
-         */
-        $timeout(openNewQuestion, 3000);
-        /**
-         * Pinta a alternaticva correta com a cor verde
-         * e a selecionada com a cor laranja.
-         */
-        $scope.question.alternatives = alternatives.filter(function (alternative) {
-            document.getElementById(alternative._id+'X').disabled = true;
-            document.getElementById(alternative._id).disabled = true;
-            $scope.showButtonPronto= false;
-            if(alternative.right == true ){
-                alternative.class="green"
-            }
-             return true;
-        });
-        $scope.user = $cookieStore.get('user');
-        var data = {
-            "userId":$scope.user._id,
-            "alternative":alternative,
-            "question":questions[i]
-        };
-        /**
-         * Incrementa o valor da alternativa ao score do usuario e salva o historico das
-         * questoes respondidas no servidor .
-         * @return user //atualizado
-         */
-        UserAPI.putUser(data)
-            .then(function success(response) {
-                    console.log(response.data);
-                    $scope.user = response.data;
-            },
-            function errorCallback(error) {
-                console.log(error)
-            });
+
+    $rootScope.loadData = function(){
+      var user      = ApiService.getUserData();
+      var questions =  ApiService.getQuestions();
+
+      //load user info to user globals
+       user.then(function succesHandle(data){
+        // console.log(data);
+          $rootScope.userName       = data.name;
+          $rootScope.userScore      = data.score;
+          $rootScope.userLastAnswer = data.lastQ;
+          // if(data.lastQ == 6){
+          //   $rootScope.userLastAnswer = 1;
+          // }else{
+
+          //   $rootScope.userLastAnswer = data.lastQ;
+          // }
+
+          $rootScope.setUserCookies(data.name,data.score, data.lastQ);
+
+          $rootScope.isLoading      = false;
+          $rootScope.$apply;
+
+       },function errorHandler(erro){
+          console.log(erro);
+          $rootScope.isLoading = false; 
+       });
+        
+      //load user info to user globals
+       questions.then(function succesHandle(data){ 
+        $rootScope.isLoading     = true;
+
+          $rootScope.userQuestions.push(data); 
+          $rootScope.isLoading     = false;
+          $rootScope.$apply;
+
+         
+       },function errorHandler(erro){
+          $rootScope.isLoading = false; 
+          console.log(erro);
+       });
+
+
 
     };
-  }
-);
+
+
+    $rootScope.loadQuestion = function(id){ 
+  
+
+      var question         =  ApiService.getQuestionData(id);
+      $rootScope.isLoading = true;
+      $rootScope.userQuestion = [];
+     question.then(function succesHandle(data){
+        $rootScope.userQuestion.push(data);  
+        $rootScope.isQuestion     = true;
+        $rootScope.isLoading  = false;
+        $rootScope.$apply;
+
+       },function errorHandler(erro){
+          $rootScope.isLoading = false; 
+          console.log(erro);
+       });
+         
+    };
+
+    $rootScope.writeQuestion = function(id, val, score, acertou){
+        var question = ApiService.setQuestionData(id, val);
+        // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
+ 
+         question.then(function succesHandle(data){    
+              console.log("gravou "+data); 
+              $rootScope.userScore = score; 
+              $rootScope.$apply;
+
+           },function errorHandler(erro){ 
+              console.log(erro);
+           });
+    };
+
+
+    $rootScope.moveNext = function(next, prev){
+        // var question = ApiService.setQuestionData(id);
+       
+        var prevHouse = document.querySelector("#bloco-"+prev)
+        var nextHouse = document.querySelector("#bloco-"+next); 
+   
+        prevHouse.classList.remove('ultimaReposta');
+        prevHouse.classList.add('respondida');
+        nextHouse.classList.add('ultimaReposta');
+        // console.log();
+    };
+
+    $rootScope.userGetData = function(){
+      // return ApiService.getUserData();
+    };
+     $rootScope.openRank = function(){ 
+        $rootScope.isRanking = true;
+         var rank = ApiService.getRanking(); 
+ 
+         rank.then(function succesHandle(data){    
+         // console.log(data); 
+              $rootScope.gameRank.push(data); 
+              $rootScope.$apply;
+
+           },function errorHandler(erro){ 
+              console.log(erro);
+           });
+     };
+
+
+ 
+    $rootScope.$watch('userLastAnswer', function(value){
+       //
+       return $rootScope.userLastAnswer;
+    }); 
+ 
+    $rootScope.$watch('userScore', function(value){
+       //
+       // console.log("+ "+value + " total: "+ $rootScope.userScore);
+       return $rootScope.userScore;
+    }); 
+    $rootScope.$watch('userQuestions', function(value){
+       //
+       // console.log(value);
+       return $rootScope.userQuestions;
+    });  
+
+}]);
 /***********************
   Main
 ************************/
 
-quest.controller('mainController', ['$rootScope', '$scope', '$location', '$q', 'AuthService', 'BoardService', 'ApiService',
+quest.controller('mainController', 
+  ['$rootScope', '$scope', '$location', '$q', 'AuthService', 'BoardService', 'ApiService',
   function ($rootScope, $scope, $location, $q, AuthService, BoardService, ApiService) {
 
     $rootScope.isLoading = false;
@@ -211,22 +274,22 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$q', '
 
     };
 
-    $rootScope.writeQuestionData = function(num,last){
+    // $rootScope.writeQuestionData = function(num,last){
 
-      if(num && last){
+    //   if(num && last){
 
-       var promise = ApiService.setQuestionData(num,last);
-        promise.then(function resolveHandler(){ 
-          return true;
+    //    var promise = ApiService.setQuestionData(num,last);
+    //     promise.then(function resolveHandler(){ 
+    //       return true;
 
-        }, function rejectHandler(error){ 
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
+    //     }, function rejectHandler(error){ 
+    //       $rootScope.error = true;
+    //       $rootScope.errorMessage = error;
+    //     }); 
 
-      }
+    //   }
 
-    };  
+    // };  
 
     $rootScope.setErro = function(erro){
           $rootScope.isLoading = false;
@@ -249,6 +312,9 @@ quest.controller('mainController', ['$rootScope', '$scope', '$location', '$q', '
     $rootScope.$watch('moveMarker'); 
     $rootScope.$watch('isQuestion');  
     $rootScope.$watch('userData', function(value){
+       //
+    });  
+    $rootScope.$watch('questionData', function(value){
        //
     });  
 

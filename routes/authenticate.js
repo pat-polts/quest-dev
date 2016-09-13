@@ -25,23 +25,22 @@ router.post('/login', function(req, res, next) {
  
     httpClient.post(api, args, function (data, response) {
       if(data){      
-         
-         if(req.session){
+           var sess         = req.session.cookie; 
+           sess.session     = Math.random() * 2;
            req.session.user = data;
 
           req.session.regenerate(function(err){
             if(err) res.status(400).end({error: err});
 
-            if(req.session.user){ 
+            if(sess.session){ 
+              console.log(sess.session)
              res.status(200).send({logged: true});
             }else{
               res.status(500).send({error: "sem sessão, logue"});
             }
 
           });
-        }else{
-          res.status(500).send({error: "erro inesperado"});
-        }
+
 
       }else{
         res.status(500).end();
@@ -51,15 +50,7 @@ router.post('/login', function(req, res, next) {
   }
 });
 
-router.get('/session', function(req, res, next) {
-  var uSessions = [
-    {"token": req.session.user},
-    {"ultimaRespondida": req.session.lastQ},
-    {"ultimaPagina": null}
-  ]
-  res.status(200).send({uSessions});
-});
-
+ 
 router.get('/logout', function(req, res, next){
 
   res.redirect('/login');
@@ -71,8 +62,12 @@ router.get('/logout', function(req, res, next){
 
 router.get('/status', function(req, res, next){ 
 
-  if(req.session.user){
-    var user = req.session.user;
+ var sess = req.session.cookie; 
+
+  if(sess.session){
+
+    var user = sess.user;
+    console.log(user);
     if(user){
       res.status(200).send({logged: true});
     }

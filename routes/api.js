@@ -9,25 +9,27 @@ var httpClient = new Http();
 
 
 router.get('/questions', function(req, res, next) {
-
-  i 
-     var env = process.env.API_QUESTION + '/YWRtaW46MTIz';
-
-      httpClient.get(env, function (data, response) {
-        
-      console.log(data);
-        if(data){ 
-          console.log(data);
-          res.status(200).send({
+  var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
+ 
+     var api = process.env.API_QUESTION + 'YWRtaW46MTIz';
+     var questQ = [];
+      httpClient.get(api, function (data, response) {
+          
+   
+        res.status(200).send({
             obj: data
           });
+        // if(data){ 
+        //   res.status(200).send({
+        //     obj: data
+        //   });
 
-        }else{
-          res.status(500);
-            res.send({
-              error: "Não foi possivel carregar as questoes"
-            }); 
-        } 
+        // }else{
+        //   res.status(500);
+        //     res.send({
+        //       error: "Não foi possivel carregar as questoes"
+        //     }); 
+        // } 
       });
   
     
@@ -36,9 +38,10 @@ router.get('/questions', function(req, res, next) {
  
 router.get('/user',function(req,res,next){
 
-  var token = 'YWRtaW46MTIz';  
+  var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
+
   if(token){
-    var api = process.env.API_USER + token; 
+    var api  = process.env.API_USER + token; 
     var user = {};
 
       var args = {  
@@ -72,10 +75,46 @@ router.get('/question/:id',function(req,res,next){
     var qId = req.params.id;
 
     if(qId){
-      var token = 'YWRtaW46MTIz'; 
-      var api = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
+      var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+      var api   = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
 
       httpClient.get(api, function (data, response) {
+        if(data){ 
+    
+          res.status(200).send({
+            obj: data
+          });
+
+        }else{
+          res.status(500).send({
+            error: "Não foi possivel obter pergunta"
+          }); 
+        } 
+      });
+    }
+
+  // }
+
+});
+ 
+router.post('/question/:id',function(req,res,next){
+ 
+  // if(!req.session.user){
+  //    res.status(500).end('Sem usuario'); 
+  // }else{
+    var qId = req.params.numero;
+    var qVal = req.params.valor;
+
+    if(qId){
+      var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+      var api   = process.env.API_SEND_QUESTION + '/' + token;
+
+    var args = { 
+      data: { NumeroPergunta: qId, ValorAlternativaRespondida: qVal},
+      headers: { "Content-Type": "application/json" }
+    };
+
+      httpClient.post(api, args, function (data, response) {
         if(data){ 
     
           res.status(200).send({
@@ -98,7 +137,7 @@ router.get('/question/:id',function(req,res,next){
 router.post('/question',function(req,res,next){
  
   
-    var token = 'YWRtaW46MTIz'; 
+    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
 
     var api = process.env.API_SEND_QUESTION + token;
 
@@ -129,15 +168,14 @@ router.post('/question',function(req,res,next){
 });
 
  
-router.post('/ranking',function(req,res,next){
+router.get('/ranking',function(req,res,next){
   
-    var token = 'YWRtaW46MTIz'; 
+    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
 
     var api = process.env.API_RANKING + token;
 
       httpClient.get(api, function (data, response) {
-        if(data){ 
-          console.log(data);
+        if(data){  
            res.status(200).send({
               obj: data
             });

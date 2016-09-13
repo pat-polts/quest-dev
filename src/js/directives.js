@@ -60,21 +60,17 @@ quest.directive('setQuestion', function($timeout, $window){
 /**************************
   Board
 ***************************/
-quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  function($rootScope, $http, BoardService, AuthService){
+quest.directive('board', ['$rootScope','$http', '$cookies', 'BoardService', 'AuthService',  
+  function($rootScope, $http, $cookies, BoardService, AuthService){
     return{
       restrict: 'E',
       replace: true,
       transclude: true,
       scope: {
-        score: '=score',
-        boardData: '=boardData' 
+        boardData: '=', 
+        questionData: '=' 
       },
-      controller: ['$scope', function boardController($scope) {
-        $scope.moveToNext = function(next){
-          console.log(next);
-        }
-      }],
-      template: '<canvas id="game" width="1024" height="768"></canvas>',
+      template: '<canvas id="game" width="1024" height="768"></canvas> ',
       // controller: function(scope, element,attribute){
       //   // $rootScope.moveEl = function(){
       //   //   console.log(1);
@@ -82,7 +78,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
       // },
       link: function(scope, element, attribute){
    
-        var w, h, px, py, loader, manifest, board, house, eHouse,shape, profile, loadHouse, question,user;
+        var w, h, px, py, hx, hy, loader, manifest, board, house, especial, challenge, shape, profile, loadHouse, question,user;
  
         drawBoard();   
         function drawBoard(){
@@ -115,7 +111,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 
         }
         function handleComplete(){  
-          
+          scope.load = false;
           board        = new createjs.Shape();
           var alertLoad    = new createjs.Shape();
           var alertLoadTxt = new createjs.Text("Carregando informações", "22px Arial", "#c00");
@@ -123,16 +119,33 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           var palcoH = h / 2;
           var palcoX = (w / 2) / 2;
           var palcoY = (h / 2) / 2;
-          var imgBoard = loader.getResult("board");     
+          var imgBoard = loader.getResult("board");   
+          var userCookie = [];  
 
           board.graphics.beginBitmapFill(imgBoard).drawRect(0, 0, 1024, 768); 
 
           scope.stage.addChild(board);   
- 
+            $rootScope.isLoading = true;
 
-           setTimeout(function () {  
-             boardStart();  
-          },4000); 
+           setTimeout(function () { 
+              $rootScope.isLoading = false;  
+              boardStart();     
+              userCookie = [
+                {
+                  'nome': $rootScope.userName, 
+                  'pontos': $rootScope.userScore, 
+                  'ultima': $rootScope.userLastAnswer
+                }
+              ];
+
+              // if($cookies.getObject().length === 0){
+                $cookies.putObject('user', userCookie); 
+              // } 
+              // console.log($rootScope.userLastAnswer);
+              // console.log($rootScope.userQuestion);
+             
+          },5000); 
+
 
           
 
@@ -147,70 +160,125 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 
         }
         function boardStart(){
-        
+          var userCookie = $cookies.getObject('user');
           var special    = false;  
-          var last        =  $rootScope.userLastQ;
-          if(last === 17){
+          var last        =  userCookie[0].ultima;
+          if(last === 20){
             var current = 1;
           }else{
-            var current     =  $rootScope.userLastQ + 1;
+            var current     =  last + 1;
 
           }
-            
-            for (var i = 1; i < 32; i++) { 
+          var questions = $rootScope.userQuestions[0];
+        //   questions.sort(function(a, b){
+        //     var keyA = new Date(a.Numero),
+        //         keyB = new Date(b.Numero);
+        //     // Compare the 2 dates
+        //     if(keyA < keyB) return -1;
+        //     if(keyA > keyB) return 1;
+        //     return 0;
+        // });
+          for (var i = 0; i < questions.length; i++) {
+            if(questions[i].Numero){
+               questions[i].Numero.sort();
+            }
+          }
+          console.log(questions);
+          // var qTotal = questions; 
+          // var totalCasas = 30;
+          // console.log(questions);
+        // var active     = false;
+        // var especial   = false;
+        // var index      = 20;
+        // scope.casas    = [];
+        // scope.blocos = [];
+        // var isActive = false;
 
-              if(i < 7){ 
-                 createMarker(1,i,special);
+        for (var i = 0; i < 30; i++) {
 
-              }else if(i > 6 && i < 13){  
-                if(i === 12){
-                  special = true;
-                }else{
-                  special = false;
-                }
-                 
-                 createMarker(2,i,special); 
-                             
-              }else if(i > 13 && i < 20){
-                special = false;
-                 createMarker(3,i,special); 
-                
-              }else if(i > 19 && i < 22){    
-                special = false;
-                 createMarker(4,i,special);     
-
-              
-              }else if(i > 22 && i < 29){   
-                if(i === 23 || i === 27){
-                  special = true;
-                } else{
-                  special = false;   
-                }
-                 createMarker(5,i,special);  
-
-              } else{
-                if(i > 28 && i < 33){
-
-                  special = false; 
-                 createMarker(6,i,special); 
-                } 
-
-              }
-
+            if(i === 11 || i === 20 || i === 25){
+              special = true;
             }
 
-             
-            $rootScope.$watch('isQuestion',function(value){
-              if(value == false){
-                moveToNext();
-              }
-            });
+            if(i === index){
+              isActive = true;
+            }
 
-            return loadQuestion(current);
+            scope.casas.push({"id": i,  "isSelected": isActive});
+         
+          
+        } 
+        // var bloco_0 = scope.casas.slice(0,6);
+        // var bloco_1 = scope.casas.slice(6,12);
+        // var bloco_2 = scope.casas.slice(12,18);
+        // var bloco_3 = scope.casas.slice(18,20);
+        // var bloco_4 = scope.casas.slice(20,28);
+        // var bloco_5 = scope.casas.slice(28,30);
+
+        // scope.blocos = [
+        //   {"id": 0, "bloco": bloco_0 }, 
+        //   {"id": 1, "bloco":  bloco_1 }, 
+        //   {"id": 2, "bloco":  bloco_2 }, 
+        //   {"id": 3, "bloco":  bloco_3 }, 
+        //   {"id": 4, "bloco":  bloco_4 }, 
+        //   {"id": 5, "bloco":  bloco_5 } 
+        // ];
+       
+
+          for (var i = 0; i < 30; i++) {
+            
+          }
+
+
+            
+            // for (var i = 1; i < 32; i++) { 
+
+            //   if(i < 7){ 
+            //      createMarker(current,1,i,special);
+
+            //   }else if(i > 6 && i < 13){  
+            //     if(i === 12){
+            //       special = true;
+            //     }else{
+            //       special = false;
+            //     }
+                 
+            //      createMarker(current,2,i,special); 
+                             
+            //   }else if(i > 13 && i < 20){
+            //     special = false;
+            //      createMarker(3,i,special); 
+                
+            //   }else if(i > 19 && i < 22){    
+            //     special = false;
+            //      createMarker(current,4,i,special);     
+
+              
+            //   }else if(i > 22 && i < 29){   
+            //     if(i === 23 || i === 27){
+            //       special = true;
+            //     } else{
+            //       special = false;   
+            //     }
+            //      createMarker(current,5,i,special);  
+
+            //   } else{
+            //     if(i > 28 && i < 33){
+
+            //       special = false; 
+            //      createMarker(current,6,i,special); 
+            //     } 
+
+            //   }
+
+            // }
+
+           
+            // return loadQuestion(current);
           
         }
 
-        function createMarker(lines,index,special){
+        function createMarker(current,lines,index,special){
 
           
           var offsetx     = (w / 3);
@@ -219,12 +287,7 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           var circle      = new createjs.Shape();
           var currentMark = loader.getResult("currentMarker");
           var marker      = new createjs.Shape();  
-          var last        =  $rootScope.userLastQ;
-          if(last === 17){
-            var current     =  1;    
-          }else{
-            var current     =  $rootScope.userLastQ + 1;
-          }
+          
           
          
 
@@ -316,8 +379,9 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
           if(current === index){
             marker.graphics.beginFill("#e8a612").drawRoundRect(0,0,31,45,17);
             marker.name = current;
-            marker.x = circle.x - 16;
-            marker.y = circle.y - 20;
+            marker.x = circle.x;
+            marker.y = circle.y;
+
             scope.stage.addChild(marker); 
           }
 
@@ -326,20 +390,20 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 //  carrega a pegunta
 //************************************
         function moveToNext(){
-          var next = BoardService.getNext();
-          if(next){
-            //console.log(maker.x);
-          }
+          // var next = nexsQuest();
+          // if(next){
+          //   //console.log(maker.x);
+          // }
         };
         function loadQuestion(q = ''){ 
       
           if(q){  
            $rootScope.loadQuestionData(q);   
             console.log(1);
-            setTimeout(function () { 
-            console.log(1);
-              $rootScope.isQuestion   = true;  
-            },200);  
+            // setTimeout(function () { 
+            // console.log(2);
+            //   $rootScope.isQuestion   = true;  
+            // },200);  
 
             // $rootScope.isQuestion = true; 
             // $http.get('/api/question/'+q)
@@ -361,29 +425,29 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 //  handle clique na casa
 //************************************
         function handleMarkClick(){ 
-          var house     = this;
-          var houseName = house.name;
-          var alert     = new createjs.Shape();
-          var next      = houseName + 1;
-          var prev      = $rootScope.userLastQ;
-          var question  = scope.boardData.questions;
+          // var house     = this;
+          // var houseName = house.name;
+          // var alert     = new createjs.Shape();
+          // var next      = houseName + 1;
+          // var prev      = $rootScope.userLastQ;
+          // var question  = scope.boardData.questions;
 
-          if(prev !==0 && !question[prev].Respondida){
-            //Ops pulando casas
-            return handleWrongHouse(prev);
-          }
+          // if(prev !==0 && !question[prev].Respondida){
+          //   //Ops pulando casas
+          //   return handleWrongHouse(prev);
+          // }
 
-            if(question[houseName]){
-              if(question[houseName].Respondida){
-                //proxima casa
-                return loadQuestion(question[next]);
+          //   if(question[houseName]){
+          //     if(question[houseName].Respondida){
+          //       //proxima casa
+          //       return loadQuestion(question[next]);
 
-              }else{
-                //carrega pergunta
-                return loadQuestion(question[houseName]);
+          //     }else{
+          //       //carrega pergunta
+          //       return loadQuestion(question[houseName]);
 
-              }
-            }
+          //     }
+          //   }
 
         }
 //************************************
@@ -429,103 +493,88 @@ quest.directive('board', ['$rootScope','$http', 'BoardService', 'AuthService',  
 }]);
 
 
-quest.directive('question', ['$rootScope', '$http', 'BoardService',  function($rootScope, $http,BoardService){
+quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',  
+  function($rootScope, $http, $cookies, $location){
   return{   
       restrict: 'E',
       transclude: true,
       templateUrl: '../../views/templates/question.html',
       scope: { 
+        pergunta: '='
       },
-      link: function(scope, element, attribute,boardController){
-         var question;
-        scope.load = false;
+      link: function(scope, element, attribute){
 
-          $rootScope.isLoading = true;
-        //espera caregar conteudo antes de setar vars
-        setTimeout(function () { 
-          scope.load           = true;
-        },2000);
-
-        if(scope.load){
-          question         = scope.questionData; 
-          $rootScope.isLoading = false;
-          var index =  parseInt($rootScope.userLastQ) - 1;
-
+          var index =  1;
           var escolha = null;
+          var question = scope.pergunta[0];
+          scope.optSelected = false;
+          scope.optInvalid = false;
+          scope.acertou = false;
+          scope.optValue = null;
 
-                if(question){
+          scope.id           = question.Numero;
+          scope.titulo       = question.Titulo;
+          scope.respondida   = question.Respondida;
+          scope.alternativas = question.Alternativas;
+          scope.correta      = question.ValorAlternativaCorreta;
+          scope.pontos       = question.ValorPontuacao;
 
-                  // scope.id       = question.Numero;
-                  // scope.title    = question.Titulo;
-                  // scope.desc     = question.Descricao;
-                  // scope.score    = question.ValorPontuacao;
-                  // scope.answered = question.Respondida;
-                  // scope.options  = question.Alternativas; 
-                  // scope.correct  = question.ValorAlternativaCorreta; 
-
-                  scope.isSelected = false;
-                  index = scope.id;
-                } 
-
-                scope.selectOption = function(){
-
-                  var el       = this; 
-                  var resposta = el.$index; 
-                  console.log(el.element);
-
-                  escolha      = el.alt.Valor;
-
-                }
-        
-        }
-
-
-        function loadQuestion(q = ''){ 
-    
-          if(q){  
-           $rootScope.loadQuestionData(q);   
-
-            setTimeout(function () { 
-              $rootScope.isQuestion   = true;  
-            },500);  
-
-            // $rootScope.isQuestion = true; 
-            // $http.get('/api/question/'+q)
-            //   .then(function success(res){ 
-            //     if(res.data.question){
-            //       $rootScope.isQuestion = true;  
-            //       $rootScope.questionData = res.data.question;  
-            //     }
-            //   }, function error(res){ 
-            //       console.log("erro ao obter pergunta");
-            //   }); 
+          scope.name = $cookies.getObject('nome');
+          // console.log(question);
+          if(scope.respondida && scope.name == "TopCode"){
+            var next = parseInt(scope.id) + 1;
+            // scope.optInvalid = true;
+            console.log("ja respondida usuario admin");
+            // $location.path('/jogar');
+          }else{
+            // $location.path('/jogar');
           }
 
-        }
- 
-        scope.choose = function(){  
-          // scope.answered = false;
-            if(escolha){
-              $rootScope.isQuestion = false;
-              if(escolha === scope.correct){
-                scope.choose = escolha;
-                scope.answered = true;
-                $rootScope.userScore +=  parseInt(scope.score);
-                  // $rootScope.alertWin(userScore);
-                 
-              }
+          scope.responder = function(){ 
+            if(scope.optSelected){
+              //jaescolhido
+              console.log("valor "+ scope.optValue +" já escolhido");
             }else{
-                scope.choose = escolha;
-                scope.answered = true;
-              } 
+              var el            = this;
+              var elIndex       = el.$index;
+              var escolha       = el.data.Valor;  
+              var pClass        = 'valor-'+escolha;
+              var childValor    = document.querySelector('#v'+elIndex); 
+              var childAllValor = document.querySelector('p.valor'); 
 
-               if(scope.id !== 30){
-                    $rootScope.seQuestion(scope.id,scope.choose);
-               }
-        }
+                childAllValor.classList.remove('selected'); 
+                childValor.classList.add('selected'); 
+
+              scope.optSelected = true; 
+               scope.optValue  = escolha;
+            }
+       
+            // console.log(escolha);
+          }
+          scope.enviaPergunta = function(){ 
+              var el            = this;
+            if(scope.optValue !== null){
+              if(scope.optValue == scope.correta){
+                scope.acertou = true;
+                $rootScope.userScore += scope.pontos; 
+              }
+
+              $rootScope.writeQuestion(scope.id,scope.optValue,scope.pontos,scope.acertou);
+              $rootScope.isQuestion = false;
+              var next = parseInt(scope.id);
+              var prev = parseInt(scope.id) - 1;
+              $rootScope.moveNext(next,prev);
+              
+            }else{
+              console.log("escolha uma opcao");
+            }
+            scope.optValue = null;
+       
+          }
       }
+   }
 
-  }
+  
 }]); 
 
 
@@ -546,11 +595,11 @@ quest.directive('msgErro', ['$rootScope',  function($rootScope, $http,BoardServi
  } ] );   
 
 
-quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
+quest.directive('especialUm', ['$rootScope',  function($rootScope, $http,ApiService){
 
  return{   
       restrict: 'E', 
-      templateUrl: '../../views/templates/ranking.html',
+      templateUrl: '../../views/templates/especial-1.html',
       scope: {
       },
       link: function(scope, element, attribute){
@@ -559,51 +608,77 @@ quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService
       
   }
 
- } ] );   
-quest.directive('tabuleiro', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
+ } ] );
+quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '../../views/templates/ranking.html',
+      scope: {
+        ranking: '='
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+        console.log(scope.ranking);
+        // scope.nome = $cookies.getObject('nome');
+        scope.close = function(){
+          $rootScope.isRanking = false;
+        }
+      }
+      
+  }
+
+ } ] );
+
+quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies', 
+  function($rootScope, $http, $q,$cookies){
 
  return{   
       restrict: 'E', 
       templateUrl: '../../views/tabuleiro.html',
       scope: {  
+        boardData: '='
       },
-      link: function(scope, element, attribute){  
-          var questions = $rootScope.questionData;   
-        scope.load = false;
-          $rootScope.isLoading = true;
-            setTimeout(function () { 
-              scope.user           = $rootScope.userData;
-              $rootScope.isLoading = false;
-              scope.load           = true;
-            },200);
-              console.log(questions);
+      link: function(scope, element, attribute){   
+        var userCookie = [];
+        scope.load = false; 
 
-            if(scope.load){
+        scope.nome      = parseInt($cookies.getObject('nome'));
+        scope.ultima    = parseInt($cookies.getObject('ultima'));
+        scope.pontuacao = $cookies.getObject('pontos');
 
-            }
-        // var total      = pgt.length + 1; 
         var totalCasas = 30;
         var active     = false;
         var especial   = false;
-        var index      = 20;
+        var index = scope.ultima;
+
+        console.log("last: "+scope.ultima);
+        console.log("score: "+scope.pontuacao);
+
         scope.casas    = [];
         scope.blocos = [];
-        var isActive = false;
-
-        for (var i = 0; i < totalCasas; i++) {
-
+        if(scope.boardData.length !== 0){
+          var perguntas = scope.boardData;
+            console.log(perguntas[0]);
+        }
+        var isActive = false; 
+        for (var i = 0; i < totalCasas; i++) { 
             if(i === 11 || i === 20 || i === 25){
-              special = true;
+              especial = true;
             }
-
+ 
             if(i === index){
-              isActive = true;
-            }
+              // console.log(perguntas[0][i]);
+              var pushObj = {"id": i, "isSelected": true, "special": especial};
+            }else{
 
-            scope.casas.push({"id": i, "index": index, "isActive": isActive});
+              var pushObj = {"id": i, "isSelected": false, "special": especial};
+            }
+            scope.casas.push(pushObj);
          
           
         } 
+
         var bloco_0 = scope.casas.slice(0,6);
         var bloco_1 = scope.casas.slice(6,12);
         var bloco_2 = scope.casas.slice(12,18);
@@ -619,15 +694,20 @@ quest.directive('tabuleiro', ['$rootScope', '$q', 'ApiService', function($rootSc
           {"id": 4, "bloco":  bloco_4 }, 
           {"id": 5, "bloco":  bloco_5 } 
         ];
-       
-          // console.log(scope.blocos[0].bloco[0]);   
-        scope.getQuizz = function(id){  
-          return $rootScope.loadNextQuestion(id);   
+   
+
+        scope.openQ = function(id){
+          var el = this.$index + 1; 
+          var prev;
+          // scope.boardData.forEach(function(){
+          //  // console.log(scope.boardData);
+          // });
+          $rootScope.loadQuestion(el);   
         };
 
         scope.openRank = function(){
           $rootScope.isQuestion = false;
-          $rootScope.isRanking  = true;
+          $rootScope.isRanking  = false;
         };
       }
       

@@ -185,6 +185,7 @@ canvas {
   position: absolute;
   left: 2em;
   bottom: 2em;
+  z-index: 105;
 }
 .board .user-info figure {
   width: 165px;
@@ -243,8 +244,20 @@ canvas {
   float: left;
   cursor: pointer;
 }
-.board ul li .reposta [class^="bloco-"] {
-  background: #bd9c31 !important;
+.board ul li :visited {
+  background: #e8a612 !important;
+}
+.board li.ultimaReposta {
+  background: url('../../../dist/assets/current-marker.png') !important;
+  background-color: #bd9c31 !important;
+  height: 38px;
+  margin-top: -11px;
+  border: none;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  /* for old Konqueror browsers */
 }
 .board .tabuleiro-inicio,
 .board .tabuleiro-sinais,
@@ -346,19 +359,19 @@ canvas {
   width: 1024px;
   height: 768px;
   margin: 0px auto;
+  position: absolute;
   z-index: 200;
 }
 .pergunta {
+  background: url('../../../dist/assets/fundo-dialogo.png') no-repeat;
   position: absolute;
-  background: #f2f2f2;
   color: black;
   text-align: center;
-  left: 2%;
-  top: 2%;
-  width: 95%;
-  height: 95%;
-  z-index: 102;
-  border: 1px solid #9a9c9e;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 106;
 }
 .pergunta ul {
   display: block;
@@ -371,38 +384,66 @@ canvas {
 .pergunta ul li {
   display: inline-block;
   width: 100%;
-  height: 95px;
-  margin: 2% 0px;
+  height: auto;
+  min-height: 70px;
+  margin: 0px 0px 1%  0px;
   padding: 0px;
 }
 .pergunta ul li p:first-child {
-  width: 100px;
-  height: 95px;
+  width: 9%;
+  height: auto;
   background: #004e72;
   color: #fff;
-  padding: 25px 0px 0px 0px;
-  margin: 0px 19px 0px 0px;
+  padding: 1.4% 0px;
+  margin: 0px 1% 0px 0px;
   text-align: center;
-  border-radius: 5em;
-  -moz-border-radius: 5em;
-  -webkit-border-radius: 5em;
-  -khtml-border-radius: 5em;
+  float: left;
+  font-size: 2.5em;
+  text-transform: lowercase;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
 .pergunta ul li p:nth-child(2) {
-  width: 800px;
-  min-height: 95px;
+  width: 81%;
   height: auto;
-  color: #fff;
-  padding: 25px 0px 0px 0px;
-  margin: 0px 19px 0px 0px;
-  text-align: center;
+  padding: 2.1%;
+  margin: 0;
+  float: left;
+  font-size: 1.5em;
   border: 2px solid #004e72;
-  border-radius: 3em;
-  -moz-border-radius: 3em;
-  -webkit-border-radius: 3em;
-  -khtml-border-radius: 3em;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
+}
+.pergunta p {
+  color: #004e72;
+  font-size: 1.8em;
+  text-align: left;
+  margin: 2% auto;
+  width: 92%;
+  height: auto;
+  padding: 2%;
+  background: rgba(249, 254, 255, 0.5);
+  border: 2px solid #004e72;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  /* for old Konqueror browsers */
+}
+.pergunta p.valor.selected {
+  background: #e8a612!important;
+  border: 2px solid #e8a612;
+}
+.pergunta button {
+  width: 320px;
+  height: 60px;
+  margin: 7% auto 0 auto;
 }
 button {
   color: #fff;
@@ -485,11 +526,6 @@ button {
 /*Quiz........................................*/
 .myContainer-quiz {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
-  height: 768px;
-  width: 1023px;
-  margin: 0 auto 0;
-  border: 1px solid transparent;
-  position: relative;
 }
 .myPanel-quiz {
   margin-top: 120px;
@@ -572,10 +608,10 @@ button {
 .myContainer-ranking {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
   height: 768px;
-  width: 1023px;
-  margin: 0 auto 0;
-  border: 1px solid transparent;
-  position: relative;
+  width: 1024px;
+  margin: 0 auto;
+  position: absolute;
+  z-index: 110;
 }
 .myPanel-ranking {
   width: 690px;
