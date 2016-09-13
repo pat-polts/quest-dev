@@ -104,6 +104,7 @@ quest.controller('tabuleiro',
           $rootScope.isLoading  = false;
           $rootScope.isSpecial1    = true;
           $rootScope.$apply;
+ 
 
        },function errorHandler(erro){
           $rootScope.isLoading = false; 

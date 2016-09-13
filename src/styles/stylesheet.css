@@ -509,6 +509,51 @@ canvas {
   height: 100%;
   z-index: 106;
 }
+.especial1 p {
+  font-size: 2em;
+  text-align: center;
+}
+.especial1 ul.colA {
+  float: left;
+  clear: left;
+}
+.especial1 ul.colB {
+  float: right;
+}
+.especial1 ul {
+  display: block;
+  width: 49%;
+  margin: 0px;
+  padding: 0px;
+  text-align: center;
+}
+.especial1 ul li {
+  display: inline-block;
+  width: 100%;
+  margin: 1% 0px;
+  padding: 0;
+  text-align: center;
+}
+.especial1 .card {
+  width: 75%;
+  height: auto;
+  padding: 2.1%;
+  margin: 0 auto;
+  font-size: 1.5em;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px solid #004e72;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -khtml-border-radius: 15px;
+  /* for old Konqueror browsers */
+}
+.especial1 .mulher {
+  background: url('../../dist/assets/corpo-feminino.png');
+  position: absolute;
+  top: 20px;
+  left: 25%;
+}
 .myContainer-ranking img {
   width: 275px;
   float: left;

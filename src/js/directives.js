@@ -751,16 +751,44 @@ quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, 
         data: '='
       },
       link: function(scope, element, attribute){
-        console.log(data);
-        scope.erroMsg = $rootScope.errorMessage;
-        if(data.length !== 0){
+        console.log($rootScope.questionEspecial);
+        var data = $rootScope.questionEspecial[0];
+        scope.erroMsg = $rootScope.errorMessage; 
           scope.id = data.Numero;
           scope.titulo = data.Titulo;
           scope.opcoes = data.AlternativasEspeciais;
           scope.corretas = data.RespostasCorretasEspeciais;
-          
+
+        scope.selecionadas = [];
+
+        var totalList = scope.opcoes.length;
+        var total = totalList / 2;
+        scope.listA = [];
+        scope.listB = []; 
+
+          var sortArr = function(arr){
+            var newArr;
+            newArr = arr.sort(function(){
+              return 0.5 - Math.random();
+            }); 
+          }
+    
+        sortArr(scope.opcoes);  
+        scope.listA = scope.opcoes.slice(0,total);
+        scope.listB = scope.opcoes.slice(total,totalList); 
+
+
+        scope.selectOption = function(id){
+            scope.selecionadas.push(id);
+
+            
+        console.log(scope.selecionadas);
         }
+
+
       }
+
+
       
   }
 

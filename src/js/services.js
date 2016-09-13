@@ -132,7 +132,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           .then(function success(res){  
               if(res.status === 200){ 
                 if(res.data.obj.length !== 0){  
-                console.log(res.data.obj);
+                // console.log(res.data.obj);
                   deferred.resolve(res.data.obj);
                 }
               } 
