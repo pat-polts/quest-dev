@@ -857,18 +857,22 @@ quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, 
         scope.onDropComplete=function(data,evt){
             console.log("drop success, data:", data);
         }
+
         scope.selectOption = function(list,id){
             // scope.selecionadas.push(id);
             var drags = [];  
             scope.isSelected = true;
             var option = scope.corretas[list].Relacoes;
             var acertou = compareCorrect(option,id,list); 
-            if(drags){
-              drags.push({relacoes: list, valor: id, acertou: true});
+            var checkHit = false;
+            if(acertou){
+              checkHit = true;
             }else{
-              drags.push({relacoes: list, valor: id, acertou: false});
+              checkHit = false;
             }
-            scope.listChange(list,id);  
+            var data = {relacoes: list, valor: id, acertou: checkHit};
+            scope.selecionadas.push(data);
+            console.log(scope.selecionadas);
     
         }
 
