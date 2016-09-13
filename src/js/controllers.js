@@ -8,17 +8,22 @@ quest.controller('tabuleiro',
   function ($rootScope, $location, $q, $cookies, ApiService) {
     // $rootScope.activePage     = $location.path(); 
     $rootScope.isLoading      = false;
+    $rootScope.isLoadingGame  = false;
+    $rootScope.isSpecial1     = false;
+    $rootScope.isSpecial2     = false;
+    $rootScope.isSpecial3     = false;
+    
     $rootScope.userLogged     = null;
     $rootScope.userName       = null;
     $rootScope.userEmail      = null;
     $rootScope.userScore      = 0;
     $rootScope.userLastAnswer = null;
-    $rootScope.userQuestions = [];
-    $rootScope.userQuestion = [];
-
-    $rootScope.users = [];
+    $rootScope.userQuestions  = [];
+    $rootScope.userQuestion   = [];
+    
+    $rootScope.users          = [];
     $rootScope.optionSelected = false;
-    $rootScope.gameRank = [];
+    $rootScope.gameRank       = [];
 
     $rootScope.setUserCookies = function(name,score,last){
       $cookies.putObject('nome', name);
@@ -29,10 +34,10 @@ quest.controller('tabuleiro',
     $rootScope.loadData = function(){
       var user      = ApiService.getUserData();
       var questions =  ApiService.getQuestions();
-
+      $rootScope.isLoadingGame = true;
       //load user info to user globals
        user.then(function succesHandle(data){
-        // console.log(data);
+          $rootScope.isLoadingGame  = false;
           $rootScope.userName       = data.name;
           $rootScope.userScore      = data.score;
           $rootScope.userLastAnswer = data.lastQ;
@@ -45,25 +50,24 @@ quest.controller('tabuleiro',
 
           $rootScope.setUserCookies(data.name,data.score, data.lastQ);
 
-          $rootScope.isLoading      = false;
           $rootScope.$apply;
 
        },function errorHandler(erro){
           console.log(erro);
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
        });
         
       //load user info to user globals
-       questions.then(function succesHandle(data){ 
-        $rootScope.isLoading     = true;
+       questions.then(function succesHandle(data){  
+          $rootScope.isLoadingGame = true; 
 
           $rootScope.userQuestions.push(data); 
-          $rootScope.isLoading     = false;
+          $rootScope.isLoadingGame     = false;
           $rootScope.$apply;
 
          
        },function errorHandler(erro){
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
           console.log(erro);
        });
 
@@ -76,16 +80,16 @@ quest.controller('tabuleiro',
   
 
       var question         =  ApiService.getQuestionData(id);
-      $rootScope.isLoading = true;
+      $rootScope.isLoadingGame = true;
       $rootScope.userQuestion = [];
      question.then(function succesHandle(data){
         $rootScope.userQuestion.push(data);  
         $rootScope.isQuestion     = true;
-        $rootScope.isLoading  = false;
+        $rootScope.isLoadingGame  = false;
         $rootScope.$apply;
 
        },function errorHandler(erro){
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
           console.log(erro);
        });
          
@@ -136,6 +140,11 @@ quest.controller('tabuleiro',
      };
 
 
+ 
+    $rootScope.$watch('isLoadingGame', function(value){
+       //
+       return $rootScope.isLoadingGame;
+    }); 
  
     $rootScope.$watch('userLastAnswer', function(value){
        //

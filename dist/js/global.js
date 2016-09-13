@@ -670,6 +670,20 @@ quest.directive('especialUm', ['$rootScope',  function($rootScope, $http,ApiServ
   }
 
  } ] );
+quest.directive('loadingGame', ['$rootScope',  function($rootScope, $http,ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );
 quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
 
  return{   
@@ -684,6 +698,7 @@ quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService
         // scope.nome = $cookies.getObject('nome');
         scope.close = function(){
           $rootScope.isRanking = false;
+
         }
       }
       
@@ -804,13 +819,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     var userApi = {};
 
-    userApi.getUserData = function(){ 
-      $rootScope.isLoading = true;
+    userApi.getUserData = function(){  
 
       var deferred = $q.defer(); 
       $http.get('/api/user')
-        .then(function success(res){   
-          $rootScope.isLoading = false;
+        .then(function success(res){    
             if(res.status === 200){ 
               if(res.data.obj){ 
 
@@ -818,8 +831,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               }
             } 
            
-        }, function error(res){ 
-          $rootScope.isLoading = false;
+        }, function error(res){  
             if(res.status === 500){
               if(res.data.error){ 
                 $rootScope.error        = true; 
@@ -863,22 +875,19 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.getQuestions = function(){ 
 
-      var deferred = $q.defer(); 
-      $rootScope.isLoading     = true;
+      var deferred = $q.defer();  
      
         $http.get('/api/questions')
           .then(function success(res){  
               if(res.status === 200){ 
-                if(res.data.obj.length !== 0){  
-                  $rootScope.isLoading     = false;
+                if(res.data.obj.length !== 0){   
                   deferred.resolve(res.data.obj);
                 }
               } 
              
           }, function error(res){ 
 
-              if(res.status === 500){
-                  $rootScope.isLoading     = false;
+              if(res.status === 500){ 
                 if(res.data.error){ 
                   $rootScope.error = true; 
                   $rootScope.errorMessage = res.data.error;  
@@ -894,13 +903,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.setQuestionData = function(id,last){ 
 
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
+      var deferred = $q.defer(); 
 
       if(id && last){
         $http.post('/api/question/',{numero: id, valor: last})
-          .then(function success(res){  
-            $rootScope.isLoading = false;
+          .then(function success(res){   
               if(res.status === 200){ 
                 if(res.data.obj){
                    deferred.resolve(res.data.obj); 
@@ -908,8 +915,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
                  
               } 
              
-          }, function error(res){ 
-            $rootScope.isLoading = false;
+          }, function error(res){  
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -925,20 +931,17 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.getRanking = function(){ 
 
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
+      var deferred = $q.defer(); 
 
         $http.get('/api/ranking')
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
+          .then(function success(res){  
               if(res.status === 200){  
                 if(res.data.obj){
                   deferred.resolve(res.data.obj); 
                 }
               } 
              
-          }, function error(res){
-            $rootScope.isLoading = false; 
+          }, function error(res){ 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -987,11 +990,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var deferred    = $q.defer();
 
         var credentials = {login: username, senha: password }; 
-        $rootScope.isLoading = true;
-
         $http.post('/auth/login', credentials)
           .then(function success(res){ 
-            $rootScope.isLoading = false;  
             
             if(res.status === 200){
               // console.log(res);
@@ -1021,7 +1021,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.get('/auth/status')
         .then(function success(res){ 
-          $rootScope.isLoading = false;  
             if(res.status === 200){
             
                deferred.resolve(res.data.logged);
@@ -1042,8 +1041,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var deferred = $q.defer();
 
         $http.get('/auth/logout')
-        .then(function success(res){ 
-            $rootScope.isLoading = false;  
+        .then(function success(res){   
               if(res.status === 200){
                  deferred.resolve();
               } 
@@ -1156,17 +1154,22 @@ quest.controller('tabuleiro',
   function ($rootScope, $location, $q, $cookies, ApiService) {
     // $rootScope.activePage     = $location.path(); 
     $rootScope.isLoading      = false;
+    $rootScope.isLoadingGame  = false;
+    $rootScope.isSpecial1     = false;
+    $rootScope.isSpecial2     = false;
+    $rootScope.isSpecial3     = false;
+    
     $rootScope.userLogged     = null;
     $rootScope.userName       = null;
     $rootScope.userEmail      = null;
     $rootScope.userScore      = 0;
     $rootScope.userLastAnswer = null;
-    $rootScope.userQuestions = [];
-    $rootScope.userQuestion = [];
-
-    $rootScope.users = [];
+    $rootScope.userQuestions  = [];
+    $rootScope.userQuestion   = [];
+    
+    $rootScope.users          = [];
     $rootScope.optionSelected = false;
-    $rootScope.gameRank = [];
+    $rootScope.gameRank       = [];
 
     $rootScope.setUserCookies = function(name,score,last){
       $cookies.putObject('nome', name);
@@ -1177,10 +1180,10 @@ quest.controller('tabuleiro',
     $rootScope.loadData = function(){
       var user      = ApiService.getUserData();
       var questions =  ApiService.getQuestions();
-
+      $rootScope.isLoadingGame = true;
       //load user info to user globals
        user.then(function succesHandle(data){
-        // console.log(data);
+          $rootScope.isLoadingGame  = false;
           $rootScope.userName       = data.name;
           $rootScope.userScore      = data.score;
           $rootScope.userLastAnswer = data.lastQ;
@@ -1193,25 +1196,24 @@ quest.controller('tabuleiro',
 
           $rootScope.setUserCookies(data.name,data.score, data.lastQ);
 
-          $rootScope.isLoading      = false;
           $rootScope.$apply;
 
        },function errorHandler(erro){
           console.log(erro);
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
        });
         
       //load user info to user globals
-       questions.then(function succesHandle(data){ 
-        $rootScope.isLoading     = true;
+       questions.then(function succesHandle(data){  
+          $rootScope.isLoadingGame = true; 
 
           $rootScope.userQuestions.push(data); 
-          $rootScope.isLoading     = false;
+          $rootScope.isLoadingGame     = false;
           $rootScope.$apply;
 
          
        },function errorHandler(erro){
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
           console.log(erro);
        });
 
@@ -1224,16 +1226,16 @@ quest.controller('tabuleiro',
   
 
       var question         =  ApiService.getQuestionData(id);
-      $rootScope.isLoading = true;
+      $rootScope.isLoadingGame = true;
       $rootScope.userQuestion = [];
      question.then(function succesHandle(data){
         $rootScope.userQuestion.push(data);  
         $rootScope.isQuestion     = true;
-        $rootScope.isLoading  = false;
+        $rootScope.isLoadingGame  = false;
         $rootScope.$apply;
 
        },function errorHandler(erro){
-          $rootScope.isLoading = false; 
+          $rootScope.isLoadingGame = false; 
           console.log(erro);
        });
          
@@ -1284,6 +1286,11 @@ quest.controller('tabuleiro',
      };
 
 
+ 
+    $rootScope.$watch('isLoadingGame', function(value){
+       //
+       return $rootScope.isLoadingGame;
+    }); 
  
     $rootScope.$watch('userLastAnswer', function(value){
        //

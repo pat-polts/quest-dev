@@ -609,6 +609,20 @@ quest.directive('especialUm', ['$rootScope',  function($rootScope, $http,ApiServ
   }
 
  } ] );
+quest.directive('loadingGame', ['$rootScope',  function($rootScope, $http,ApiService){
+
+ return{   
+      restrict: 'E', 
+      templateUrl: '',
+      scope: {
+      },
+      link: function(scope, element, attribute){
+        scope.erroMsg = $rootScope.errorMessage;
+      }
+      
+  }
+
+ } ] );
 quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService){
 
  return{   
@@ -623,6 +637,7 @@ quest.directive('ranking', ['$rootScope',  function($rootScope, $http,ApiService
         // scope.nome = $cookies.getObject('nome');
         scope.close = function(){
           $rootScope.isRanking = false;
+
         }
       }
       

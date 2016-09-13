@@ -12,13 +12,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     var userApi = {};
 
-    userApi.getUserData = function(){ 
-      $rootScope.isLoading = true;
+    userApi.getUserData = function(){  
 
       var deferred = $q.defer(); 
       $http.get('/api/user')
-        .then(function success(res){   
-          $rootScope.isLoading = false;
+        .then(function success(res){    
             if(res.status === 200){ 
               if(res.data.obj){ 
 
@@ -26,8 +24,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               }
             } 
            
-        }, function error(res){ 
-          $rootScope.isLoading = false;
+        }, function error(res){  
             if(res.status === 500){
               if(res.data.error){ 
                 $rootScope.error        = true; 
@@ -71,22 +68,19 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.getQuestions = function(){ 
 
-      var deferred = $q.defer(); 
-      $rootScope.isLoading     = true;
+      var deferred = $q.defer();  
      
         $http.get('/api/questions')
           .then(function success(res){  
               if(res.status === 200){ 
-                if(res.data.obj.length !== 0){  
-                  $rootScope.isLoading     = false;
+                if(res.data.obj.length !== 0){   
                   deferred.resolve(res.data.obj);
                 }
               } 
              
           }, function error(res){ 
 
-              if(res.status === 500){
-                  $rootScope.isLoading     = false;
+              if(res.status === 500){ 
                 if(res.data.error){ 
                   $rootScope.error = true; 
                   $rootScope.errorMessage = res.data.error;  
@@ -102,13 +96,11 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.setQuestionData = function(id,last){ 
 
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
+      var deferred = $q.defer(); 
 
       if(id && last){
         $http.post('/api/question/',{numero: id, valor: last})
-          .then(function success(res){  
-            $rootScope.isLoading = false;
+          .then(function success(res){   
               if(res.status === 200){ 
                 if(res.data.obj){
                    deferred.resolve(res.data.obj); 
@@ -116,8 +108,7 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
                  
               } 
              
-          }, function error(res){ 
-            $rootScope.isLoading = false;
+          }, function error(res){  
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -133,20 +124,17 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
     userApi.getRanking = function(){ 
 
-      var deferred = $q.defer();
-      $rootScope.isLoading = true;
+      var deferred = $q.defer(); 
 
         $http.get('/api/ranking')
-          .then(function success(res){ 
-              $rootScope.isLoading = false; 
+          .then(function success(res){  
               if(res.status === 200){  
                 if(res.data.obj){
                   deferred.resolve(res.data.obj); 
                 }
               } 
              
-          }, function error(res){
-            $rootScope.isLoading = false; 
+          }, function error(res){ 
               if(res.status === 500){
                 if(res.data.error){ 
                   $rootScope.error = true; 
@@ -195,11 +183,8 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var deferred    = $q.defer();
 
         var credentials = {login: username, senha: password }; 
-        $rootScope.isLoading = true;
-
         $http.post('/auth/login', credentials)
           .then(function success(res){ 
-            $rootScope.isLoading = false;  
             
             if(res.status === 200){
               // console.log(res);
@@ -229,7 +214,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
 
         $http.get('/auth/status')
         .then(function success(res){ 
-          $rootScope.isLoading = false;  
             if(res.status === 200){
             
                deferred.resolve(res.data.logged);
@@ -250,8 +234,7 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
         var deferred = $q.defer();
 
         $http.get('/auth/logout')
-        .then(function success(res){ 
-            $rootScope.isLoading = false;  
+        .then(function success(res){   
               if(res.status === 200){
                  deferred.resolve();
               } 

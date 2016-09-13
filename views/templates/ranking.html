@@ -1,15 +1,21 @@
-<div class="myContainer-ranking">
-    <div class="myPanel-ranking">
-
-        <div ng-repeat="user in ranking[0]" ng-if="ranking.length > 0">
-            <div class="myRanking-item">
-                <button class="myRanking-position">{{user.Posicao}}º </button>
-                <button class="myRanking-user-name"> {{ user.Email }}</button>
-                <button class="myRanking-user-score">{{user.Pontuacao}}<small>pts</small></button>
-            </div>
+<div class="myContainer-ranking" ng-if="ranking.length > 0">
+    <h1>Ranking <small>pts</small></h1>
+    <img src="dist/assets/logoquest.png">
+    <div class="rank-content">
+        <div class="rank">
+            
+            <ul>
+                <li id="rank" ng-repeat="user in ranking[0]">
+                     
+                    <p class="posicao"> {{user.Posicao}}º</p>
+                    <p class="nome"> {{user.Email}}</p>
+                    <p class="pontos"> {{user.Pontuacao}} <small>pts</small></p>
+                     
+                </li>
+            </ul>
         </div>
-
     </div>
+<!--     </div> -->
 
         <button ng-click="close()">voltar</button>
         <button ng-click="close()">pronto</button>
