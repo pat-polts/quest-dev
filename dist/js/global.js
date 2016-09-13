@@ -587,7 +587,11 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
             // scope.optInvalid = true;
             console.log("ja respondida usuario admin");
             // $location.path('/jogar');
-          }else{
+          }else if(!scope.respondida){
+            console.log("responda a anterior");
+            exit();
+          }
+          else{
             // $location.path('/jogar');
           }
 
@@ -773,9 +777,11 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
             break;   
             case 20 :
               //special
+              $rootScope.loadQuestion('E2');
             break;   
             case 24 :
               //special
+              // $rootScope.loadQuestionE5();
             break;  
             default:
               //simples
@@ -910,6 +916,95 @@ quest.directive('sinaisESintomas', ['$rootScope','$http',  function($rootScope, 
 
  } ] );
 
+
+
+/********************************************************************************************
+* VANTAGENS E DISVANTAGENS :: especial 2
+* diretiva: <sinais-e-sintomas ng-if ="isSpecial1" data="questionEspecial"></sinais-e-sintomas>
+* html: question-especial-1.html
+* dados: api $rootScope.loadQuestionE1()
+/********************************************************************************************/
+
+quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
+ function($rootScope, $http, $cookies, ApiService){
+  return{
+    restrict: 'E', 
+    templateUrl: '../../views/templates/question-especial-2.html',
+    scope:{
+      data: '='
+    },
+
+     link: function(scope, element, attribute){
+        // console.log(data);
+  
+        var indice = 0; 
+
+          scope.isSelected   = false; 
+          scope.esolha = false;
+          scope.erroMsg      = $rootScope.errorMessage; 
+          scope.btnTxt       = 'proximo'; 
+          scope.img       = ''; 
+
+          if(scope.data.length !== 0){  
+            console.log(scope.data);
+
+            var data         = scope.data[0];
+            scope.id         = data.Numero;
+            scope.titulo     = data.Titulo;
+            scope.descricao  = data.Descricao;
+            scope.opcoes     = data.Alternativas;
+            scope.correta    = data.ValorAlternativaCorreta;
+            scope.pontos     = data.ValorPontuacao;
+            scope.respondida = data.Respondida;
+
+            if(!scope.respondida){
+              //ok
+            }
+
+            if(scope.id == 'E2'){
+              scope.img = 'img-suzana-desenho.png';
+            }
+
+          }
+          
+          scope.selecionadas = [];
+
+          scope.selectOption = function(id){
+            if(scope.esolha){
+              console.log("ja escolhida: "+ scope.esolha);
+
+            }else{
+
+             var el            = this;
+                var elIndex       = el.$index;
+                var escolha       = el.opt.Valor;  
+                var pClass        = 'valor-'+escolha;
+                var childValor    = document.querySelector('#v-'+elIndex); 
+                var childAllValor = document.querySelector('p.valor'); 
+                  scope.escolha = escolha;
+
+                // console.log(elIndex);
+
+
+
+                    childAllValor.classList.remove('selected'); 
+                    childValor.classList.add('selected'); 
+
+                      if(escolha == scope.correta){
+                        $rootScope.userScore += parseInt(scope.pontos); 
+                      }
+
+
+          
+              } 
+            // console.log(el);
+          };
+    } 
+
+  }
+}]);
+
+
 quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($rootScope, $http, $q, ApiService){
 
  return{   
@@ -921,7 +1016,7 @@ quest.directive('faseCompleta', ['$rootScope', '$q', 'ApiService', function($roo
          //
 
       }
- }
+    }
  
  }]);        
 
@@ -1060,6 +1155,35 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
               if(res.status === 200){ 
                 if(res.data.obj.length !== 0){  
                 // console.log(res.data.obj);
+                  deferred.resolve(res.data.obj);
+                }
+              } 
+             
+          }, function error(res){ 
+
+              if(res.status === 500){ 
+                if(res.data.error){ 
+                  $rootScope.error = true; 
+                  $rootScope.errorMessage = res.data.error;  
+                  deferred.reject(res.data.error);
+                }
+              }
+
+          });
+      
+
+      return deferred.promise; 
+    };
+
+    userApi.getQuestionE2 = function(){ 
+
+      var deferred = $q.defer();  
+     
+        $http.get('/api/especial2')
+          .then(function success(res){  
+              if(res.status === 200){ 
+                if(res.data.obj.length !== 0){  
+                console.log("especial 2 "+res.data.obj);
                   deferred.resolve(res.data.obj);
                 }
               } 
@@ -1388,13 +1512,18 @@ quest.controller('tabuleiro',
 
 
     $rootScope.loadQuestion = function(id){ 
-      console.log(id);
+
       var question         =  ApiService.getQuestionData(id);
       $rootScope.isLoading = true;
+     
       $rootScope.userQuestion = [];
      question.then(function succesHandle(data){
         $rootScope.userQuestion.push(data);  
-        $rootScope.isQuestion     = true;
+         if(id == 'E2'){
+            $rootScope.isSpecial2 = true; 
+            $rootScope.isQuestion = false;
+        }
+        console.log($rootScope.userQuestion);
         $rootScope.isLoading  = false;
         $rootScope.$apply;
 
@@ -1422,8 +1551,27 @@ quest.controller('tabuleiro',
        });
          
     };
+ 
 
     $rootScope.writeQuestion = function(id, val, score, acertou){
+        var question = ApiService.setQuestionData(id, val);
+        // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
+ 
+      $rootScope.isLoading = true;
+         question.then(function succesHandle(data){  
+             $rootScope.isLoading = false;  
+              console.log("gravou "+data); 
+              $rootScope.userScore = score; 
+              $rootScope.$apply;
+
+           },function errorHandler(erro){  
+             $rootScope.isLoading = false;  
+              console.log(erro);
+           });
+
+       };
+
+    $rootScope.writeEspecial1 = function(id, val, score, acertou){
         var question = ApiService.setQuestionData(id, val);
         // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
  

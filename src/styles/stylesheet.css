@@ -508,14 +508,6 @@ canvas {
   width: 100%;
   height: 100%;
   z-index: 106;
-  /*****
-** TODO: otimizar/integrar
-*****/
-  /* app css stylesheet */
-  /*.................................................................................*/
-  /*./tabuleiro*/
-  /*Quiz........................................*/
-  /*Ranking ..........................................*/
 }
 .especial1 p {
   font-size: 2em;
@@ -574,15 +566,124 @@ canvas {
   left: 34%;
   bottom: 2%;
 }
-.especial1 ul [ng-drop].drag-enter {
+.especial1 ul .selected {
   border: 2px solid #e8a612;
 }
-.especial1 .myContainer-ranking img {
+.especial2 {
+  background: url('../../dist/assets/fundo-dialogo.png') no-repeat;
+  position: absolute;
+  color: #004e72;
+  text-align: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 106;
+}
+.especial2 p {
+  border: none;
+  font-size: 2em;
+  text-align: center;
+}
+.especial2 p.titulo {
+  text-align: left;
+  font-weight: bold;
+  width: 90%;
+}
+.especial2 .descricao p {
+  width: 62%;
+  float: right;
+  text-align: justify;
+  color: inherit;
+  font-size: 1.6em !important;
+  margin: 0 2% 0 0;
+}
+.especial2 figure {
+  width: 260px;
+  height: 260px;
+  float: left;
+  margin: -1% 0 0 5%;
+  padding: 0;
+  text-align: center;
+  border-radius: 100%;
+  -moz-border-radius: 100%;
+  -webkit-border-radius: 100%;
+  -khtml-border-radius: 100%;
+  /* for old Konqueror browsers */
+}
+.especial2 figure img {
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+.especial2 ul {
+  display: inline-block;
+  width: 100%;
+  margin: 2% 0 0 6%;
+  padding: 0px;
+  height: auto;
+  max-height: 768px;
+  text-align: center;
+}
+.especial2 ul li {
+  display: inline-block;
+  width: 100%;
+  margin: 1% 0px;
+  padding: 0;
+  text-align: center;
+}
+.especial2 ul li p:first-child {
+  width: 9%;
+  height: auto;
+  background: #004e72;
+  color: #fff;
+  padding: 2% 0px;
+  margin: 2% 1% 0 0;
+  text-align: center;
+  float: left;
+  font-size: 2.4em;
+  text-transform: lowercase;
+  border-radius: 15px;
+  -moz-border-radius: 15px;
+  -webkit-border-radius: 15px;
+  -khtml-border-radius: 15px;
+  /* for old Konqueror browsers */
+}
+.especial2 ul li p:nth-child(2) {
+  background: none;
+  color: #004e72;
+  width: 78%;
+  font-size: 1.5em;
+  border: none;
+  margin: .5% 0 0 0;
+  font-weight: bold;
+  text-align: left;
+}
+.especial2 ul .card {
+  width: 100%;
+  height: auto;
+  padding: 2%;
+  margin: 0 auto;
+  font-size: 1.5em;
+}
+.especial2 ul button {
+  font-size: 2em;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  left: 34%;
+  bottom: 2%;
+}
+.especial2 ul p.selected {
+  background: #e8a612 !important;
+}
+/** */
+.myContainer-ranking img {
   width: 275px;
   float: left;
   margin: 2% 0 0 2%;
 }
-.especial1 .myContainer-ranking h1 {
+.myContainer-ranking h1 {
   color: #004e72;
   font-weight: bold;
   font-size: 4em;
@@ -591,13 +692,13 @@ canvas {
   width: 350px;
   float: right;
 }
-.especial1 .myContainer-ranking h1 small {
+.myContainer-ranking h1 small {
   font-size: .6em !important;
   color: #004e72;
   font-weight: normal;
   margin: 0 0 0 -11px;
 }
-.especial1 .myContainer-ranking .rank-content {
+.myContainer-ranking .rank-content {
   position: relative;
   top: 2%;
   left: 2%;
@@ -606,11 +707,11 @@ canvas {
   overflow: hidden;
   margin: 0 0 7% 0;
 }
-.especial1 .myContainer-ranking .rank-content .rank {
+.myContainer-ranking .rank-content .rank {
   overflow: auto;
   height: 460px;
 }
-.especial1 .myContainer-ranking ul {
+.myContainer-ranking ul {
   display: block;
   list-style-type: none;
   width: 100%;
@@ -619,7 +720,7 @@ canvas {
   padding: 2%;
   margin-left: 2%;
 }
-.especial1 .myContainer-ranking ul li {
+.myContainer-ranking ul li {
   display: inline-block;
   width: 100%;
   height: auto;
@@ -627,7 +728,7 @@ canvas {
   margin: 0px 0px 1%  0px;
   padding: 0px;
 }
-.especial1 .myContainer-ranking ul li p.posicao {
+.myContainer-ranking ul li p.posicao {
   width: 5%;
   height: auto;
   background: #004e72;
@@ -644,7 +745,7 @@ canvas {
   -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
-.especial1 .myContainer-ranking ul li p.nome {
+.myContainer-ranking ul li p.nome {
   width: 50%;
   height: auto;
   padding: 2%;
@@ -662,7 +763,7 @@ canvas {
   -khtml-border-radius: 15px;
   /* for old Konqueror browsers */
 }
-.especial1 .myContainer-ranking ul li p.pontos {
+.myContainer-ranking ul li p.pontos {
   width: 10%;
   height: auto;
   color: #e8a612;
@@ -675,13 +776,13 @@ canvas {
   border: none;
   font-weight: bold;
 }
-.especial1 .myContainer-ranking ul li p.pontos small {
+.myContainer-ranking ul li p.pontos small {
   font-size: .6em !important;
   color: rgba(0, 78, 114, 0.6);
   font-weight: normal !important;
   margin: 0 0 0 -12px !important;
 }
-.especial1 button {
+button {
   color: #fff;
   font-weight: bold;
   background: #004e72;
@@ -700,62 +801,69 @@ canvas {
   -khtml-border-radius: 10em;
   /* for old Konqueror browsers */
 }
-.especial1 ::-webkit-input-placeholder {
+::-webkit-input-placeholder {
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-.especial1 :-moz-placeholder {
+:-moz-placeholder {
   /* Firefox 18- */
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-.especial1 ::-moz-placeholder {
+::-moz-placeholder {
   /* Firefox 19+ */
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-.especial1 :-ms-input-placeholder {
+:-ms-input-placeholder {
   color: #477499;
   font-size: inherit;
   text-align: center;
   margin: 0 auto;
 }
-.especial1 .myImg {
+/*****
+** TODO: otimizar/integrar
+*****/
+/* app css stylesheet */
+/*.................................................................................*/
+.myImg {
   margin: 10px;
   text-align: center;
 }
-.especial1 .myButton-ranking {
+.myButton-ranking {
   border: 4px solid #e8a612;
 }
-.especial1 .myData-user {
+.myData-user {
   border: 1px solid transparent;
   float: left;
   width: auto;
   height: 40px;
   margin-left: 40px;
 }
-.especial1 .myUser-score,
-.especial1 .myPts,
-.especial1 .myUser-name,
-.especial1 .myButton-ranking {
+.myUser-score,
+.myPts,
+.myUser-name,
+.myButton-ranking {
   font-size: 1.8em;
   color: #e8a612;
   font-weight: bold;
 }
-.especial1 .myButton-ranking {
+.myButton-ranking {
   position: absolute;
   z-index: 110;
 }
-.especial1 .myContainer-quiz {
+/*./tabuleiro*/
+/*Quiz........................................*/
+.myContainer-quiz {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
 }
-.especial1 .myPanel-quiz {
+.myPanel-quiz {
   margin-top: 120px;
   width: 765px;
   margin-right: auto;
@@ -763,19 +871,19 @@ canvas {
   border: 3px solid transparent;
   background: transparent;
 }
-.especial1 .myTitle-question {
+.myTitle-question {
   width: 100%;
   padding: 5px;
   border: 2px solid #32407c;
   border-radius: 10px;
 }
-.especial1 .myTitle-question p {
+.myTitle-question p {
   height: 100%;
   max-height: 200px;
   white-space: pre-wrap;
   overflow-y: scroll;
 }
-.especial1 .myAlterntive-option {
+.myAlterntive-option {
   width: 12%;
   margin-top: 10px;
   padding: 5px;
@@ -785,7 +893,7 @@ canvas {
   background-color: #32407c;
   color: #FFFFFF;
 }
-.especial1 .myAlternative {
+.myAlternative {
   height: 75px;
   width: 87%;
   padding: 5px;
@@ -793,24 +901,24 @@ canvas {
   border-radius: 10px;
   border: 2px solid #32407c;
 }
-.especial1 .myAlternativa:hover {
+.myAlternativa:hover {
   background-color: #32407c;
 }
-.especial1 .myAlterntive-option:active {
+.myAlterntive-option:active {
   background-color: #e8a612;
   box-shadow: inset 2px;
 }
-.especial1 .myAlternativa:active {
+.myAlternativa:active {
   background-color: #e8a612;
   box-shadow: inset 2px;
 }
-.especial1 .myButton-done {
+.myButton-done {
   width: 200px;
   margin-top: 20px;
   margin-right: auto;
   margin-left: auto;
 }
-.especial1 .myButton-pronto {
+.myButton-pronto {
   display: block;
   width: 100%;
   text-align: center;
@@ -818,7 +926,7 @@ canvas {
   border-radius: 10px;
   border: 4px solid #32407c;
 }
-.especial1 .myScore {
+.myScore {
   width: 200px;
   height: 200px;
   border: 2px solid #000;
@@ -832,7 +940,8 @@ canvas {
   font-size: 6em;
   padding: 30px;
 }
-.especial1 .myContainer-ranking {
+/*Ranking ..........................................*/
+.myContainer-ranking {
   background: url("../../../dist/assets/fundo-dialogo.png") no-repeat;
   height: 768px;
   width: 1024px;
@@ -840,7 +949,7 @@ canvas {
   position: absolute;
   z-index: 110;
 }
-.especial1 .myPanel-ranking {
+.myPanel-ranking {
   width: 690px;
   height: 100%;
   max-height: 500px;
@@ -852,13 +961,13 @@ canvas {
   background: transparent;
   overflow-y: scroll;
 }
-.especial1 .myRanking-item {
+.myRanking-item {
   margin-top: 10px;
   height: 65px;
   margin-right: auto;
   margin-left: auto;
 }
-.especial1 .myRanking-position {
+.myRanking-position {
   width: 65px;
   height: 100%;
   margin-left: 10px;
@@ -870,7 +979,7 @@ canvas {
   border-radius: 15px;
   color: #FFFFFF;
 }
-.especial1 .myRanking-user-name {
+.myRanking-user-name {
   width: 70%;
   height: 100%;
   margin-left: 15px;
@@ -881,7 +990,7 @@ canvas {
   border-radius: 10px;
   text-align: center;
 }
-.especial1 .myRanking-user-score {
+.myRanking-user-score {
   width: 65px;
   height: 100%;
   padding-top: 5px;
@@ -891,12 +1000,12 @@ canvas {
   font-weight: bold;
   color: #e8a612;
 }
-.especial1 small {
+small {
   color: #32407c;
   font-size: 0.5em;
   font-weight: normal;
 }
-.especial1 .myRanking-group-buttons {
+.myRanking-group-buttons {
   width: 70%;
   height: 60px;
   position: absolute;
@@ -905,8 +1014,8 @@ canvas {
   left: auto;
   text-align: center;
 }
-.especial1 .myRanking-button-voltar,
-.especial1 .myRanking-button-pronto {
+.myRanking-button-voltar,
+.myRanking-button-pronto {
   width: 100px;
   height: 40px;
   border-radius: 10px;

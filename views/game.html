@@ -15,7 +15,15 @@
               
             <button ng-click="openRank()">Ranking</button>
         </div> 
+
+    <!-- carrega perguntas simples -->
 	<question ng-if="isQuestion" pergunta="userQuestion"></question>
-	<sinais-e-sintomas ng-if="isSpecial1" data="questionEspecial"></sinais-e-sintomas>
+     <!-- carrega especial1 -->
+    <sinais-e-sintomas ng-if="isSpecial1" data="questionEspecial"></sinais-e-sintomas>
+    <!-- carrega especial2 -->
+	<vantagens-e-disvantagens ng-if="isSpecial2" data="userQuestion"></vantagens-e-disvantagens>
+
+     <!-- carrega ranking-->
 	<ranking ng-if="isRanking" ranking="gameRank"></ranking>
+
 </div>

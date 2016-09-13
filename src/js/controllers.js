@@ -88,13 +88,18 @@ quest.controller('tabuleiro',
 
 
     $rootScope.loadQuestion = function(id){ 
-      console.log(id);
+
       var question         =  ApiService.getQuestionData(id);
       $rootScope.isLoading = true;
+     
       $rootScope.userQuestion = [];
      question.then(function succesHandle(data){
         $rootScope.userQuestion.push(data);  
-        $rootScope.isQuestion     = true;
+         if(id == 'E2'){
+            $rootScope.isSpecial2 = true; 
+            $rootScope.isQuestion = false;
+        }
+        console.log($rootScope.userQuestion);
         $rootScope.isLoading  = false;
         $rootScope.$apply;
 
@@ -122,8 +127,27 @@ quest.controller('tabuleiro',
        });
          
     };
+ 
 
     $rootScope.writeQuestion = function(id, val, score, acertou){
+        var question = ApiService.setQuestionData(id, val);
+        // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
+ 
+      $rootScope.isLoading = true;
+         question.then(function succesHandle(data){  
+             $rootScope.isLoading = false;  
+              console.log("gravou "+data); 
+              $rootScope.userScore = score; 
+              $rootScope.$apply;
+
+           },function errorHandler(erro){  
+             $rootScope.isLoading = false;  
+              console.log(erro);
+           });
+
+       };
+
+    $rootScope.writeEspecial1 = function(id, val, score, acertou){
         var question = ApiService.setQuestionData(id, val);
         // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
  

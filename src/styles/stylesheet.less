@@ -465,6 +465,7 @@ canvas{
         height: 60px;
         margin: 7% auto 0 auto;
     }
+
 }
 .especial1{
     background: url('../../dist/assets/fundo-desafio1.png') no-repeat;
@@ -541,12 +542,137 @@ canvas{
     }
 
 
-    [ng-drop].drag-enter{
+    .selected{
         .border(2px, solid, @base-yellow);
     }
 
 
+    }
 }
+.especial2{
+    background: url('../../dist/assets/fundo-dialogo.png') no-repeat;
+    position: absolute;  
+    color: @base-blue;
+    text-align: center; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 106;  
+
+    p{
+        border: none;
+        font-size: 2em;
+        text-align: center;
+    }
+    p.titulo{
+        text-align: left;
+        font-weight: bold;
+        width: 90%;
+    }
+    .descricao{
+        p{
+             width: 62%;
+            float: right;
+            text-align: justify;
+            color: inherit;
+            font-size: 1.6em !important;
+            margin: 0 2% 0 0;
+        }
+    }
+ 
+    figure{    
+        width: 260px;
+        height: 260px;
+        float: left;
+        margin: -1% 0 0 5%;
+        padding: 0;
+        text-align: center;
+
+        .border-radius(100%);
+
+        img{
+            width: auto;
+            height: auto;
+            margin: 0 auto;
+        }
+    }
+
+    ul{
+        display: inline-block;
+        width: 100%;
+        margin: 2% 0 0 6%;
+        padding: 0px;
+        height: auto;
+        max-height: 768px;
+        text-align: center;
+
+
+        li{
+            display: inline-block;
+            width: 100%;
+            margin: 1% 0px;
+            padding: 0;
+            text-align: center;
+
+
+            p:first-child{
+                width: 9%;
+                height: auto;
+                background: @base-blue;
+                color: #fff;
+                padding: 2% 0px;
+                margin: 2% 1% 0 0;
+                text-align: center;
+                float: left;
+                font-size: 2.4em;
+                text-transform: lowercase;
+               
+                .border-radius(15px);
+            }
+            p:nth-child(2){
+                background: none;
+                color: @base-blue;
+                width: 78%;
+                font-size: 1.5em;
+                border: none;
+                margin: .5% 0 0 0;
+                font-weight: bold;
+                text-align: left;
+            }
+
+
+
+        }
+
+        .card{
+            width: 100%;
+            height: auto;
+            padding: 2%;
+            margin: 0 auto; 
+            font-size: 1.5em; 
+        } 
+
+        button{
+            font-size: 2em;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            left: 34%;
+            bottom: 2%;
+        }
+
+
+        p.selected{
+            background: @base-yellow !important;
+        }   
+
+
+    }
+}
+
+
+/** */
 .myContainer-ranking{
     img{
         width: 275px;
@@ -879,6 +1005,4 @@ small{
     border-radius: 10px;
     border: 2px solid #32407c;
     font-size: 1.5em;
-}
-
 }

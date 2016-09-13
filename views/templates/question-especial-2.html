@@ -1,0 +1,19 @@
+<div class="pergunta especial2">
+<p class="titulo">{{titulo}}</p> 
+<div class="descricao">
+	<figure>
+		<img ng-src="dist/assets/{{img}}">
+	</figure>
+	<p>{{ descricao }}}</p>
+</div>
+<ul > 
+	<li ng-repeat="opt in opcoes" ng-click="selectOption(opt.Valor)" id="i-{{$index}}"> 
+			<p class="valor" id="v-{{$index}}">{{ opt.Valor}}</p>
+			<p>{{ opt.DescricaoAlternativa }} </p>
+	</li> 
+</ul>
+ 
+
+<button ng-if="isSelected" ng-click="check()">{{btnTxt}}</button>
+	
+</div>
