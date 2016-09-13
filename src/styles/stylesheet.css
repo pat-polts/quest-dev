@@ -244,8 +244,8 @@ canvas {
   float: left;
   cursor: pointer;
 }
-.board ul li :visited {
-  background: #e8a612 !important;
+.board li.especial:not(.ultimaReposta) {
+  background: #37d349 !important;
 }
 .board li.ultimaReposta {
   background: url('../../../dist/assets/current-marker.png') !important;

@@ -190,4 +190,47 @@ router.get('/ranking',function(req,res,next){
   
 });
 
+router.get('/especial',function(req,res,next){
+  
+    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+
+    var api = process.env.API_QUESTION_ESPECIAL + token;
+
+      httpClient.get(api, function (data, response) {
+        if(data){  
+           res.status(200).send({
+              obj: data
+            });
+
+        }else{
+          res.status(500).send({
+              error: "erro"
+            }); 
+        } 
+      });
+    
+  
+});
+router.post('/especial',function(req,res,next){
+  
+    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+
+    var api = process.env.API_SEND_QUESTION_ESPECIAL + token;
+
+      httpClient.get(api, function (data, response) {
+        if(data){  
+           res.status(200).send({
+              obj: data
+            });
+
+        }else{
+          res.status(500).send({
+              error: "erro"
+            }); 
+        } 
+      });
+    
+  
+});
+
 module.exports = router;

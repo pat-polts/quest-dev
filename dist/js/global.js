@@ -737,19 +737,24 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
           var perguntas = scope.boardData;
             console.log(perguntas[0]);
         }
-        var isActive = false; 
+        var isActive = false;  
+        var pushObj = [];
+        var especial = false;
+        var isSelected = false;
         for (var i = 0; i < totalCasas; i++) { 
             if(i === 11 || i === 20 || i === 25){
               especial = true;
+            }else{
+              especial = false;
             }
  
             if(i === index){
               // console.log(perguntas[0][i]);
-              var pushObj = {"id": i, "isSelected": true, "special": especial};
+              isSelected = true;
             }else{
-
-              var pushObj = {"id": i, "isSelected": false, "special": especial};
+              isSelected = false;
             }
+            pushObj = {"id": i, "isSelected": isSelected, "special": especial};
             scope.casas.push(pushObj);
          
           
@@ -775,10 +780,12 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
         scope.openQ = function(id){
           var el = this.$index + 1; 
           var prev;
-          // scope.boardData.forEach(function(){
-          //  // console.log(scope.boardData);
-          // });
-          $rootScope.loadQuestion(el);   
+          if(id == 11){
+
+          }else{
+            $rootScope.loadQuestion(el); 
+          }
+            
         };
 
         scope.openRank = function(){
