@@ -8,7 +8,7 @@
         
         <div ng-repeat="b in blocos" class="bloco-{{b.id}}" > 
         
-            <li ng-repeat="c in blocos[$index].bloco" ng-click="openQ(c.id)"  id="bloco-{{c.id}}" class="casas-bloco-{{b.id}}" ng-class="{ultimaReposta: c.isSelected, especial: c.special}"></li>
+            <li ng-repeat="c in blocos[$index].bloco" ng-click="openQ(c.id)"  id="bloco-{{c.id}}" class="casas casas-bloco-{{b.id}}" ng-class="{ultimaReposta: c.isSelected, especial: c.special}"></li>
 
                  
         </div>

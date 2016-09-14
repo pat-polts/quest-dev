@@ -65,7 +65,7 @@ quest.controller('tabuleiro',
 
           }
           $rootScope.$apply;
-
+          console.log(data.lastQ);
           $rootScope.setUserCookies($rootScope.userName,$rootScope.userScore , $rootScope.userLastAnswer);
 
 
@@ -99,13 +99,17 @@ quest.controller('tabuleiro',
       $rootScope.isLoading = true;
      
       $rootScope.userQuestion = [];
+       $rootScope.questionEspecial = [];
      question.then(function succesHandle(data){
-        $rootScope.userQuestion.push(data);  
-         if(id == 'E2'){
+         if(id == 20){
+            $rootScope.questionEspecial.push(data);  
+            $rootScope.isSpecial1 = false; 
             $rootScope.isSpecial2 = true; 
             $rootScope.isQuestion = false;
+
         }else{
-         $rootScope.isQuestion = true;
+          $rootScope.userQuestion.push(data);  
+          $rootScope.isQuestion = true;
         }
         $rootScope.isLoading  = false;
         $rootScope.$apply;
@@ -124,7 +128,7 @@ quest.controller('tabuleiro',
         question.then(function succesHandle(data){
           $rootScope.questionEspecial.push(data);  
           $rootScope.isLoading  = false;
-          $rootScope.isSpecial1    = true;
+          $rootScope.isSpecial1 = true;
           $rootScope.$apply;
  
 
@@ -142,15 +146,33 @@ quest.controller('tabuleiro',
         console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
 
          question.then(function succesHandle(data){  
+            if(data){
+              $cookies.remove('ultima');
+              $cookies.putObject('ultima', id);
               $rootScope.userScore = parseInt(score); 
               $rootScope.$apply;
               $rootScope.isQuestion = false;
+
+            }
                
            },function errorHandler(erro){   
               console.log(erro);
            });
 
        
+    };
+
+        $rootScope.moveNext = function(next, prev){  
+          var houses = document.querySelector(".casas");
+          var prevHouse = document.querySelector("#bloco-"+prev)
+          var nextHouse = document.querySelector("#bloco-"+next); 
+      
+          houses.classList.remove('ultimaReposta');
+          prevHouse.classList.remove('ultimaReposta');
+          prevHouse.classList.add('respondida');  
+          nextHouse.classList.add('ultimaReposta'); 
+
+        // console.log();
     };
 
     $rootScope.writeEspecial1 = function(id, val, score, acertou){
@@ -171,17 +193,7 @@ quest.controller('tabuleiro',
     };
 
 
-    $rootScope.moveNext = function(next, prev){
-        // var question = ApiService.setQuestionData(id);
-        $rootScope.isLoading = true;    
-          var prevHouse = document.querySelector("#bloco-"+prev)
-          var nextHouse = document.querySelector("#bloco-"+next); 
-      
-          prevHouse.classList.remove('ultimaReposta');
-          prevHouse.classList.add('respondida');  
-          nextHouse.classList.add('ultimaReposta'); 
-        // console.log();
-    };
+
 
     $rootScope.userGetData = function(){
       // return ApiService.getUserData();

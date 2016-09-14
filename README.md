@@ -30,6 +30,6 @@
 
 <p>add npm session store</p>
 
-<p style="color: #c00;">** Atualizações **</p>
+<p style="color: red;" >** Atualizações **</p>
 
 <code>npm update && bower update</code>

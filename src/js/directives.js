@@ -61,21 +61,21 @@ quest.directive('setQuestion', function($timeout, $window){
 quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',  
   function($rootScope, $http, $cookies, $location){
   return{   
-      restrict: 'E',
-      transclude: true,
+      restrict: 'E', 
       templateUrl: '../../views/templates/question.html',
       scope: { 
         pergunta: '='
       },
       link: function(scope, element, attribute){
 
-          var index =  1;
-          var escolha = null;
-          var question = scope.pergunta[0];
+          var index         =  0;
+          var escolha       = null;
+          var question      = scope.pergunta[0];
+
           scope.optSelected = false;
-          scope.optInvalid = false;
-          scope.acertou = false;
-          scope.optValue = null;
+          scope.optInvalid  = false;
+          scope.acertou     = false;
+          scope.optValue    = null;
 
           scope.id           = question.Numero;
           scope.titulo       = question.Titulo;
@@ -114,20 +114,14 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
               if(scope.optValue == scope.correta){
                 scope.acertou = true;
                 $rootScope.userScore += scope.pontos; 
-              }
+              } 
 
-              $rootScope.writeQuestion(scope.id, scope.optValue,scope.pontos,scope.acertou);
-              $rootScope.isQuestion = false;
-              if(scope.id == 'E2' || scope.id == 'E3' || scope.id == 'E4'){ 
-
-                var next = 21;
-                var prev = 19;
-              }else{
+              $rootScope.writeQuestion(scope.id, scope.optValue,$rootScope.userScore,scope.acertou);
+              $rootScope.isQuestion = false; 
+        
                 var next = parseInt(scope.id);
-                var prev = parseInt(scope.id) - 1;
-
-              }
-                
+                var prev = parseInt(scope.id)  - 1;  
+ 
                 $rootScope.moveNext(next,prev);
               
             }else{
@@ -218,45 +212,41 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
 
         var totalCasas = 30;
         var active     = false;
-        var especial   = false;
-        if(scope.ultima == 'E2' || scope.ultima == 'E3' || scope.ultima == 'E4'){
-          var index = 20;
-        }else{
-          var index = scope.ultima;
-        }
-        
+        var especial   = false; 
+        var index      = scope.ultima; 
 
-        console.log("last: "+parseInt(scope.ultima));
+        console.log("last: "+scope.ultima);
         console.log("score: "+scope.pontuacao);
 
-        scope.casas    = [];
+        scope.casas  = [];
         scope.blocos = [];
+
         if(scope.boardData.length !== 0){
           var perguntas = scope.boardData;
-            console.log(perguntas[0]);
+            // console.log(perguntas[0]);
         }
-        var isActive = false;  
-        var pushObj = [];
-        var especial = false;
+        var isActive   = false;  
+        var pushObj    = [];
+        var especial   = false;
         var isSelected = false;
-        for (var i = 0; i < totalCasas; i++) { 
+
+        for (var i = 0; i < totalCasas; i++) {  
             if(i === 11 || i === 20 || i === 25){
               especial = true;
             }else{
               especial = false;
             }
  
-            if(i === index){
+            if(i == index){
               // console.log(perguntas[0][i]);
               isSelected = true;
             }else{
               isSelected = false;
             }
+
             pushObj = {"id": i, "isSelected": isSelected, "special": especial};
             scope.casas.push(pushObj);
-         
-          
-        } 
+        }  
 
         var bloco_0 = scope.casas.slice(0,6);
         var bloco_1 = scope.casas.slice(6,12);
@@ -285,9 +275,9 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
             break;   
             case 20 :
               //special
-              $rootScope.loadQuestion('E2');
+              // $rootScope.loadQuestion('E2');
             break;   
-            case 24 :
+            case 25 :
               //special
               // $rootScope.loadQuestionE5();
             break;  

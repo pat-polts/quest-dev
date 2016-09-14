@@ -26,7 +26,7 @@ body {
 }
 @keyframes loadmove {
   0% {
-    width: 0px;
+    width: 10px;
   }
   100% {
     width: 540px;
@@ -268,6 +268,9 @@ canvas {
   -khtml-border-radius: 10px;
   /* for old Konqueror browsers */
 }
+.board li.casas-bloco-1.ultimaReposta {
+  margin-top: 11px;
+}
 .board .tabuleiro-inicio,
 .board .tabuleiro-sinais,
 .board .tabuleiro-vantagens,
@@ -409,11 +412,11 @@ canvas {
   height: 34px;
   width: 100px;
   background: #004e72;
-  animation: loadmove 6s linear infinite;
-  -webkit-animation: loadmove 6s linear infinite;
-  -moz-animation: loadmove 6s linear infinite;
-  -o-animation: loadmove 6s linear infinite;
-  animation: loadmove 5s linear infinite;
+  animation: 6s linear infinite forwards;
+  -webkit-animation: loadmove 6s linear infinite forwards;
+  -moz-animation: loadmove 6s linear infinite forwards;
+  -o-animation: loadmove 6s linear infinite forwards;
+  animation: loadmove 5s linear infinite forwards;
   border-radius: 24px;
   -moz-border-radius: 24px;
   -webkit-border-radius: 24px;

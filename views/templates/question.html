@@ -5,7 +5,7 @@
             <ul>
             	<li id="option" ng-repeat="data in alternativas" ng-click="responder()">
             		 
-            		<p class="valor" id="v{{$index}}"> {{data.Valor}}</p>
+            		<p class="valor" id="v{{$index}}" ng-class="{ultimaRespondida: isSelected}"> {{data.Valor}}</p>
             		<p class="desc"> {{data.DescricaoAlternativa}}</p>
             		 
             	</li>
