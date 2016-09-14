@@ -34,6 +34,22 @@ quest.config(function ($routeProvider,$locationProvider) {
     .when('/jogar', {
       templateUrl: '../../views/game.html',
       restricted: true
+    })  
+    .when('/jogar/especial-2/historia/', {
+      templateUrl: '../../views/templates/question-especial-2_historia-2.html',
+      restricted: true
+    }) 
+    .when('/jogar/especial-2/multipla-escolha-1/', {
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-1.html',
+      restricted: true
+    }) 
+    .when('/jogar/especial-2/multipla-escolha-2/', {
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-2.html',
+      restricted: true
+    }) 
+    .when('/jogar/desafio/', {
+      templateUrl: '../../views/templates/question-desafio.html',
+      restricted: true
     }) 
     .otherwise({
       redirectTo: '/' 

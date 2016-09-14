@@ -36,10 +36,10 @@ quest.controller('tabuleiro',
           }); 
         };
 
-    $rootScope.setUserCookies = function(name,score,last){
-      $cookies.putObject('nome', name);
-      $cookies.putObject('pontos', score);
-      $cookies.putObject('ultima', last);
+    $rootScope.setUserCookies = function(name,score,last){ 
+      $cookies.putObject('nome', name); 
+      $cookies.putObject('pontos', score); 
+      $cookies.putObject('ultima', last); 
     };
 
     $rootScope.loadData = function(){
@@ -51,17 +51,19 @@ quest.controller('tabuleiro',
           $rootScope.isLoading  = false;
           $rootScope.userName       = data.name;
           $rootScope.userScore      = data.score;
-          $rootScope.userLastAnswer = data.lastQ;
-          // if(data.lastQ == 6){
-          //   $rootScope.userLastAnswer = 1;
-          // }else{
+         
+          if(isNaN(data.lastQ)){
+            $rootScope.userLastAnswer = 1;
+          }else if(data.lastQ == 'E2' || data.lastQ == 'E3' || data.lastQ == 'E4'){
+            $rootScope.userLastAnswer = data.lastQ;
+          }else{
+            $rootScope.userLastAnswer = data.lastQ;
 
-          //   $rootScope.userLastAnswer = data.lastQ;
-          // }
-
-          $rootScope.setUserCookies(data.name,data.score, data.lastQ);
-
+          }
           $rootScope.$apply;
+
+          $rootScope.setUserCookies(data.name,data.score, $rootScope.userLastAnswer);
+
 
        },function errorHandler(erro){
           console.log(erro);
@@ -214,6 +216,10 @@ quest.controller('tabuleiro',
               console.log(erro);
            });
      };
+
+    $rootScope.go = function (route) {
+      $location.path(route);
+    };
 
 
  

@@ -213,8 +213,10 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
         var userCookie = [];
         scope.load = false; 
 
-        scope.nome      = parseInt($cookies.getObject('nome'));
-        scope.ultima    = parseInt($cookies.getObject('ultima'));
+        var user = 
+
+        scope.nome      = $cookies.getObject('nome');
+        scope.ultima    = $cookies.getObject('ultima');
         scope.pontuacao = $cookies.getObject('pontos');
 
         var totalCasas = 30;
@@ -509,8 +511,28 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
        
             // console.log(escolha);
           }
-          scope.check = function(){ 
-            scope.enviaPergunta();
+          scope.next = function(id){ 
+            console.log(id)
+             if(id == 'E2' || id == 'E3' || id == 'E4' ||  id == 'E5'){
+              
+              switch(id){
+                case 'E2': 
+                //
+                break;
+                case 'E3':
+                  $rootScope.go('/jogar/especial-2/historia/');
+                break;
+                case 'E4':
+                  $rootScope.go('/jogar/especial-2/multipla-escolha-2');
+                break;
+                case 'E5':
+                  $rootScope.go('/jogar/desafio/');
+                break;
+              }
+
+            }else{
+              scope.enviaPergunta();
+            }
               // scope.enviaPergunta();
            
           }

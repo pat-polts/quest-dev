@@ -34,6 +34,22 @@ quest.config(function ($routeProvider,$locationProvider) {
     .when('/jogar', {
       templateUrl: '../../views/game.html',
       restricted: true
+    })  
+    .when('/jogar/especial-2/historia/', {
+      templateUrl: '../../views/templates/question-especial-2_historia-2.html',
+      restricted: true
+    }) 
+    .when('/jogar/especial-2/multipla-escolha-1/', {
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-1.html',
+      restricted: true
+    }) 
+    .when('/jogar/especial-2/multipla-escolha-2/', {
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-2.html',
+      restricted: true
+    }) 
+    .when('/jogar/desafio/', {
+      templateUrl: '../../views/templates/question-desafio.html',
+      restricted: true
     }) 
     .otherwise({
       redirectTo: '/' 
@@ -274,8 +290,10 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
         var userCookie = [];
         scope.load = false; 
 
-        scope.nome      = parseInt($cookies.getObject('nome'));
-        scope.ultima    = parseInt($cookies.getObject('ultima'));
+        var user = 
+
+        scope.nome      = $cookies.getObject('nome');
+        scope.ultima    = $cookies.getObject('ultima');
         scope.pontuacao = $cookies.getObject('pontos');
 
         var totalCasas = 30;
@@ -570,8 +588,28 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
        
             // console.log(escolha);
           }
-          scope.check = function(){ 
-            scope.enviaPergunta();
+          scope.next = function(id){ 
+            console.log(id)
+             if(id == 'E2' || id == 'E3' || id == 'E4' ||  id == 'E5'){
+              
+              switch(id){
+                case 'E2': 
+                //
+                break;
+                case 'E3':
+                  $rootScope.go('/jogar/especial-2/historia/');
+                break;
+                case 'E4':
+                  $rootScope.go('/jogar/especial-2/multipla-escolha-2');
+                break;
+                case 'E5':
+                  $rootScope.go('/jogar/desafio/');
+                break;
+              }
+
+            }else{
+              scope.enviaPergunta();
+            }
               // scope.enviaPergunta();
            
           }
@@ -1175,10 +1213,10 @@ quest.controller('tabuleiro',
           }); 
         };
 
-    $rootScope.setUserCookies = function(name,score,last){
-      $cookies.putObject('nome', name);
-      $cookies.putObject('pontos', score);
-      $cookies.putObject('ultima', last);
+    $rootScope.setUserCookies = function(name,score,last){ 
+      $cookies.putObject('nome', name); 
+      $cookies.putObject('pontos', score); 
+      $cookies.putObject('ultima', last); 
     };
 
     $rootScope.loadData = function(){
@@ -1190,17 +1228,19 @@ quest.controller('tabuleiro',
           $rootScope.isLoading  = false;
           $rootScope.userName       = data.name;
           $rootScope.userScore      = data.score;
-          $rootScope.userLastAnswer = data.lastQ;
-          // if(data.lastQ == 6){
-          //   $rootScope.userLastAnswer = 1;
-          // }else{
+         
+          if(isNaN(data.lastQ)){
+            $rootScope.userLastAnswer = 1;
+          }else if(data.lastQ == 'E2' || data.lastQ == 'E3' || data.lastQ == 'E4'){
+            $rootScope.userLastAnswer = data.lastQ;
+          }else{
+            $rootScope.userLastAnswer = data.lastQ;
 
-          //   $rootScope.userLastAnswer = data.lastQ;
-          // }
-
-          $rootScope.setUserCookies(data.name,data.score, data.lastQ);
-
+          }
           $rootScope.$apply;
+
+          $rootScope.setUserCookies(data.name,data.score, $rootScope.userLastAnswer);
+
 
        },function errorHandler(erro){
           console.log(erro);
@@ -1353,6 +1393,10 @@ quest.controller('tabuleiro',
               console.log(erro);
            });
      };
+
+    $rootScope.go = function (route) {
+      $location.path(route);
+    };
 
 
  
