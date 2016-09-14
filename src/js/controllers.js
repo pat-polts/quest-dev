@@ -100,8 +100,9 @@ quest.controller('tabuleiro',
          if(id == 'E2'){
             $rootScope.isSpecial2 = true; 
             $rootScope.isQuestion = false;
+        }else{
+         $rootScope.isQuestion = true;
         }
-        console.log($rootScope.userQuestion);
         $rootScope.isLoading  = false;
         $rootScope.$apply;
 

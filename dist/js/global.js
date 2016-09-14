@@ -357,8 +357,8 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
 
         scope.openQ = function(id){
           var el = id; 
-          var pgt = el + 1;
-          switch(id){
+          var pgt = id + 1;
+          switch(el){
             case 11 :
               //special
               $rootScope.loadQuestionE1();
@@ -376,13 +376,7 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
               $rootScope.loadQuestion(pgt); 
             break;   
           }
-          if(el == 11){
-            var pgt = el;
-            console.log("especial1: "+pgt);
-            // $rootScope.loadQuestion(12);
-
-          }else{
-          }
+       
             
         };
 
@@ -1277,8 +1271,9 @@ quest.controller('tabuleiro',
          if(id == 'E2'){
             $rootScope.isSpecial2 = true; 
             $rootScope.isQuestion = false;
+        }else{
+         $rootScope.isQuestion = true;
         }
-        console.log($rootScope.userQuestion);
         $rootScope.isLoading  = false;
         $rootScope.$apply;
 
