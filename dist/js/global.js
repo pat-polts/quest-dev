@@ -160,9 +160,12 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
           scope.alternativas = question.Alternativas;
           scope.correta      = question.ValorAlternativaCorreta;
           scope.pontos       = question.ValorPontuacao;
+          scope.descricao = question.Descricao;
+ 
 
+ 
           scope.name = $cookies.getObject('nome');
-    
+    console.log(question);
  
           scope.responder = function(){ 
             if(scope.optSelected){
