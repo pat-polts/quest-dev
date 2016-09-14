@@ -1,7 +1,7 @@
-<div class="pergunta especial-simples">
-<p class="titulo">{{titulo}}</p> 
-<div class="descricao">
-	<figure>
+<div class="pergunta especial-simples" >
+<p class="titulo" ng-if="titulo">{{titulo}}</p> 
+<div class="descricao" ng-if="descricao">
+	<figure >
 		<img ng-src="dist/assets/{{img}}">
 	</figure>
 	<p>{{ descricao }}</p>
@@ -14,6 +14,6 @@
 </ul>
  
 
-<button ng-if="optSelected" ng-click="check()">{{btnTxt}}</button>
+<button  ng-click="check()">{{btnTxt}}</button>
 	
 </div>

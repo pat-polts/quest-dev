@@ -131,21 +131,25 @@ quest.controller('tabuleiro',
 
     $rootScope.writeQuestion = function(id, val, score, acertou){
         var question = ApiService.setQuestionData(id, val);
-        // console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
- 
+        console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
+        if(id == 'E2'){
+          $cookies.getObject('ultima');
+          $cookies.putObject('ultima', 'E2');
+        }
+
       $rootScope.isLoading = true;
          question.then(function succesHandle(data){  
-             $rootScope.isLoading = false;  
-              console.log("gravou "+data); 
-              $rootScope.userScore = score; 
+             $rootScope.isLoading = false;   
+              $rootScope.userScore = parseInt(score); 
               $rootScope.$apply;
-
+               
            },function errorHandler(erro){  
              $rootScope.isLoading = false;  
               console.log(erro);
            });
 
-       };
+       
+    };
 
     $rootScope.writeEspecial1 = function(id, val, score, acertou){
         var question = ApiService.setQuestionData(id, val);
@@ -167,13 +171,29 @@ quest.controller('tabuleiro',
 
     $rootScope.moveNext = function(next, prev){
         // var question = ApiService.setQuestionData(id);
-       
-        var prevHouse = document.querySelector("#bloco-"+prev)
-        var nextHouse = document.querySelector("#bloco-"+next); 
+             $rootScope.isLoading = true;  
+       if(prev == "E2"){
+             $rootScope.isSpecial2 = false;
+             $rootScope.userQuestion = [];
+             $rootScope.isSpecial3 = true;
+             $rootScope.isLoading = true; 
+
+            $rootScope.$apply;
+
+             return $rootScope.loadQuestion('E3'); 
+
+       }else{
+
+        var prevHouse = document.querySelector("#bloco-20")
+        var nextHouse = document.querySelector("#bloco-20"); 
    
         prevHouse.classList.remove('ultimaReposta');
         prevHouse.classList.add('respondida');
         nextHouse.classList.add('ultimaReposta');
+          $rootScope.isSpecial2 = false;
+          $rootScope.userQuestion = [];
+
+       }
         // console.log();
     };
 

@@ -70,15 +70,18 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
       var deferred = $q.defer();  
      
+        $rootScope.isLoading = true;  
         $http.get('/api/questions')
-          .then(function success(res){  
+          .then(function success(res){   
               if(res.status === 200){ 
-                if(res.data.obj.length !== 0){   
+                if(res.data.obj.length !== 0){ 
+                 $rootScope.isLoading = false;   
                   deferred.resolve(res.data.obj);
                 }
               } 
              
           }, function error(res){ 
+                 $rootScope.isLoading = false;  
 
               if(res.status === 500){ 
                 if(res.data.error){ 
