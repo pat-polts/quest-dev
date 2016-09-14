@@ -94,14 +94,14 @@ quest.controller('tabuleiro',
 
 
     $rootScope.loadQuestion = function(id){ 
-
+console.log(id);
       var question         =  ApiService.getQuestionData(id);
       $rootScope.isLoading = true;
      
       $rootScope.userQuestion = [];
        $rootScope.questionEspecial = [];
      question.then(function succesHandle(data){
-         if(id == 20){
+         if(id == 'E2'){
             $rootScope.questionEspecial.push(data);  
             $rootScope.isSpecial1 = false; 
             $rootScope.isSpecial2 = true; 

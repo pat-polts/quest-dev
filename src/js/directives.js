@@ -83,12 +83,28 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
           scope.alternativas = question.Alternativas;
           scope.correta      = question.ValorAlternativaCorreta;
           scope.pontos       = question.ValorPontuacao;
-          scope.descricao = question.Descricao;
- 
+            
+            if(question.Descricao){
+              var desc = question.Descricao;
+              var desc2 = desc.split('<br />');
+              if(desc2.length !== 0){
+                scope.descricaoList = [];
+                desc2.forEach(function(e,i,a){
+                  console.log(e);
+                  if(e !== ''){
+                       scope.descricaoList.push(e);
+                  }
+                });
+                
+              }else{
+                scope.descricao    = question.Descricao;
 
- 
+              }
+            }
+
+
           scope.name = $cookies.getObject('nome');
-    console.log(question);
+    // console.log(question);
  
           scope.responder = function(){ 
             if(scope.optSelected){
@@ -125,7 +141,8 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
                 var next = parseInt(scope.id);
                 var prev = parseInt(scope.id)  - 1;  
  
-                $rootScope.moveNext(next,prev);
+                // $rootScope.moveNext(next,prev);
+                $rootScope.go('/jogar');
               
             }else{
               console.log("escolha uma opcao");
@@ -271,6 +288,7 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
         scope.openQ = function(id){
           var el = id; 
           var pgt = id + 1;
+          console.log(el);
           switch(el){
             case 11 :
               //special
@@ -278,7 +296,7 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
             break;   
             case 20 :
               //special
-              // $rootScope.loadQuestion('E2');
+              $rootScope.loadQuestion('E2');
             break;   
             case 25 :
               //special

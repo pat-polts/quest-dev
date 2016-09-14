@@ -433,6 +433,8 @@ canvas {
   width: 100%;
   height: 100%;
   z-index: 106;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 .pergunta ul {
   display: block;
@@ -505,6 +507,31 @@ canvas {
   width: 320px;
   height: 60px;
   margin: 7% auto 0 auto;
+}
+.pergunta .descricao-list {
+  width: 90%;
+  height: auto;
+  overflow: hidden;
+  padding: 1% 0 0 0;
+  margin: 0 auto;
+  border: 2px solid #004e72;
+  border-radius: 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  /* for old Konqueror browsers */
+}
+.pergunta .descricao-list p {
+  width: 235px;
+  float: left;
+  text-align: left;
+  color: inherit;
+  font-size: 1.5em !  important;
+  margin: 0 0 1% 3%;
+  padding: 2%;
+  color: #004e72;
+  border-radius: none;
+  border: none;
 }
 .especial1 {
   background: url('../../dist/assets/fundo-desafio1.png') no-repeat;

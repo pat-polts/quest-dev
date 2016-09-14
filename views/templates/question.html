@@ -1,6 +1,11 @@
 <div class="pergunta">
 	<p class="titulo">{{titulo}}</p>
     <p class="descricao" ng-if="descricao">{{ descricao }}</p>
+    <div class="descricao-list" ng-if="descricaoList">
+        <p ng-repeat="des in descricaoList">
+            {{ des }}
+        </p>
+    </div>
    
 
             <ul>
