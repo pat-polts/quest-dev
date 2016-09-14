@@ -37,6 +37,10 @@ quest.controller('tabuleiro',
         };
 
     $rootScope.setUserCookies = function(name,score,last){ 
+      $cookies.remove('nome');
+      $cookies.remove('pontos');
+      $cookies.remove('ultima');
+
       $cookies.putObject('nome', name); 
       $cookies.putObject('pontos', score); 
       $cookies.putObject('ultima', last); 
@@ -55,14 +59,14 @@ quest.controller('tabuleiro',
           if(isNaN(data.lastQ)){
             $rootScope.userLastAnswer = 1;
           }else if(data.lastQ == 'E2' || data.lastQ == 'E3' || data.lastQ == 'E4'){
-            $rootScope.userLastAnswer = data.lastQ;
+            $rootScope.userLastAnswer = 20;
           }else{
             $rootScope.userLastAnswer = data.lastQ;
 
           }
           $rootScope.$apply;
 
-          $rootScope.setUserCookies(data.name,data.score, $rootScope.userLastAnswer);
+          $rootScope.setUserCookies($rootScope.userName,$rootScope.userScore , $rootScope.userLastAnswer);
 
 
        },function errorHandler(erro){
@@ -132,22 +136,17 @@ quest.controller('tabuleiro',
     };
  
 
-    $rootScope.writeQuestion = function(id, val, score, acertou){
+    $rootScope.writeQuestion = function(id, val, score, acertou){ 
+
         var question = ApiService.setQuestionData(id, val);
         console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
-        if(id == 'E2'){
-          $cookies.getObject('ultima');
-          $cookies.putObject('ultima', 'E2');
-        }
 
-      $rootScope.isLoading = true;
          question.then(function succesHandle(data){  
-             $rootScope.isLoading = false;   
               $rootScope.userScore = parseInt(score); 
               $rootScope.$apply;
+              $rootScope.isQuestion = false;
                
-           },function errorHandler(erro){  
-             $rootScope.isLoading = false;  
+           },function errorHandler(erro){   
               console.log(erro);
            });
 
@@ -174,29 +173,13 @@ quest.controller('tabuleiro',
 
     $rootScope.moveNext = function(next, prev){
         // var question = ApiService.setQuestionData(id);
-             $rootScope.isLoading = true;  
-       if(prev == "E2"){
-             $rootScope.isSpecial2 = false;
-             $rootScope.userQuestion = [];
-             $rootScope.isSpecial3 = true;
-             $rootScope.isLoading = true; 
-
-            $rootScope.$apply;
-
-             return $rootScope.loadQuestion('E3'); 
-
-       }else{
-
-        var prevHouse = document.querySelector("#bloco-20")
-        var nextHouse = document.querySelector("#bloco-20"); 
-   
-        prevHouse.classList.remove('ultimaReposta');
-        prevHouse.classList.add('respondida');
-        nextHouse.classList.add('ultimaReposta');
-          $rootScope.isSpecial2 = false;
-          $rootScope.userQuestion = [];
-
-       }
+        $rootScope.isLoading = true;    
+          var prevHouse = document.querySelector("#bloco-"+prev)
+          var nextHouse = document.querySelector("#bloco-"+next); 
+      
+          prevHouse.classList.remove('ultimaReposta');
+          prevHouse.classList.add('respondida');  
+          nextHouse.classList.add('ultimaReposta'); 
         // console.log();
     };
 

@@ -96,17 +96,23 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 
       return deferred.promise; 
     };
+/*********************************************************
+********* Grava questão simples e especiai E2 a E4 atualmente
+*** passar numero = id pergunta valor = ultima respondida
 
+*********************************************************/
     userApi.setQuestionData = function(id,last){ 
 
       var deferred = $q.defer(); 
 
+      $rootScope.isLoading = true;
       if(id && last){
         $http.post('/api/question/',{numero: id, valor: last})
           .then(function success(res){   
               if(res.status === 200){ 
-                if(res.data.obj){
-                   deferred.resolve(res.data.obj); 
+                if(res.data.ok){
+                  $rootScope.isLoading = false;   
+                   deferred.resolve(res.data.ok); 
                 } 
                  
               } 
@@ -114,12 +120,15 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
           }, function error(res){  
               if(res.status === 500){
                 if(res.data.error){ 
+                 $rootScope.isLoading = false;   
                   $rootScope.error = true; 
                   $rootScope.errorMessage = res.data.error;  
                   deferred.reject(res.data.error);
                 }
               }
           });
+      }else{
+        console.log("pergunta nao enviada");
       }
 
       return deferred.promise; 

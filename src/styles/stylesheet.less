@@ -381,7 +381,11 @@ canvas{
             width: 100px;
             background: @base-blue;
 
-            animation: loadmove 6s linear infinite alternate backwards;
+            animation: loadmove 6s linear infinite;
+              -webkit-animation: loadmove 6s linear infinite;
+              -moz-animation:    loadmove 6s linear infinite;
+              -o-animation:      loadmove 6s linear infinite;
+              animation:         loadmove 5s linear infinite;
         .border-radius(24px);
 
 

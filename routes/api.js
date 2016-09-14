@@ -158,7 +158,7 @@ router.post('/question',function(req,res,next){
 
         }else{
           res.status(500).send({
-              ok: false
+              error: "erro ao cadastrar pergunta"
             }); 
         } 
       });

@@ -85,20 +85,8 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
           scope.pontos       = question.ValorPontuacao;
 
           scope.name = $cookies.getObject('nome');
-          // console.log(question);
-          if(scope.respondida && scope.name == "TopCode"){
-            var next = parseInt(scope.id) + 1;
-            // scope.optInvalid = true;
-            console.log("ja respondida usuario admin");
-            // $location.path('/jogar');
-          }else if(!scope.respondida){
-            console.log("responda a anterior");
-            exit();
-          }
-          else{
-            // $location.path('/jogar');
-          }
-
+    
+ 
           scope.responder = function(){ 
             if(scope.optSelected){
               //jaescolhido
@@ -117,26 +105,35 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
               scope.optSelected = true; 
                scope.optValue  = escolha;
             }
-       
+              // scope.enviaPergunta();
             // console.log(escolha);
           }
           scope.enviaPergunta = function(){ 
               var el            = this;
-            if(scope.optValue !== null){
+            if(scope.optValue){
               if(scope.optValue == scope.correta){
                 scope.acertou = true;
                 $rootScope.userScore += scope.pontos; 
               }
 
-              $rootScope.writeQuestion(scope.id,scope.optValue,scope.pontos,scope.acertou);
+              $rootScope.writeQuestion(scope.id, scope.optValue,scope.pontos,scope.acertou);
               $rootScope.isQuestion = false;
-              var next = parseInt(scope.id);
-              var prev = parseInt(scope.id) - 1;
-              $rootScope.moveNext(next,prev);
+              if(scope.id == 'E2' || scope.id == 'E3' || scope.id == 'E4'){ 
+
+                var next = 21;
+                var prev = 19;
+              }else{
+                var next = parseInt(scope.id);
+                var prev = parseInt(scope.id) - 1;
+
+              }
+                
+                $rootScope.moveNext(next,prev);
               
             }else{
               console.log("escolha uma opcao");
             }
+
             scope.optValue = null;
        
           }
