@@ -1,22 +1,42 @@
-<div class="especial1">
-<p>{{titulo}}</p>
-<div class="mulher"></div>
-<ul class="colA"  ng-drop="true" ng-drop-success="onDropComplete($data,$event)" >
-	<p>Podem estar</p>
-	<li class="col-a v{{optA.Valor}}" ng-repeat="optA in listA" ng-click="selectOption(0,optA.Valor)">
-		<div class="card" >
-			{{ optA.DescricaoAlternativa }}
-		</div>
-	</li> 
-</ul>
-<ul class="colB" >
-	
-	<p>Podem Não estar</p>
-	<li class="col-b" ng-repeat="optB in listB" ng-click="selectOption(1,optB.Valor)" ng-class="{selected: isSelected}" >
-	<div class="card" >{{  optB.DescricaoAlternativa }}</div>
-	</li>
-</ul>
+<div class="desafio-instrucoes" ng-if="instrucoes === true">
+	<div ng-show="error">{{errorMessage}}</div>
+	<div class="header">
+		<img src="dist/assets/logoquest.png" >
+		<img src="dist/assets/logoastra.png" >
+	</div> 
+	<div class="box-infos">
 
-<button ng-if="isSelected" ng-click="check()">{{btnTxt}}</button>
+	 <div class="dialogos">
+
+	 	<p>{{ instrucaoText }} </p> 
+
+	 </div>
+ 	<div class="personagem"> <img src="../../../dist/assets/personagem.png" ></div>    
 	
+    <button type="button" ng-click="next()">próximo</button>  
+    
+  </div>
+</div>
+
+<div class="especial1"  ng-if="instrucoes === false"> 
+		<p>{{titulo}}</p>
+		<div class="mulher"></div>
+		<ul class="colA"  ng-drop="true" ng-drop-success="onDropComplete($data,$event)" >
+			<small>Podem estar</small>
+			<li class="col-a v{{optA.Valor}}" ng-repeat="optA in listA" ng-click="selectOption(0,optA.Valor)">
+				<div class="card" >
+					{{ optA.DescricaoAlternativa }}
+				</div>
+			</li>
+
+		</ul>
+		<ul class="colB" >
+			<small>Podem Não estar</small>
+			<li class="col-b" ng-repeat="optB in listB" ng-click="selectOption(1,optB.Valor)" >
+			<div class="card" >{{  optB.DescricaoAlternativa }}</div>
+			</li>
+		</ul>
+		<div>
+			<button ng-if="isSelected" ng-click="check()">{{btnTxt}}</button>
+		</div> 
 </div>

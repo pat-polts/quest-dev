@@ -108,16 +108,22 @@ p.error-msg{
 	padding: 1em 0px; 
 }
 
-.animations{
+
+.animation-progress{
+
+
 	@keyframes loadmove{
-		 0%{ 
-			width: 10px;
+		0%{ 
+				width: 50px;
 		 }
 
 		100%{
-			width: 540px;
-		}
-
-		 
+				width: 540px;
+		}	 
 	}
+
+    animation:  15s linear infinite forwards; 
+       -webkit-animation: loadmove 15s linear infinite forwards;
+        -moz-animation:    loadmove 15s linear infinite forwards;
+        -o-animation:      loadmove 15s linear infinite forwards;
 }

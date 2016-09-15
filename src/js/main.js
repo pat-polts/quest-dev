@@ -19,7 +19,7 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: false
     })
     .when('/logout', {
-      controller: 'authController',
+      controller: 'logoutController',
       restricted: true
       
     })
@@ -52,25 +52,18 @@ quest.config(function ($routeProvider,$locationProvider) {
       restricted: true
     }) 
     .otherwise({
-      redirectTo: '/' 
+      redirectTo: '/login' 
     });
 });
 
-quest.run(function ($rootScope, $location, $route, AuthService) { 
-$rootScope.$on('$routeChangeStart', function (next, current) {
-      if(next && next.$$route && next.$$route.restricted){
-        if(!AuthService.logged()){ 
+quest.run(function ($rootScope, $location, $route, $cookies, $q, AuthService) { 
+  $rootScope.$on('$routeChangeStart', function (next, current) {
+      if(!$cookies.get('logged')){ 
+       
          $location.path('/login'); 
-        } 
+       
       }
   });
-$rootScope.$on('$stateChangeStart',function (next, current) { 
-        if(next && next.$$route && next.$$route.restricted){      
-          if(!AuthService.logged()){ 
-            console.log(next);
-           $location.path('/login'); 
-          } 
-      }
-});
+
  
 });

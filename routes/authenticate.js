@@ -5,15 +5,17 @@ var app        = express();
 var router     = express.Router();
 var session    = require('express-session');  
 var bodyparser = require('body-parser');  
-// var io    = require('socket.io');
+// var io      = require('socket.io');
 var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
-var fs           = require('fs'); 
-
+var fs         = require('fs'); 
+var cache      = require('memory-cache');
+var hour         = 3600000;  
+var exp          = new Date(Date.now() + hour); 
 var token = null;
 
 router.post('/login', function(req, res, next) {
-  // var socket = io(req.originalUrl);
+ 
   var api = process.env.API_LOGIN; 
 
   if(req.body.login && req.body.senha){ 
@@ -24,23 +26,17 @@ router.post('/login', function(req, res, next) {
     };
  
     httpClient.post(api, args, function (data, response) {
-      if(data){      
-           var sess         = req.session.cookie; 
-           sess.session     = Math.random() * 2;
-           req.session.user = data;
+      if(data){         
 
-          req.session.regenerate(function(err){
-            if(err) res.status(400).end({error: err});
+        cache.put('ut',data,{expires: exp}); 
 
-            if(sess.session){ 
-              console.log(sess.session)
-             res.status(200).send({logged: true});
-            }else{
-              res.status(500).send({error: "sem sessão, logue"});
-            }
-
-          });
-
+        if(cache.get('ut')){ 
+          
+          res.status(200).send({logged: true});
+          
+        }else{
+          res.status(500).send({error: "sem sessão, logue"});   
+        }
 
       }else{
         res.status(500).end();
@@ -62,15 +58,13 @@ router.get('/logout', function(req, res, next){
 
 router.get('/status', function(req, res, next){ 
 
- var sess = req.session.cookie; 
+ var token = cache.get('ut'); 
 
-  if(sess.session){
-
-    var user = sess.user;
-    console.log(user);
-    if(user){
-      res.status(200).send({logged: true});
-    }
+  if(token){
+ 
+    console.log(token); 
+    res.status(200).send({logged: true});
+    
   }else{
     res.status(500).send({error: "Sem suporte a sessões"});
   }

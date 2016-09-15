@@ -7,29 +7,20 @@ var bodyparser = require('body-parser');
 var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
 
+var cache      = require('memory-cache');
+var userToken  = cache.get('ut');
+var token      = userToken ? userToken : 'YWRtaW46MTIz';  
 
 router.get('/questions', function(req, res, next) {
-  var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
  
-     var api = process.env.API_QUESTION + 'YWRtaW46MTIz';
+     var api = process.env.API_QUESTION + token;
      var questQ = [];
       httpClient.get(api, function (data, response) {
-          
-   
+
         res.status(200).send({
             obj: data
           });
-        // if(data){ 
-        //   res.status(200).send({
-        //     obj: data
-        //   });
-
-        // }else{
-        //   res.status(500);
-        //     res.send({
-        //       error: "Não foi possivel carregar as questoes"
-        //     }); 
-        // } 
+       
       });
   
     
@@ -38,8 +29,12 @@ router.get('/questions', function(req, res, next) {
  
 router.get('/user',function(req,res,next){
 
-  var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
-
+  // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
+     var sess     = req.session.cookie; 
+      sess.session = Math.floor(Math.random('2')); 
+ 
+           console.log(req.session.session);
+           console.log(cache.get('ut'));
   if(token){
     var api  = process.env.API_USER + token; 
     var user = {};
@@ -75,7 +70,7 @@ router.get('/question/:id',function(req,res,next){
     var qId = req.params.id;
 
     if(qId){
-      var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+      // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
       var api   = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
 
       httpClient.get(api, function (data, response) {
@@ -137,7 +132,7 @@ router.post('/question/:id',function(req,res,next){
 router.post('/question',function(req,res,next){
  
   
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
 
     var api = process.env.API_SEND_QUESTION + token;
 
@@ -170,7 +165,7 @@ router.post('/question',function(req,res,next){
  
 router.get('/ranking',function(req,res,next){
   
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
 
     var api = process.env.API_RANKING + token;
 
@@ -192,7 +187,7 @@ router.get('/ranking',function(req,res,next){
 
 router.get('/especial1', function(req,res,next){
   
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
     var id = 'E1';
     var api = process.env.API_QUESTION_ESPECIAL + id + '/' + token;
 
@@ -211,53 +206,9 @@ router.get('/especial1', function(req,res,next){
     
   
 });
-router.post('/especial1',function(req,res,next){
-  
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
-
-    var api = process.env.API_SEND_QUESTION_ESPECIAL + token;
-
-      httpClient.get(api, function (data, response) {
-        if(data){  
-           res.status(200).send({
-              obj: data
-            });
-
-        }else{
-          res.status(500).send({
-              error: "erro"
-            }); 
-        } 
-      });
-    
-  
-});
-
-
-router.get('/especial2', function(req,res,next){
-  
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
-    var id = 'E2';
-    var api = process.env.API_QUESTION_ESPECIAL + id + '/' + token;
-
-      httpClient.get(api, function (data, response) {
-        if(data){  
-           res.status(200).send({
-              obj: data
-            });
-
-        }else{
-          res.status(500).send({
-              error: "erro"
-            }); 
-        } 
-      });
-    
-  
-});
+ 
 router.post('/especial2',function(req,res,next){
-  
-    var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+   
 
     var api = process.env.API_SEND_QUESTION_ESPECIAL + token;
 

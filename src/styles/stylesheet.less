@@ -30,7 +30,6 @@ body{
 	}
 }
 
-.animations;
 
 .box-content{
 	width: 100%;
@@ -68,7 +67,63 @@ body{
 
 }
 .instrucoes{
+    background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important; 
+
+    .header{
+        position: relative;
+        width: 100%;
+        text-align: center;
+        height: auto;
+        clear: both;
+
+        img{
+            float: left;
+            width: auto;
+            height: auto;
+            margin: 2em 0px 0px 4em;
+        }
+
+        img:nth-child(2){
+            float: right;
+            margin: 3.8em 4em 0px 0px;
+        }
+    }
+
+    .box-infos{
+        width: 100%;
+        height: auto;
+        position: relative;
+
+        .dialogos{
+            width: 600px;
+            float: right;
+            margin: 2em 4em 0px 0px; 
+            clear: both;
+        }
+
+        .personagem{
+            position: absolute;
+            left: 0px;
+            bottom: -5.2em;
+        }
+
+        button{
+            width: 320px;
+            margin: 64% 5% 0 auto;
+        }
+    }
+}
+ 
+.desafio-instrucoes{
 	background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important; 
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 120;
+    width: 1023px;
+    padding: 0;
+    height: 768px;
+    margin: 0px;
 
 	.header{
 		position: relative;
@@ -100,6 +155,9 @@ body{
 			float: right;
 			margin: 2em 4em 0px 0px; 
 			clear: both;
+            padding: 3em 4em;
+            letter-spacing: 1px;
+            line-height: 25px;
 		}
 
 		.personagem{
@@ -384,12 +442,8 @@ canvas{
             width: 100px;
             background: @base-blue;
  
-            animation:  6s linear infinite forwards; 
-              -webkit-animation: loadmove 6s linear infinite forwards;
-              -moz-animation:    loadmove 6s linear infinite forwards;
-              -o-animation:      loadmove 6s linear infinite forwards;
-              animation:         loadmove 5s linear infinite forwards;
-        .border-radius(24px);
+            .border-radius(24px);
+            .animation-progress;
 
 
         }
@@ -518,6 +572,11 @@ canvas{
     p{
         font-size: 2em;
         text-align: center;
+        font-weight: bold;
+    }
+    small{
+        font-size: 1.4em;
+        font-weight: bold;
     }
 
         ul.colA{

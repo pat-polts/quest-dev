@@ -15,10 +15,31 @@ var hour         = 3600000;
 var check        = 1440;
 var exp          = new Date(Date.now() + hour); 
 
-
+var memoryCache = require('memory-cache');
 var userAuth     = require('./routes/authenticate.js');
 var api          = require('./routes/api.js');
 var helmet       = require('helmet');
+ 
+var cache = function(duration){
+  return function(req, res, next){
+    var key = '__express__'+req.originalurl || req.url;
+    var cacheBody = memoryCache.get(key);
+    
+    if (cacheBody) {
+      console.log(cacheBody);
+      res.send(cacheBody);
+    
+    }else {
+      res.sendResponse = res.send
+      res.send = (body) => {
+        memoryCache.put(key, body, duration * 1000);
+      console.log(body);
+        res.sendResponse(body);
+    }
+      next();
+    }
+  }
+};
 
 
 var appSecret = process.env.APP_SECRET ? process.env.APP_SECRET : 'Tabuleiro default session key';
@@ -46,7 +67,7 @@ app.use(
     saveUninitialized: true,
     cookie: { 
         maxAge: hour, 
-        httpOnly: false, 
+        httpOnly: true, 
         secure: true 
     }
   })
@@ -59,10 +80,12 @@ app.use('/views', express.static(path.join(__dirname, 'views')));
 app.use('/auth/', userAuth); 
 app.use('/api/', api); 
 
-app.get('/', function(req, res, next) { 
+app.get('/', cache(10), function(req, res, next) { 
 
+  setTimeout(function(){
+    res.sendFile(path.join(__dirname, 'views/index.html')); 
+  },5000);
 
-  res.sendFile(path.join(__dirname, 'views/index.html')); 
 });
 
 // Todos os erros sem status especificado ou 404

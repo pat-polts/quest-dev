@@ -24,14 +24,6 @@ body {
   font-family: inherit;
   overflow: hidden;
 }
-@keyframes loadmove {
-  0% {
-    width: 10px;
-  }
-  100% {
-    width: 540px;
-  }
-}
 .box-content {
   width: 100%;
   position: absolute;
@@ -145,6 +137,57 @@ body {
   bottom: -5.2em;
 }
 .instrucoes .box-infos button {
+  width: 320px;
+  margin: 64% 5% 0 auto;
+}
+.desafio-instrucoes {
+  background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 120;
+  width: 1023px;
+  padding: 0;
+  height: 768px;
+  margin: 0px;
+}
+.desafio-instrucoes .header {
+  position: relative;
+  width: 100%;
+  text-align: center;
+  height: auto;
+  clear: both;
+}
+.desafio-instrucoes .header img {
+  float: left;
+  width: auto;
+  height: auto;
+  margin: 2em 0px 0px 4em;
+}
+.desafio-instrucoes .header img:nth-child(2) {
+  float: right;
+  margin: 3.8em 4em 0px 0px;
+}
+.desafio-instrucoes .box-infos {
+  width: 100%;
+  height: auto;
+  position: relative;
+}
+.desafio-instrucoes .box-infos .dialogos {
+  width: 600px;
+  float: right;
+  margin: 2em 4em 0px 0px;
+  clear: both;
+  padding: 3em 4em;
+  letter-spacing: 1px;
+  line-height: 25px;
+}
+.desafio-instrucoes .box-infos .personagem {
+  position: absolute;
+  left: 0px;
+  bottom: -5.2em;
+}
+.desafio-instrucoes .box-infos button {
   width: 320px;
   margin: 64% 5% 0 auto;
 }
@@ -412,16 +455,23 @@ canvas {
   height: 34px;
   width: 100px;
   background: #004e72;
-  animation: 6s linear infinite forwards;
-  -webkit-animation: loadmove 6s linear infinite forwards;
-  -moz-animation: loadmove 6s linear infinite forwards;
-  -o-animation: loadmove 6s linear infinite forwards;
-  animation: loadmove 5s linear infinite forwards;
   border-radius: 24px;
   -moz-border-radius: 24px;
   -webkit-border-radius: 24px;
   -khtml-border-radius: 24px;
   /* for old Konqueror browsers */
+  animation: 15s linear infinite forwards;
+  -webkit-animation: loadmove 15s linear infinite forwards;
+  -moz-animation: loadmove 15s linear infinite forwards;
+  -o-animation: loadmove 15s linear infinite forwards;
+}
+@keyframes loadmove {
+  0% {
+    width: 50px;
+  }
+  100% {
+    width: 540px;
+  }
 }
 .pergunta {
   background: url('../../../dist/assets/fundo-dialogo.png') no-repeat;
@@ -547,6 +597,11 @@ canvas {
 .especial1 p {
   font-size: 2em;
   text-align: center;
+  font-weight: bold;
+}
+.especial1 small {
+  font-size: 1.4em;
+  font-weight: bold;
 }
 .especial1 ul.colA {
   float: left;
