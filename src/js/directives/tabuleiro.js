@@ -89,7 +89,7 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
             break;   
             case 20 :
               //special
-              $rootScope.loadQuestion('E2');
+              $rootScope.loadQuestion('E2.1');
             break;   
             case 25 :
               //special

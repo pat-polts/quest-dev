@@ -17,16 +17,24 @@ body {
   overflow: hidden;
 }
 .container .content {
-  position: relative;
+  position: absolute;
   width: 1024px;
   height: 768px;
   margin: 0px auto;
   font-family: inherit;
   overflow: hidden;
 }
+.container .wrapper {
+  width: 1124px;
+  height: 868px;
+  overflow: hidden;
+  margin: 0 auto;
+  border: 1px solid #f6f6f6 solid #004e72;
+}
 .box-content {
   width: 100%;
   position: absolute;
+  min-height: 100%;
   text-align: center;
   background: url('../../../dist/assets/bg-2.png') top center no-repeat;
   background-size: 100% 100%;
@@ -102,6 +110,8 @@ body {
 }
 .instrucoes {
   background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important;
+  width: 1023px;
+  height: 1024px;
 }
 .instrucoes .header {
   position: relative;
@@ -419,26 +429,32 @@ canvas {
 }
 .loading-game {
   background: url('../../../dist/assets/bg-loading02.png');
+  position: absolute;
   width: 1024px;
   height: 768px;
-  margin: 0px auto;
-  position: absolute;
+  margin: 0 auto;
+  top: 0;
+  left: 0;
   z-index: 200;
   text-align: center;
 }
 .loading-game p {
   font-size: 2em;
   color: #004e72;
-  font-weight: bold;
+  font-weight: 700;
   text-transform: uppercase;
+  margin: 25% 0 0 42%;
   text-align: center;
-  margin: 25% auto 0 auto;
+  width: auto;
+  height: 33px;
 }
 .loading-game .bar {
   position: relative;
   width: 535px;
   height: 24px;
-  margin: 2% auto;
+  padding: 0;
+  margin: 30% 0 0 -37%;
+  clear: both;
   background: #fff;
   padding: 1%;
   border: 2px solid #004e72;
@@ -460,10 +476,10 @@ canvas {
   -webkit-border-radius: 24px;
   -khtml-border-radius: 24px;
   /* for old Konqueror browsers */
-  animation: 15s linear infinite forwards;
-  -webkit-animation: loadmove 15s linear infinite forwards;
-  -moz-animation: loadmove 15s linear infinite forwards;
-  -o-animation: loadmove 15s linear infinite forwards;
+  animation: 20s linear infinite forwards;
+  -webkit-animation: loadmove 20s linear infinite forwards;
+  -moz-animation: loadmove 20s linear infinite forwards;
+  -o-animation: loadmove 20s linear infinite forwards;
 }
 @keyframes loadmove {
   0% {

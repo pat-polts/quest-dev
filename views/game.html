@@ -1,8 +1,8 @@
 <!-- # Tela Login  --> 
-<div ng-init="loadData()" ng-controller="tabuleiro" class="board">
+<div ng-controller="tabuleiro" class="board" ng-init="loadData()">
 	<msg-erro>{{errorMessage}}</msg-erro> 
 	 
-	<tabuleiro board-data="userQuestions" ></tabuleiro>
+	<tabuleiro ng-if="userLastAnswer" board-data="userQuestions" ></tabuleiro>
 
         <div class="user-info" ng-if="userName">
             <figure>
@@ -21,7 +21,7 @@
      <!-- carrega especial1 -->
     <sinais-e-sintomas ng-if="isSpecial1" data="questionEspecial"></sinais-e-sintomas>
     <!-- carrega especiais 2 -->
-    <vantagens-e-disvantagens ng-if="isSpecial2" data="questionEspecial"></vantagens-e-disvantagens>
+    <vantagens-e-disvantagens ng-if="isSpecial2" data="userQuestion"></vantagens-e-disvantagens>
 	<vantagens-e-disvantagens-2 ng-if="isSpecial3" data="questionEspecial"></vantagens-e-disvantagens-2>
 
      <!-- carrega ranking-->

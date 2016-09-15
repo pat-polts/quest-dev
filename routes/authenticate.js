@@ -10,9 +10,9 @@ var Http       = require('node-rest-client').Client;
 var httpClient = new Http();
 var fs         = require('fs'); 
 var cache      = require('memory-cache');
-var hour         = 3600000;  
-var exp          = new Date(Date.now() + hour); 
-var token = null;
+var hour       = 3600000;  
+var exp        = new Date(Date.now() + hour); 
+var token      = null;
 
 router.post('/login', function(req, res, next) {
  
@@ -28,10 +28,10 @@ router.post('/login', function(req, res, next) {
     httpClient.post(api, args, function (data, response) {
       if(data){         
 
-        cache.put('ut',data,{expires: exp}); 
-
+        cache.put('ut',data,hour); 
+        console.log(cache.get('ut'));
         if(cache.get('ut')){ 
-          
+
           res.status(200).send({logged: true});
           
         }else{
@@ -60,9 +60,8 @@ router.get('/status', function(req, res, next){
 
  var token = cache.get('ut'); 
 
-  if(token){
- 
-    console.log(token); 
+  if(token){ 
+    
     res.status(200).send({logged: true});
     
   }else{

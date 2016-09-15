@@ -21,19 +21,28 @@ body{
 	overflow: hidden;
 
 	.content{
-		position: relative;
+		position: absolute;
 		width: 1024px;
 		height: 768px;
 		margin: 0px auto;
 		font-family: inherit;
 		overflow: hidden;
 	}
+    .wrapper{
+        width: 1124px;
+        height: 868px;
+        overflow: hidden;
+        margin: 0 auto; 
+        .border(1px solid #f6f6f6);
+
+    }
 }
 
 
 .box-content{
 	width: 100%;
 	position: absolute;  
+    min-height: 100%;
 	text-align: center;
 	background: url('../../../dist/assets/bg-2.png') top center no-repeat;
     background-size: 100% 100%;
@@ -68,6 +77,8 @@ body{
 }
 .instrucoes{
     background: url('../../../dist/assets/fundo-dialogo.png') top center no-repeat !important; 
+    width: 1023px;
+    height: 1024px;
 
     .header{
         position: relative;
@@ -398,6 +409,7 @@ canvas{
 }
 /* */
 .loading{
+    position: absolute;
 	background: url('../../../dist/assets/loading01.png');
 	width: 1024px;
 	height: 768px;
@@ -408,29 +420,38 @@ canvas{
 
 .loading-game{
     background: url('../../../dist/assets/bg-loading02.png');
+    position: absolute;
     width: 1024px;
     height: 768px;
-    margin: 0px auto;
-    position: absolute;
+    margin: 0 auto;
+    top: 0;
+    text-align: center;
+    left: 0;
     z-index: 200;
-        text-align: center;
+    text-align: center;
     
     p{
         font-size: 2em;
-        color: @base-blue;
-        font-weight: bold;
+        color: #004e72;
+        font-weight: 700;
         text-transform: uppercase;
         text-align: center;
-        margin: 25% auto 0 auto;
+        margin: 25% 0 0 42%;
+        text-align: center;
+        width: auto;
+        height: 33px;
     }
 
     .bar{
         position: relative;
         width: 535px;
         height: 24px;
-        margin: 2% auto;
+        padding: 0;
+        margin: 30% 0 0 -37%;
+        clear: both;
         background: #fff;
         padding: 1%;
+
         .border(2px, solid, @base-blue);
         .border-radius(24px);
 

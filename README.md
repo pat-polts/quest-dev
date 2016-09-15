@@ -32,4 +32,8 @@
 
 <p style="color: red;" >** Atualizações **</p>
 
-<code>npm update && bower update</code>
+<ul>
+	<li>Adicionado modulo memory-cache</li>
+	<li>Sessão login resolvida</li>
+</ul>
+ 

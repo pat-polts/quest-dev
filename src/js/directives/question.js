@@ -84,7 +84,7 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
                 var next = parseInt(scope.id);
                 var prev = parseInt(scope.id)  - 1;  
  
-                // $rootScope.moveNext(next,prev);
+                $rootScope.moveNext(next,prev);
                 $rootScope.go('/jogar');
               
             }else{

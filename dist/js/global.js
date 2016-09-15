@@ -10,46 +10,37 @@ quest.config(function ($routeProvider,$locationProvider) {
   
   $routeProvider.
    when('/', {
-      templateUrl: '../../views/saudacoes.html',
-      restricted: true 
+      templateUrl: '../../views/saudacoes.html', 
     })
     .when('/login', {
       templateUrl: '../../views/login.html',
-      controller: 'authController',
-      restricted: false
+      controller: 'authController', 
     })
     .when('/logout', {
-      controller: 'logoutController',
-      restricted: true
+      templateUrl: '../../views/login.html',
+      controller: 'authController', 
       
     })
     .when('/mais-sobre', {
-      templateUrl: '../../views/mais-sobre.html',
-      restricted: true 
+      templateUrl: '../../views/mais-sobre.html', 
     })
     .when('/vamos-jogar', {
-      templateUrl: '../../views/vamos-jogar.html',
-      restricted: true
+      templateUrl: '../../views/vamos-jogar.html', 
     })
     .when('/jogar', {
-      templateUrl: '../../views/game.html',
-      restricted: true
+      templateUrl: '../../views/game.html', 
     })  
     .when('/jogar/especial-2/historia/', {
-      templateUrl: '../../views/templates/question-especial-2_historia-2.html',
-      restricted: true
+      templateUrl: '../../views/templates/question-especial-2_historia-2.html', 
     }) 
     .when('/jogar/especial-2/multipla-escolha-1/', {
-      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-1.html',
-      restricted: true
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-1.html', 
     }) 
     .when('/jogar/especial-2/multipla-escolha-2/', {
-      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-2.html',
-      restricted: true
+      templateUrl: '../../views/templates/question-especial-2_multipla-escolha-2.html', 
     }) 
     .when('/jogar/desafio/', {
-      templateUrl: '../../views/templates/question-desafio.html',
-      restricted: true
+      templateUrl: '../../views/templates/question-desafio.html', 
     }) 
     .otherwise({
       redirectTo: '/login' 
@@ -59,9 +50,7 @@ quest.config(function ($routeProvider,$locationProvider) {
 quest.run(function ($rootScope, $location, $route, $cookies, $q, AuthService) { 
   $rootScope.$on('$routeChangeStart', function (next, current) {
       if(!$cookies.get('logged')){ 
-       
-         $location.path('/login'); 
-       
+         $location.path('/login');  
       }
   });
 
@@ -300,7 +289,7 @@ quest.directive('question', ['$rootScope', '$http', '$cookies', '$location',
                 var next = parseInt(scope.id);
                 var prev = parseInt(scope.id)  - 1;  
  
-                // $rootScope.moveNext(next,prev);
+                $rootScope.moveNext(next,prev);
                 $rootScope.go('/jogar');
               
             }else{
@@ -545,7 +534,7 @@ quest.directive('tabuleiro', ['$rootScope', '$http','$q', '$cookies',
             break;   
             case 20 :
               //special
-              $rootScope.loadQuestion('E2');
+              $rootScope.loadQuestion('E2.1');
             break;   
             case 25 :
               //special
@@ -591,7 +580,8 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
     },
 
      link: function(scope, element, attribute){
-        // console.log(data);
+        console.log($rootScope.userQuestion);
+
            var escolha = null;
            var question = [];
            var question2 = [];
@@ -602,8 +592,11 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
           scope.optInvalid = false;
           scope.acertou = false;
           scope.optValue = null;
-
-         question = scope.data[0];      
+          if(!scope.data){
+             question = $rootScope.userQuestion; 
+          }else{
+            question = scope.data[0];  
+          }    
 
             scope.id           = question.Numero;
             scope.titulo       = question.Titulo;
@@ -627,7 +620,7 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
             // $location.path('/jogar');
           }
 
-          if(scope.id == 'E2'){
+          if(scope.id == 'E2.1'){
             scope.img    = 'img-suzana-desenho.png';
             scope.btnTxt = 'proximo';
           }else{
@@ -822,93 +815,6 @@ quest.directive('vantagensEDisvantagens2', ['$rootScope','$http', '$cookies',
   }
 }]);
 
-"use strict";
-//================================================
-//# App Factories
-//================================================
-
-
-/*********************
-  BoardService
-**********************/
-quest.factory('BoardService', ['$rootScope', '$q', '$timeout', '$http', 'ApiService', 
-  function($rootScope, $q, $timeout, $http, ApiService){
-
-    var deferred    = $q.defer();
-    var score       = 0;
-    var totalHouses = 30;
-    var houses = {
-          'score' : '10',
-          'question' : ['title', 'options', 'correct'],
-          'answer' : '',
-          'special' : false,
-          'x': 0,
-          'y':0
-    };
-    var board     = [1,2,3,4,5,6];
-    var boardData = {}; 
-    var game      = {}; 
-    var move      = false;
-
-    game.getQuestions = function(){ 
-      var promise = ApiService.getQuestionData();
-        promise.then(function successHandle(data){
-            console.log(data);
-            $rootScope.boardData.push(data);
-         console.log($rootScope.boardData);
-        },function successHandle(erro){
-            if(erro){
-              console.log(erro);
-            }
-        });
-       
-    };
- 
-    game.getNext = function(){
-     return move;
-    };
- 
-    game.loadNext = function(n){
-     if(n){
-      move = n;
-     }
-    };
-
-    game.getGameApi = function(){
-      return board;
-    };
-
-    game.createBoard = function(){
-      var props = [];
-
-      for (var i = 0; i < totalHouses; i++) {
-        props[i] = houses;
-      }
-
-      return props;
-    };
-
-    game.getBoard = function(){
-      // for (var i = 0; i < 6; i++) {
-      //   board.push(i);
-      // }
-      return board;
-    };
-
-    game.getBoardData = function(){
-      return boardData;
-    };
-
-    game.getHouses = function(){
-      return houses;
-    };
-
-    game.getScore = function(){
-      return score;
-    };
-
-    return game;
-}]);
 
 /*********************
   UserService
@@ -922,17 +828,19 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
     userApi.getUserData = function(){  
 
       var deferred = $q.defer(); 
+      $rootScope.isLoading = true;
       $http.get('/api/user')
         .then(function success(res){    
             if(res.status === 200){ 
-              if(res.data.obj){ 
-
+             $rootScope.isLoading = false;
+              if(res.data.obj){  
                 deferred.resolve(res.data.obj);
               }
             } 
            
         }, function error(res){  
             if(res.status === 500){
+            $rootScope.isLoading = false;
               if(res.data.error){ 
                 $rootScope.error        = true; 
                 $rootScope.errorMessage = res.data.error;  
@@ -1142,27 +1050,16 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
 quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies', '$location', 
   function ($rootScope, $q, $timeout, $http, $cookies, $location) {
 
-      var user     = null; 
-      var userAuth = {}; 
-      var hour     = 3600000
-      var exp      = new Date(Date.now() + hour);
+      var user          = null; 
+      var userAuth      = {}; 
+      var hour          = 3600000
+      var exp           = new Date(Date.now() + hour);
       var cookieOptions = {expires: exp, httpOnly: true}; 
-
-      userAuth.api = function(){ 
-        $http.get('/api')
-        .success(function(response, status){ 
-          return response.api; 
-        })
-        .error(function() {
-          $rootScope.error = true; 
-          $rootScope.errorMessage = "Problemas com a api";   
-        }); 
-      };
-
-    
-
-          // console.log(loginApi);
-
+ 
+ /******************************************************
+ # AuthService.login()
+ # loga usuario
+ ******************************************************/
       userAuth.login = function (username, password) {   
         var deferred    = $q.defer();
 
@@ -1175,7 +1072,9 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
               // console.log(res);
               if(res.data.logged){
                 $cookies.putObject('logged', true, cookieOptions);
-                 deferred.resolve(res.data.logged);
+                if($cookies.getObject('logged')){
+                  deferred.resolve(res.data.logged);
+                }
               }
             }
 
@@ -1196,6 +1095,10 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
           return deferred.promise;
       }; 
 
+ /******************************************************
+ # AuthService.logged()
+ # verifica se existe usuário
+ ******************************************************/
      userAuth.logged = function(){ 
 
         var deferred = $q.defer();
@@ -1219,23 +1122,10 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
       };
 
       userAuth.logout = function(){ 
-        var deferred = $q.defer();
-
-        $http.get('/auth/logout')
-        .then(function success(res){   
-              if(res.status === 200){
-                 deferred.resolve();
-              } 
-          }, function error(res){
-            if(res.data.error){           
-              $rootScope.error = true; 
-              $rootScope.errorMessage = res.data.error;  
-            }
-            deferred.reject();
-          }); 
-
-        return deferred.promise;    
-
+    
+          $cookies.remove('user');
+          $cookies.remove('logged');
+         
       };
  
  
@@ -1243,10 +1133,6 @@ quest.factory('AuthService', ['$rootScope', '$q', '$timeout', '$http','$cookies'
     return userAuth;
 
 }]); //AuthService ends
-"use strict";
-//================================================
-//# App Controllers
-//================================================
 
 quest.controller('tabuleiro',
   ['$rootScope', '$location','$q', '$cookies', 'ApiService',
@@ -1258,18 +1144,19 @@ quest.controller('tabuleiro',
     $rootScope.isSpecial2     = false;
     $rootScope.isSpecial3     = false;
     
-    $rootScope.userLogged     = null;
-    $rootScope.userName       = null;
-    $rootScope.userEmail      = null;
-    $rootScope.userScore      = 0;
-    $rootScope.userLastAnswer = null;
-    $rootScope.userQuestions  = [];
-    $rootScope.userQuestion   = [];
+    $rootScope.userLogged     = $cookies.getObject('logged') || 'null';
+    $rootScope.userName;
+    $rootScope.userEmail;
+    $rootScope.userScore;
+    $rootScope.userLastAnswer;
+
+    $rootScope.userQuestions    = [];
+    $rootScope.userQuestion     = [];
     
-    $rootScope.users          = [];
-    $rootScope.optionSelected = false;
-    $rootScope.gameRank       = [];
-    $rootScope.questionEspecial     = [];
+    $rootScope.users            = [];
+    $rootScope.optionSelected   = false;
+    $rootScope.gameRank         = [];
+    $rootScope.questionEspecial = [];
 
     $rootScope.desafioInstrucoes = false;
     $rootScope.desafioId = 0;
@@ -1283,28 +1170,30 @@ quest.controller('tabuleiro',
       }); 
     };
 
+
     $rootScope.setUserCookies = function(name,score,last){ 
       var user          = {'name': name, 'score': score, 'last': last};
       var hour          = 3600000
       var exp           = new Date(Date.now() + hour);
-      var cookieOptions = {expires: exp, httpOnly: true}; 
+      var cookieOptions = {expires: exp}; 
 
       $cookies.remove('user'); 
       $cookies.putObject('user', user, cookieOptions);  
+        
 
     };
+  
 
-    $rootScope.loadData = function(){
+    $rootScope.loadData = function(){ 
       var user      = ApiService.getUserData();
-      var questions =  ApiService.getQuestions();
-      $rootScope.isLoading = true;
  
-       user.then(function succesHandle(data){
-          $rootScope.isLoading = false;
-          $rootScope.userName  = data.name;
-          $rootScope.userScore = data.score;
-         
-          if(isNaN(data.lastQ)){
+
+      user.then(function succesHandle(data){
+      
+          $rootScope.userName      = data.name;
+          $rootScope.userScore     = data.score;
+    
+          if(isNaN(data.lastQ) || data.lastQ == ''){
             $rootScope.userLastAnswer = 1;
           }else if(data.lastQ == 'E2' || data.lastQ == 'E3' || data.lastQ == 'E4'){
             $rootScope.userLastAnswer = 20;
@@ -1315,18 +1204,18 @@ quest.controller('tabuleiro',
           $rootScope.$apply;
           $rootScope.setUserCookies($rootScope.userName,$rootScope.userScore , $rootScope.userLastAnswer);
 
+ 
 
        },function errorHandler(erro){
-          console.log(erro);
-          $rootScope.isLoading = false; 
+          console.log(erro); 
        });
-        
-      //load user info to user globals
+
+      var questions =  ApiService.getQuestions();
+
        questions.then(function succesHandle(data){  
-          $rootScope.isLoading = true; 
+          $rootScope.isLoading     = false;
 
           $rootScope.userQuestions.push(data); 
-          $rootScope.isLoading     = false;
           $rootScope.$apply;
 
          
@@ -1335,10 +1224,9 @@ quest.controller('tabuleiro',
           console.log(erro);
        });
 
-
-
     };
 
+    
 /*********************************************
 ## Carrega questões simples e especial 2
 *********************************************/
@@ -1349,22 +1237,30 @@ quest.controller('tabuleiro',
 
       $rootScope.isLoading        = true;
       $rootScope.userQuestion     = [];
-       $rootScope.questionEspecial = [];
+       $rootScope.questionEspecial = []; 
 
      question.then(function succesHandle(data){
-      $rootScope.isLoading  = false;
-         if(id == 'E2'){
-            $rootScope.questionEspecial.push(data);  
+      $rootScope.userQuestion.push(data);  
+          $rootScope.isLoading = false; 
+
+         if(id == 'E2.1'){
+            // $rootScope.questionEspecial.push(data);  
             $rootScope.isSpecial1 = false; 
             $rootScope.isSpecial2 = true; 
             $rootScope.isQuestion = false;
             
             $rootScope.$apply;
+            if($rootScope.questionEspecial.length !== 0){
+             $rootScope.isLoading  = false;
+
+            }
 
 
         }else{ 
-          $rootScope.userQuestion.push(data);  
+          $rootScope.isSpecial1 = false; 
+          $rootScope.isSpecial2 = false; 
           $rootScope.isQuestion = true;
+          $rootScope.isLoading  = false;
           $rootScope.$apply;
         }
 
@@ -1399,14 +1295,19 @@ quest.controller('tabuleiro',
     $rootScope.writeQuestion = function(id, val, score, acertou){ 
 
         var question = ApiService.setQuestionData(id, val);
+        var user   = $cookies.getObject('user');
+        var name   = user.name;
+        var ultima = user.ultima;
+        var pontos = user.pontos;
+
         console.log('Pergunta: '+id+' Resposta: '+val + ' Pontuação: '+score);
 
          question.then(function succesHandle(data){  
             if(data){
-              $cookies.remove('ultima');
-              $cookies.putObject('ultima', id);
+
               $rootScope.userScore = parseInt(score); 
               $rootScope.$apply;
+              $rootScope.setUserCookies(name,$rootScope.userScore,id);
               $rootScope.isQuestion = false;
 
             }
@@ -1418,7 +1319,9 @@ quest.controller('tabuleiro',
     };
 
     $rootScope.moveNext = function(next, prev){  
-        var houses    = document.querySelector(".casas");
+        var user = $cookies.getObject('user');
+        console.log(user.ultima);
+        var houses    = document.querySelector("#bloco-27");
         var prevHouse = document.querySelector("#bloco-"+prev)
         var nextHouse = document.querySelector("#bloco-"+next); 
       
@@ -1496,146 +1399,20 @@ quest.controller('tabuleiro',
 
 }]);
 /***********************
-  Main
-************************/
-
-quest.controller('mainController', 
-  ['$rootScope', '$scope', '$location', '$q', 'AuthService', 'BoardService', 'ApiService',
-  function ($rootScope, $scope, $location, $q, AuthService, BoardService, ApiService) {
-
-    $rootScope.isLoading = false;
-    $rootScope.activePage   = $location.path(); 
-     
- 
-    $rootScope.isQuestion    = false;  
-    $rootScope.isRanking = false;
-    $rootScope.questionData  = {};
-
-    //refazendo logica menos bagunçada
-    $rootScope.userData      = {}; 
-    $rootScope.rankData      = {}; 
-     $rootScope.userScore;
-     $rootScope.userName;
-     $rootScope.userLastQ;
-
-     $rootScope.lastPage; 
-
-     $rootScope.openRank = function(){ 
-        $rootScope.lastPage = 'ranking';
-        $rootScope.isRanking = true;
-     }; 
-
-  
-
-    $rootScope.userQuestionData = function(){
-     var promise =  AuthService.getQuestions();
-     promise.then(function succesHandle(data){
-      console.log(data);
-      $rootScope.questionData.push(data);
-      $rootScope.$apply;
-     },function errorHandler(erro){
-
-     });
-
-    };
-
-    $rootScope.go = function (route) {
-      $location.path(route);
-    };
-
-    $rootScope.loadRankData = function(){
-    
-       var promise = ApiService.getRanking();
-        promise.then(function resolveHandler(rank){ 
-        $rootScope.isLoading = false; 
-
-        }, function rejectHandler(error){ 
-          $rootScope.isLoading = false;
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
-
-      
-
-    }; 
-
-    $rootScope.loadUserData = function(){
-     
-       var promise = ApiService.getUserData();
-        promise.then(function resolveHandler(user){ 
-        $rootScope.isLoading = false;
-          $rootScope.userData.userName  = user.name;
-          $rootScope.userData.userScore = parseInt(user.score);
-          $rootScope.userData.userLastQ = parseInt(user.lastQ);  
-         $rootScope.$apply;
-
-        }, function rejectHandler(error){ 
-          $rootScope.isLoading = false;
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-        }); 
-
-      
-
-    }; 
-
-    $rootScope.loadQuestionData = function(data){
-     
-       var promise = ApiService.getQuestionData(data);
-        promise.then(function resolveHandler(question){ 
-
-          $rootScope.questionData  = question; 
-
-        }, function rejectHandler(error){ 
-
-          $rootScope.setErro(error);
-        }); 
-     
-
-    };
-
-    $rootScope.setErro = function(erro){
-          $rootScope.isLoading = false;
-          $rootScope.error = true;
-          $rootScope.errorMessage = error;
-    };
-
-    $rootScope.logged = function(){ 
-      var promisse = AuthService.logged();
-        promisse.then(function success(logged){
-          $location.path('/');
-          
-        }, function error(erro){
-           $location.path('/login');
-        });
-    };
-
-    $rootScope.nextPage = function(){ 
-      //
-    };
-
-
-    //assistinda valores  
-    $rootScope.$watch('isQuestion');  
-    $rootScope.$watch('userData', function(value){
-       //
-    });  
-    $rootScope.$watch('questionData', function(value){
-       //
-    });  
-
-}]);
-
-/***********************
   Login
 ************************/
 
 quest.controller('authController',
-  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService',
-  function ($rootScope, $scope, $location, $http, $cookies, AuthService) {
+  ['$rootScope', '$scope', '$location', '$http','$cookies', 'AuthService', 'ApiService',
+  function ($rootScope, $scope, $location, $http, $cookies, AuthService, ApiService) {
 
     $rootScope.isLoading  = false;
     $rootScope.userActive = null; 
+ 
+    if($location.path() == '/logout'){
+      AuthService.logout();
+      return $location.path('/login');
+    }
 
 
 /*
@@ -1676,7 +1453,7 @@ quest.controller('authController',
           promisse.then(function success(logged){
             if(logged){
               console.log($cookies.getObject("logged"));
-             return  $location.path('/');
+             return   $location.path('/');
             }
           }, function error(erro){
               $rootScope.error = true;
@@ -1692,16 +1469,120 @@ quest.controller('authController',
  
 
 }]);
+ 
+
+//================================================
+//# App Controllers
+//================================================
+
 
 /***********************
-  Logout
+  Main
 ************************/
-quest.controller('logoutController',
-  ['$rootScope', '$cookies', '$location',
-  function ($rootScope, $cookies, $location) {
-    
-    // return $cookies.remove('logged');
-    
+
+quest.controller('mainController', 
+  ['$rootScope', '$scope', '$location', '$q', '$cookies', 'AuthService', 'ApiService',
+  function ($rootScope, $scope, $location, $q, $cookies, AuthService, ApiService) {
+
+    $rootScope.isLoading = false;
+    $rootScope.activePage   = $location.path(); 
+     
+ 
+    $rootScope.isQuestion    = false;  
+    $rootScope.isRanking = false;
+    $rootScope.questionData  = {};
+
+    //refazendo logica menos bagunçada
+    $rootScope.userData      = {}; 
+    $rootScope.rankData      = {}; 
+     $rootScope.userScore;
+     $rootScope.userName;
+     $rootScope.userLastQ;
+     $rootScope.userQuestions = [];
+
+     $rootScope.lastPage; 
+     
+    $rootScope.getUserData = function(){
+      var user      = ApiService.getUserData();
+      $rootScope.isLoading = true;
+      user.then(function succesHandle(data){
+          $rootScope.isLoading = false;
+          $rootScope.userName      = data.name;
+          $rootScope.userScore     = data.score;
+         
+          if(isNaN(data.lastQ) || data.lastQ == ''){
+            $rootScope.userLastAnswer = 1;
+          }else if(data.lastQ == 'E2' || data.lastQ == 'E3' || data.lastQ == 'E4'){
+            $rootScope.userLastAnswer = 20;
+          }else{
+            $rootScope.userLastAnswer = data.lastQ;
+
+          }
+          $rootScope.$apply;
+          $rootScope.setUserCookies($rootScope.userName,$rootScope.userScore , $rootScope.userLastAnswer);
+
+          console.log($cookies.getObject('user'));
+ 
+
+       },function errorHandler(erro){
+          console.log(erro);
+          $rootScope.isLoading = false;  
+       });
+     };
+
+
+
+    $rootScope.setUserCookies = function(name,score,last){ 
+      var user          = {'name': name, 'score': score, 'last': last};
+      var hour          = 3600000
+      var exp           = new Date(Date.now() + hour);
+      var cookieOptions = {expires: exp, secure: true}; 
+
+      $cookies.remove('user'); 
+      $cookies.putObject('user', user, cookieOptions);  
+
+    };
+
+
+
+     $rootScope.openRank = function(){ 
+        $rootScope.lastPage = 'ranking';
+        $rootScope.isRanking = true;
+     }; 
+
+    $rootScope.go = function (route) {
+      $location.path(route);
+    };
+
+
+    $rootScope.setErro = function(erro){
+          $rootScope.isLoading = false;
+          $rootScope.error = true;
+          $rootScope.errorMessage = error;
+    };
+
+    $rootScope.logged = function(){ 
+      var promisse = AuthService.logged();
+        promisse.then(function success(logged){
+          $location.path('/');
+          
+        }, function error(erro){
+           $location.path('/login');
+        });
+    };
+
+    $rootScope.nextPage = function(){ 
+      //
+    };
+
+
+    //assistinda valores  
+    $rootScope.$watch('isQuestion');  
+    $rootScope.$watch('userData', function(value){
+       //
+    });  
+    $rootScope.$watch('questionData', function(value){
+       //
+    });  
 
 }]);
-

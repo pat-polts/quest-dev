@@ -13,8 +13,8 @@ var token      = userToken ? userToken : 'YWRtaW46MTIz';
 
 router.get('/questions', function(req, res, next) {
  
-     var api = process.env.API_QUESTION + token;
-     var questQ = [];
+     var api    = process.env.API_QUESTION + token;
+    
       httpClient.get(api, function (data, response) {
 
         res.status(200).send({
@@ -22,19 +22,10 @@ router.get('/questions', function(req, res, next) {
           });
        
       });
-  
-    
-
 });
  
-router.get('/user',function(req,res,next){
-
-  // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';  
-     var sess     = req.session.cookie; 
-      sess.session = Math.floor(Math.random('2')); 
- 
-           console.log(req.session.session);
-           console.log(cache.get('ut'));
+router.get('/user',function(req,res,next){  
+  
   if(token){
     var api  = process.env.API_USER + token; 
     var user = {};
@@ -42,35 +33,31 @@ router.get('/user',function(req,res,next){
       var args = {  
         headers: { "Content-Type": "application/json" }
       }; 
+
       httpClient.get(api, args, function (data, response) {
         if(data){  
           user.name  = data.Nome;
           user.score = data.Pontuacao;
           user.lastQ = data.UltimaPerguntaRespondida; 
-          
+          console.log(data);
           res.status(200).send({obj: user});
-        
-       
 
         }else{
           res.status(500).send({error: "Não foi possivel obter usuario, efetue o login e tente novamente"}); 
          
         } 
       });
-  }
+  } 
   
 
 });
  
 router.get('/question/:id',function(req,res,next){
- 
-  // if(!req.session.user){
-  //    res.status(500).end('Sem usuario'); 
-  // }else{
+  
     var qId = req.params.id;
 
     if(qId){
-      // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+      
       var api   = process.env.API_QUESTION_SINGLE + '/' + qId + '/' + token;
 
       httpClient.get(api, function (data, response) {
@@ -94,9 +81,6 @@ router.get('/question/:id',function(req,res,next){
  
 router.post('/question/:id',function(req,res,next){
  
-  // if(!req.session.user){
-  //    res.status(500).end('Sem usuario'); 
-  // }else{
     var qId = req.params.numero;
     var qVal = req.params.valor;
 
@@ -122,17 +106,12 @@ router.post('/question/:id',function(req,res,next){
           }); 
         } 
       });
-    }
-
-  // }
+    } 
 
 });
 
  
-router.post('/question',function(req,res,next){
- 
-  
-    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+router.post('/question',function(req,res,next){ 
 
     var api = process.env.API_SEND_QUESTION + token;
 
@@ -163,9 +142,7 @@ router.post('/question',function(req,res,next){
 });
 
  
-router.get('/ranking',function(req,res,next){
-  
-    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+router.get('/ranking',function(req,res,next){ 
 
     var api = process.env.API_RANKING + token;
 
@@ -186,8 +163,7 @@ router.get('/ranking',function(req,res,next){
 });
 
 router.get('/especial1', function(req,res,next){
-  
-    // var token = req.session.user ? req.session.user : 'YWRtaW46MTIz';
+   
     var id = 'E1';
     var api = process.env.API_QUESTION_ESPECIAL + id + '/' + token;
 

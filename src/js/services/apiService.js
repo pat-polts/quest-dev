@@ -11,17 +11,19 @@ quest.factory('ApiService', ['$rootScope', '$q', '$timeout', '$http', '$location
     userApi.getUserData = function(){  
 
       var deferred = $q.defer(); 
+      $rootScope.isLoading = true;
       $http.get('/api/user')
         .then(function success(res){    
             if(res.status === 200){ 
-              if(res.data.obj){ 
-
+             $rootScope.isLoading = false;
+              if(res.data.obj){  
                 deferred.resolve(res.data.obj);
               }
             } 
            
         }, function error(res){  
             if(res.status === 500){
+            $rootScope.isLoading = false;
               if(res.data.error){ 
                 $rootScope.error        = true; 
                 $rootScope.errorMessage = res.data.error;  

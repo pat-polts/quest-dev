@@ -16,7 +16,8 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
     },
 
      link: function(scope, element, attribute){
-        // console.log(data);
+        console.log($rootScope.userQuestion);
+
            var escolha = null;
            var question = [];
            var question2 = [];
@@ -27,8 +28,11 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
           scope.optInvalid = false;
           scope.acertou = false;
           scope.optValue = null;
-
-         question = scope.data[0];      
+          if(!scope.data){
+             question = $rootScope.userQuestion; 
+          }else{
+            question = scope.data[0];  
+          }    
 
             scope.id           = question.Numero;
             scope.titulo       = question.Titulo;
@@ -52,7 +56,7 @@ quest.directive('vantagensEDisvantagens', ['$rootScope','$http', '$cookies',
             // $location.path('/jogar');
           }
 
-          if(scope.id == 'E2'){
+          if(scope.id == 'E2.1'){
             scope.img    = 'img-suzana-desenho.png';
             scope.btnTxt = 'proximo';
           }else{

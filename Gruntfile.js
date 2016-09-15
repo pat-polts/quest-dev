@@ -54,7 +54,7 @@ module.exports = function(grunt) {
 //---> Concat: concatanate javascript files into global.js
     concat: { 
       dist: {
-        src: ['src/js/main.js', 'src/js/directives.js', 'src/js/directives/*.js','src/js/services.js', 'src/js/services/*.js','src/js/controllers.js'],
+        src: ['src/js/app.js', 'src/js/mainDirectives.js', 'src/js/directives/*.js', 'src/js/services/*.js', 'src/js/controllers.js'],
         dest: 'dist/js/global.js',
       }
     },
